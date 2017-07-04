@@ -1,0 +1,17 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TFrameDownloaderOptionsPage_Joj','FORMDATA',[
+  'TPF0'#241#31'TFrameDownloaderOptionsPage_Joj'#30'FrameDownloaderOptionsPage_'
+  +'Joj'#0#241#6'TPanel'#18'PanelCommonOptions'#0#241#6'TLabel'#16'LabelSecureT'
+  +'oken'#6'Height'#2#15#5'Width'#2'Y'#0#0#241#6'TLabel'#13'LabelUserName'#6'He'
+  +'ight'#2#15#5'Width'#2'K'#0#0#241#6'TLabel'#13'LabelPassword'#6'Height'#2#15
+  +#5'Width'#2'?'#0#0#241#9'TCheckBox'#22'CheckDownloadSubtitles'#6'Height'#2#26
+  +#0#0#241#9'TCheckBox'#21'CheckConvertSubtitles'#6'Height'#2#26#0#0#241#9'TCh'
+  +'eckBox'#15'CheckLiveStream'#6'Height'#2#26#5'Width'#3'\'#1#0#0#241#9'TCheck'
+  +'Box'#13'CheckRealtime'#6'Height'#2#26#5'Width'#3'u'#1#0#0#0#241#6'TPanel'#20
+  +'PanelSpecificOptions'#0#242#2#0#6'TLabel'#11'LabelServer'#4'Left'#2#8#6'Hei'
+  +'ght'#2#15#3'Top'#2#2#5'Width'#2'.'#7'Caption'#6#8'Ser&ver:'#12'FocusControl'
+  +#7#10'EditServer'#11'ParentColor'#8#0#0#242#2#1#5'TEdit'#10'EditServer'#4'Le'
+  +'ft'#2'p'#6'Height'#2#21#3'Top'#2#0#5'Width'#3#193#0#7'Anchors'#11#5'akTop'#6
+  +'akLeft'#7'akRight'#0#8'TabOrder'#2#0#0#0#0#0
+]);

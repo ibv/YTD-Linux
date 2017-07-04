@@ -1,0 +1,31 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TFrameDownloaderOptionsPage_YouTube','FORMDATA',[
+  'TPF0'#241'#TFrameDownloaderOptionsPage_YouTube"FrameDownloaderOptionsPage_Yo'
+  +'uTube'#6'Height'#3#237#0#12'ClientHeight'#3#237#0#0#241#6'TPanel'#18'PanelC'
+  +'ommonOptions'#0#241#6'TLabel'#16'LabelSecureToken'#6'Height'#2#15#5'Width'#2
+  +'Y'#0#0#241#6'TLabel'#13'LabelUserName'#6'Height'#2#15#5'Width'#2'K'#0#0#241
+  +#6'TLabel'#13'LabelPassword'#6'Height'#2#15#5'Width'#2'?'#0#0#241#9'TCheckBo'
+  +'x'#22'CheckDownloadSubtitles'#6'Height'#2#26#0#0#241#9'TCheckBox'#21'CheckC'
+  +'onvertSubtitles'#6'Height'#2#26#0#0#241#9'TCheckBox'#15'CheckLiveStream'#6
+  +'Height'#2#26#5'Width'#3'\'#1#0#0#241#9'TCheckBox'#13'CheckRealtime'#6'Heigh'
+  +'t'#2#26#5'Width'#3'u'#1#0#0#0#241#6'TPanel'#20'PanelSpecificOptions'#6'Heig'
+  +'ht'#2'L'#12'ClientHeight'#2'L'#0#242#2#0#6'TLabel'#23'LabelPreferredLanguag'
+  +'es'#4'Left'#2#8#6'Height'#2#15#3'Top'#2#0#5'Width'#3#184#0#7'Caption'#6#30
+  +'&Preferred subtitle languages:'#12'FocusControl'#7#22'EditPreferredLanguage'
+  +'s'#11'ParentColor'#8#0#0#242#2#1#6'TLabel'#22'LabelMaximumVideoWidth'#4'Lef'
+  +'t'#2#8#6'Height'#2#15#3'Top'#2#24#5'Width'#3#142#0#7'Caption'#6#21'Maximum '
+  +'video &width:'#12'FocusControl'#7#21'EditMaximumVideoWidth'#11'ParentColor'
+  +#8#0#0#242#2#2#6'TLabel'#23'LabelMaximumVideoHeight'#4'Left'#2#8#6'Height'#2
+  +#15#3'Top'#2'0'#5'Width'#3#149#0#7'Caption'#6#22'Maximum video &height:'#12
+  +'FocusControl'#7#22'EditMaximumVideoHeight'#11'ParentColor'#8#0#0#242#2#3#5
+  +'TEdit'#22'EditPreferredLanguages'#4'Left'#3#152#0#6'Height'#2#21#3'Top'#2#0
+  +#5'Width'#3#153#0#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrder'#2
+  +#2#0#0#242#2#4#5'TEdit'#21'EditMaximumVideoWidth'#4'Left'#3#152#0#6'Height'#2
+  +#21#3'Top'#2#24#5'Width'#2'!'#8'TabOrder'#2#0#4'Text'#6#1'0'#0#0#242#2#5#5'T'
+  +'Edit'#22'EditMaximumVideoHeight'#4'Left'#3#152#0#6'Height'#2#21#3'Top'#2'0'
+  +#5'Width'#2'!'#8'TabOrder'#2#1#4'Text'#6#1'0'#0#0#242#2#6#9'TCheckBox'#14'Ch'
+  +'eckAvoidWebM'#4'Left'#2#8#6'Height'#2#26#3'Top'#2'H'#5'Width'#3'1'#1#7'Anch'
+  +'ors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6#19'&Avoid .webm format'
+  +#8'TabOrder'#2#3#0#0#0#0
+]);
