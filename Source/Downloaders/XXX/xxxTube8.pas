@@ -47,7 +47,7 @@ uses
     LCLIntf, LCLType, LMessages,
   {$ENDIF}
   uPCRE, uXml, HttpSend, SynaCode,
-  {uCrypto,} uStrings, uFunctions, 
+  uCrypto, uStrings, uFunctions,
   uDownloader, uCommonDownloader, uHttpDownloader;
 
 type

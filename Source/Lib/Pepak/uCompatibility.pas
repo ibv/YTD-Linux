@@ -291,12 +291,17 @@ var
   n: integer;
   x, y: integer;
 begin
+  try
   SetLength(Result, Length(S) div 2);
   for n := 1 to Length(S) div 2 do
   begin
     x := Ord(S[((n-1) * 2) + 1]);
     y := Ord(S[((n-1) * 2) + 2]);
     Result[n] := WideChar(x * 256 + y);
+  end;
+
+  except
+
   end;
 end;
 {$endif}
