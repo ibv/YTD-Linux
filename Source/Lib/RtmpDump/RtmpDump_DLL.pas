@@ -1,4 +1,4 @@
-unit rtmpdump_dll;
+unit RtmpDump_DLL;
 
 interface
 
