@@ -15,10 +15,10 @@ Stabilní funkce:
  * uložení seznamu URL do souboru
  * start, stop stahování
  * nastavení konfigurace
+ * protokoly http, https
  
  
 Netestované (nestabilní) funkce: 
- * podpora OPENSSL
  * stahování RTMP
  * podpora MSDL (mmst,mmsh,real-rtsp,wms-rtsp)
  
@@ -27,6 +27,9 @@ Požadavky
 ----------
  * Lazarus (FPC) kompilátor
  * Linux prostředí
+ * knihovna libpcre.so
+ * knihovna librtmp.so.1
+ * knihovny libssl.so, libcrypto.so 
 
 
 Jak zkompilovat
