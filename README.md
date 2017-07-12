@@ -27,6 +27,7 @@ Netestované (nestabilní) funkce:
 - knihovna libpcre.so
 - knihovna librtmp.so.1
 - knihovny libssl.so, libcrypto.so 
+- aplikace leafpad, nahrada notepadu
 
 
 ## Jak zkompilovat

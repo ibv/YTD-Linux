@@ -6,5 +6,5 @@
 {$DEFINE MINIMIZESIZE}
   // Minimize size of the resulting exe code.
 
-{.$DEFINE JSON_SUPEROBJECT}
+{$DEFINE JSON_SUPEROBJECT}
   // Implement JSON using SuperObject rather than LkJSON

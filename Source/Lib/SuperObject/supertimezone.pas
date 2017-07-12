@@ -5,7 +5,12 @@ unit supertimezone;
 interface
 
 uses
-  Windows, Registry, SysUtils, Math, {$ifndef LEGACYVERSION}Generics.Collections,{$endif}
+  {$ifdef mswindows}
+    Windows
+  {$ELSE}
+    LCLIntf, LCLType, LMessages, unix, baseunix,
+  {$ENDIF}
+  Registry, SysUtils, Math, {$ifdef mswindows}{$ifndef LEGACYVERSION}Generics.Collections,{$endif}{$endif}
   supertypes;
 
 type
@@ -23,18 +28,36 @@ type
 
     { Windows Internals }
     function TzSpecificLocalTimeToSystemTime(
+      {$ifdef mswindows}
       const lpTimeZoneInformation: PTimeZoneInformation;
+      {$else}
+      const lpTimeZoneInformation: PTimeZone;
+      {$endif}
       var lpLocalTime, lpUniversalTime: TSystemTime): BOOL;
 
     function SystemTimeToTzSpecificLocalTime(
+      {$ifdef mswindows}
       const lpTimeZoneInformation: PTimeZoneInformation;
+      {$else}
+      const lpTimeZoneInformation: PTimeZone;
+      {$endif}
       var lpUniversalTime, lpLocalTime: TSystemTime): BOOL;
 
+    {$ifdef mswindows}
     function GetTimezoneBias(const pTZinfo: PTimeZoneInformation;
       lpFileTime: PFileTime; islocal: Boolean; pBias: PLongint): Boolean;
+    {$else}
+    function GetTimezoneBias(const pTZinfo: PTimeZone;
+      lpFileTime: PFileTime; islocal: Boolean; pBias: PLongint): Boolean;
+    {$endif}
 
+    {$ifdef mswindows}
     function CompTimeZoneID(const pTZinfo: PTimeZoneInformation;
       lpFileTime: PFileTime; IsLocal: Boolean): LongWord;
+    {$else}
+    function CompTimeZoneID(const pTZinfo: PTimeZone;
+      lpFileTime: PFileTime; IsLocal: Boolean): LongWord;
+    {$endif}
 
     function DayLightCompareDate(const date: PSystemTime;
       const compareDate: PSystemTime): Integer;
