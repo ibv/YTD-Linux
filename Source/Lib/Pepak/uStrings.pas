@@ -246,7 +246,11 @@ begin
   {$IFDEF UNICODE}
   Result := Utf8ToWide(Value);
   {$ELSE}
+  {$ifdef mswindows}
   Result := WideToAnsi(Utf8ToWide(Value));
+  {$else}  // Linux is native in UTF8
+  Result := Value;
+  {$endif}
   {$ENDIF}
 end;
 
@@ -255,7 +259,11 @@ begin
   {$IFDEF UNICODE}
   Result := WideToUtf8(Value);
   {$ELSE}
+  {$ifdef mswindows}
   Result := WideToUtf8(AnsiToWide(Value));
+  {$else}  // Linux is native in UTF8
+  Result := WideString(Value);
+  {$endif}
   {$ENDIF}
   if BOM then
     Result := {$IFDEF UNICODE} Char($feff) {$ELSE} #$ef#$bb#$bf {$ENDIF} + Result;
