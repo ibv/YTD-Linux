@@ -38,7 +38,6 @@ object FormAbout: TFormAbout
     Height = 13
     Top = 40
     Width = 82
-    Anchors = [akTop, akRight]
     Caption = 'LabelVersion'
     Font.Color = clWindowText
     Font.Height = -11
@@ -60,7 +59,6 @@ object FormAbout: TFormAbout
     Height = 13
     Top = 56
     Width = 62
-    Anchors = [akTop, akRight]
     Caption = 'not found'
     Font.Color = clWindowText
     Font.Height = -11
@@ -83,7 +81,6 @@ object FormAbout: TFormAbout
     Height = 13
     Top = 72
     Width = 162
-    Anchors = [akTop, akRight]
     Caption = 'http://www.pepak.net/ytd'
     Font.Color = clWindowText
     Font.Height = -11
@@ -102,11 +99,10 @@ object FormAbout: TFormAbout
     ParentColor = False
   end
   object LabelDefsVersion: TLabel
-    Left = 202
+    Left = 187
     Height = 13
     Top = 40
     Width = 111
-    Anchors = [akTop, akRight]
     Caption = 'LabelDefsVersion'
     Font.Color = clWindowText
     Font.Height = -11
@@ -116,11 +112,10 @@ object FormAbout: TFormAbout
     ParentFont = False
   end
   object LabelNewestDefsVersion: TLabel
-    Left = 202
+    Left = 187
     Height = 13
     Top = 56
     Width = 62
-    Anchors = [akTop, akRight]
     Caption = 'not found'
     Font.Color = clWindowText
     Font.Height = -11
