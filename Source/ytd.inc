@@ -3,8 +3,6 @@
 
 //-----Behavior/functionality--------------------------------------------------
 
-{.$DEFINE UNICODE}
-
 {$DEFINE MULTIDOWNLOADS}
   // Allow multiple downloads per URL (needed for some downloaders)
 
@@ -17,7 +15,7 @@
 {$DEFINE THREADEDVERSION}
   // Check for new version done in an extra thread (in background)
 
-{.$DEFINE CONVERTERS}
+{$DEFINE CONVERTERS}
   // Support for converters: applications called after a download is finished
 
 {$DEFINE CONVERTERSMUSTBEACTIVATED}
@@ -74,7 +72,7 @@
   // Use temporary files for downloads, then rename them when the download
   // is complete.
 
-{.DEFINE JSON}
+{DEFINE JSON}
   // Many providers use JSON for their data storage. While it may be a good idea
   // to use a JSON parser for this data, in fact it is often better to simply
   // use regular expressions: One, it is shorter, and two, it turns out LkJSON
