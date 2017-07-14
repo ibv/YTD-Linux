@@ -1,43 +1,42 @@
 object FormSelectConverter: TFormSelectConverter
   Left = 192
+  Height = 77
   Top = 107
+  Width = 312
   BorderStyle = bsDialog
   Caption = 'Select converter'
   ClientHeight = 77
   ClientWidth = 312
   Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
-  Font.Style = []
-  OldCreateOrder = False
-  Position = poMainFormCenter
   OnCreate = FormCreate
-  PixelsPerInch = 96
-  TextHeight = 13
+  Position = poMainFormCenter
+  Visible = False
   object LabelConverter: TLabel
     Left = 8
-    Top = 8
-    Width = 49
     Height = 13
+    Top = 8
+    Width = 60
     Caption = '&Converter:'
     FocusControl = comboConverter
+    ParentColor = False
   end
   object comboConverter: TComboBox
     Left = 88
+    Height = 27
     Top = 8
     Width = 217
-    Height = 21
+    ItemHeight = 0
     Style = csDropDownList
-    ItemHeight = 13
     TabOrder = 0
   end
   object Button1: TButton
     Left = 152
+    Height = 25
     Top = 40
     Width = 75
-    Height = 25
     Action = actOK
     Default = True
     ModalResult = 1
@@ -45,23 +44,25 @@ object FormSelectConverter: TFormSelectConverter
   end
   object Button2: TButton
     Left = 232
+    Height = 25
     Top = 40
     Width = 75
-    Height = 25
     Action = actCancel
     Cancel = True
     ModalResult = 2
     TabOrder = 2
   end
   object ActionList: TActionList
-    Left = 16
-    Top = 32
+    left = 16
+    top = 32
     object actOK: TAction
       Caption = '&OK'
+      Enabled = False
       ShortCut = 16397
     end
     object actCancel: TAction
       Caption = '&Cancel'
+      Enabled = False
     end
   end
 end

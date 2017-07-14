@@ -336,8 +336,11 @@ begin
         Dir := 'YTDLib';
         ForceDirectories(Dir);
         if not Unzip(LibData, Dir) then
-          ///ForceDeleteDirectory(Dir)
+          {$ifdef mswindows}
+          ForceDeleteDirectory(Dir)
+          {$else}
           RemoveDir(Dir)
+          {$endif}
         else
           Result := Run(ParamStr(0), SETUP_PARAM_INSTALL_LIBRARY + ' ' + AnsiQuotedStr(Dir, '"'), 0, True);
         end;

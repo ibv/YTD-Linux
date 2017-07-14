@@ -29,6 +29,9 @@ Netestované (nestabilní) funkce:
 - knihovny libssl.so, libcrypto.so 
 - aplikace leafpad, nahrada notepadu
 
+- ffmpeg (volitelné), pro converze souborů
+- mencoder (volitelné), pro konverzi souborů
+
 
 ## Jak zkompilovat
 - nainstalovat Lazarus (1.6 a vyšší) dle návodu - http://wiki.freepascal.org/Installing_Lazarus
