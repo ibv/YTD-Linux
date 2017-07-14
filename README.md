@@ -29,7 +29,7 @@ Netestované (nestabilní) funkce:
 - knihovny libssl.so, libcrypto.so 
 - aplikace leafpad, nahrada notepadu
 
-- ffmpeg (volitelné), pro converze souborů
+- ffmpeg (volitelné), pro konverzi souborů
 - mencoder (volitelné), pro konverzi souborů
 
 
