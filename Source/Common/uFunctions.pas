@@ -266,6 +266,7 @@ begin
   Result := Run(FileName, '', OwnerHandle, Elevated);
 end;
 
+{
 function GetTempDir: string;
 const MAX_TEMP_PATH = MAX_PATH + 16;
 begin
@@ -274,6 +275,25 @@ begin
   if Result <> '' then
     Result := IncludeTrailingPathDelimiter(Result);
 end;
+}
+
+/// http://lists.lazarus.freepascal.org/pipermail/lazarus/2011-June/064087.html
+function GetTempDir: String;
+{$IFDEF MSWINDOWS}
+var
+  VTempFolder: array[0..MAX_PATH] of Char;
+{$ENDIF}
+begin
+{$IFDEF UNIX}
+  Result := GetTempDir;
+{$ENDIF}
+{$IFDEF MSWINDOWS}
+  GetTempPath(MAX_PATH, @VTempFolder);
+  Result := IncludeTrailingPathDelimiter(StrPas(VTempFolder));
+{$ENDIF}
+end;
+
+
 
 function CheckRedirect(Http: THttpSend; var Url: string): boolean;
 const
