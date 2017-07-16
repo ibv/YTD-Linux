@@ -9,7 +9,7 @@
 {.$DEFINE SYSTRAY}
   // Minimize to systray
 
-{$DEFINE GETTEXT}
+{.$DEFINE GETTEXT}
   // Multilanguage support
 
 {$DEFINE THREADEDVERSION}

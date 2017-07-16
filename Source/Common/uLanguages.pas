@@ -40,7 +40,7 @@ unit uLanguages;
   {$MODE Delphi}
 {$ENDIF}
 
-{$INCLUDE 'YTD.inc'}
+{$INCLUDE 'ytd.inc'}
 
 interface
 

@@ -11,7 +11,7 @@ object FormAbout: TFormAbout
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Position = poOwnerFormCenter
-  Visible = False
+  LCLVersion = '1.8.0.3'
   object LabelYTD: TLabel
     Left = 8
     Height = 22
@@ -34,7 +34,7 @@ object FormAbout: TFormAbout
     ParentColor = False
   end
   object LabelVersion: TLabel
-    Left = 104
+    Left = 127
     Height = 13
     Top = 40
     Width = 82
@@ -55,7 +55,7 @@ object FormAbout: TFormAbout
     ParentColor = False
   end
   object LabelNewestVersion: TLabel
-    Left = 104
+    Left = 127
     Height = 13
     Top = 56
     Width = 62
@@ -77,7 +77,7 @@ object FormAbout: TFormAbout
     ParentColor = False
   end
   object LabelHomepage: TLabel
-    Left = 104
+    Left = 127
     Height = 13
     Top = 72
     Width = 162
@@ -99,7 +99,7 @@ object FormAbout: TFormAbout
     ParentColor = False
   end
   object LabelDefsVersion: TLabel
-    Left = 187
+    Left = 210
     Height = 13
     Top = 40
     Width = 111
@@ -112,7 +112,7 @@ object FormAbout: TFormAbout
     ParentFont = False
   end
   object LabelNewestDefsVersion: TLabel
-    Left = 187
+    Left = 210
     Height = 13
     Top = 56
     Width = 62

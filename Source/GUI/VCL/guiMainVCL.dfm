@@ -15,14 +15,14 @@ object FormYTD: TFormYTD
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   ShowHint = True
-  LCLVersion = '1.7'
-  Visible = False
+  LCLVersion = '1.8.0.3'
   object ToolBar1: TToolBar
     Left = 0
     Height = 29
     Top = 0
     Width = 719
     ButtonHeight = 23
+    ButtonWidth = 23
     Images = ActionImages
     TabOrder = 0
     object ToolAddNew: TToolButton
@@ -54,7 +54,6 @@ object FormYTD: TFormYTD
       Left = 116
       Height = 23
       Top = 2
-      Width = 8
       ImageIndex = 9
       Style = tbsSeparator
     end
@@ -72,7 +71,6 @@ object FormYTD: TFormYTD
       Left = 170
       Height = 23
       Top = 2
-      Width = 8
       ImageIndex = 9
       Style = tbsSeparator
     end
@@ -95,7 +93,6 @@ object FormYTD: TFormYTD
       Left = 247
       Height = 23
       Top = 2
-      Width = 8
       ImageIndex = 4
       Style = tbsSeparator
     end
@@ -108,7 +105,6 @@ object FormYTD: TFormYTD
       Left = 278
       Height = 23
       Top = 2
-      Width = 8
       ImageIndex = 7
       Style = tbsSeparator
     end
@@ -126,7 +122,6 @@ object FormYTD: TFormYTD
       Left = 332
       Height = 23
       Top = 2
-      Width = 8
       ImageIndex = 15
       Style = tbsSeparator
     end
@@ -139,7 +134,6 @@ object FormYTD: TFormYTD
       Left = 363
       Height = 23
       Top = 2
-      Width = 8
       ImageIndex = 9
       Style = tbsSeparator
     end
@@ -189,7 +183,6 @@ object FormYTD: TFormYTD
         Width = 64
       end    
       item
-        Alignment = taCenter
         Caption = 'Progress'
         Width = 131
       end>

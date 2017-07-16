@@ -61,6 +61,7 @@ uses
   {$IFDEF FASTMM}
   FastMM4,
   {$ENDIF}
+  DefaultTranslator,
   uLanguages in 'Common\uLanguages.pas',
   // Base objects and units
   uMain in 'Common\uMain.pas',
