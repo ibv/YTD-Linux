@@ -34,25 +34,30 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************)
 
-unit guiAboutVCL;
+unit guiAboutLCL;
 {$INCLUDE 'ytd.inc'}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, HttpSend, ShellApi, ComCtrls, 
+  LCLIntf, LCLType, LMessages,
+
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, HttpSend,  ComCtrls,
   {$IFDEF DELPHIXE4_UP}
   UITypes,
   {$ENDIF}
   uLanguages, uMessages, uFunctions, uDownloadClassifier, uDownloader, uOptions,
   uUpgrade,
-  guiFunctions;
+  guiFunctions ;
 
 const
   WM_FIRSTSHOW = WM_USER + 1;
 
 type
+
+  { TFormAbout }
+
   TFormAbout = class(TForm)
     LabelYTD: TLabel;
     LabelVersionLabel: TLabel;
@@ -92,7 +97,7 @@ type
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 uses
   uScriptedDownloader;
@@ -104,6 +109,7 @@ begin
   inherited;
   TranslateProperties(self);
   fFirstShow := True;
+  ListProviders.ScrollBars := ssVertical;
 end;
 
 destructor TFormAbout.Destroy;
@@ -228,10 +234,14 @@ begin
       end;
 end;
 
+
+
+
 procedure TFormAbout.LabelHomepageClick(Sender: TObject);
 begin
   Run((Sender as TLabel).Caption, Handle);
 end;
+
 
 procedure TFormAbout.LoadProviders;
 {$IFDEF FPC}
@@ -251,7 +261,9 @@ begin
     ListProviders.Items.Count := DownloadClassifier.NameCount;
   {$ENDIF}
   ListProviders.Items.EndUpdate;
+  ListProviders.Items.Count := DownloadClassifier.NameCount;
 end;
+
 
 procedure TFormAbout.ListProvidersData(Sender: TObject; Item: TListItem);
 begin
@@ -262,6 +274,8 @@ begin
     //Item.SubItems.Add(DownloadClassifier.Names[Item.Index]);
     Item.SubItems.Add(DownloadClassifier.NameClasses[Item.Index]);
     end;
+
 end;
+
 
 end.

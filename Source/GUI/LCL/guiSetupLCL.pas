@@ -34,34 +34,74 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************)
 
-unit guiDownloaderOptions;
+unit guiSetupLCL;
 {$INCLUDE 'ytd.inc'}
 
 interface
 
 uses
-  {$IFDEF GUI_WINAPI}
-    guiOptionsWINAPI_Downloader
-  {$ELSE}
-    {$IFNDEF GUI_LCL}
-      guiOptionsVCL_Downloader
-    {$ELSE}
-      guiOptionsLCL_Downloader
-    {$ENDIF}
-  {$ENDIF}
-  ;
+  LCLIntf, LCLType, LMessages,
+
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls,
+  uLanguages, uMessages, uFunctions, {uDialogs,} uCompatibility,
+  guiFunctions;
 
 type
-  TFrameDownloaderOptionsPage = {$IFDEF GUI_WINAPI} guiOptionsWINAPI_Downloader.TFrameDownloaderOptionsPage
-    														{$ELSE}
-                                  {$IFDEF GUI_LCL}
-                                    guiOptionsLCL_Downloader.TFrameDownloaderOptionsPage
-                                	{$ELSE}
-                                    guiOptionsVCL_Downloader.TFrameDownloaderOptionsPage
-                                  {$ENDIF}
-                                {$ENDIF} ;
-  TFrameDownloaderOptionsPageClass = class of TFrameDownloaderOptionsPage;
+  TFormSetup = class(TForm)
+    LabelDestinationDir: TLabel;
+    EditDestinationDir: TEdit;
+    BtnDestinationDir: TButton;
+    CheckDesktopShortcut: TCheckBox;
+    CheckStartMenuShortcut: TCheckBox;
+    ButtonInstall: TButton;
+    ButtonRun: TButton;
+    procedure BtnDestinationDirClick(Sender: TObject);
+  private
+    function GetDestinationDir: string;
+    function GetDesktopShortcut: boolean;
+    function GetStartMenuShortcut: boolean;
+  public
+    constructor Create(AOwner: TComponent); override;
+    property DestinationDir: string read GetDestinationDir;
+    property DesktopShortcut: boolean read GetDesktopShortcut;
+    property StartMenuShortcut: boolean read GetStartMenuShortcut;
+  end;
 
 implementation
+
+{$R *.dfm}
+
+{ TFormSetup }
+
+constructor TFormSetup.Create(AOwner: TComponent);
+begin
+  inherited;
+  TranslateProperties(self);
+  EditDestinationDir.Text := GetSpecialFolder(CSIDL_PROGRAM_FILES) + '\' + APPLICATION_TITLE;
+end;
+
+procedure TFormSetup.BtnDestinationDirClick(Sender: TObject);
+var Dir: string;
+begin
+  Dir := EditDestinationDir.Text;
+  if SelectDirectory(Dir, [sdAllowCreate, sdPerformCreate, sdPrompt], 0) then
+    EditDestinationDir.Text := Dir;
+end;
+
+function TFormSetup.GetDestinationDir: string;
+begin
+  Result := EditDestinationDir.Text;
+end;
+
+function TFormSetup.GetDesktopShortcut: boolean;
+begin
+  Result := CheckDesktopShortcut.Checked;
+end;
+
+function TFormSetup.GetStartMenuShortcut: boolean;
+begin
+  Result := CheckStartMenuShortcut.Checked;
+end;
 
 end.

@@ -71,7 +71,11 @@ uses
       {$IFDEF GUI_WINAPI}
         guiSetupWINAPI,
       {$ELSE}
-        guiSetupVCL,
+        {$IFNDEF GUI_LCL}
+  		    guiSetupVCL,
+  		  {$ELSE}
+          guiSetupLCL,
+        {$ENDIF}
       {$ENDIF}
     {$ENDIF}
   {$ENDIF}
@@ -86,7 +90,11 @@ uses
       guiMainWINAPI,
     {$ELSE}
       Forms,
-      guiMainVCL,
+      {$IFNDEF GUI_LCL}
+        guiMainVCL,
+  		{$ELSE}
+  	    guiMainLCL,
+  		{$ENDIF}
     {$ENDIF}
   {$ENDIF}
   uSystem, uFunctions, uMessages;

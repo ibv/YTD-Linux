@@ -34,13 +34,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************)
 
-unit guiConverterVCL;
+unit guiConverterLCL;
 {$INCLUDE 'ytd.inc'}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  LCLIntf, LCLType, LMessages,
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ActnList, StdCtrls,
   uOptions, uLanguages, guiConsts;
 
@@ -65,7 +66,7 @@ function DecodeConverterComboBox(Combo: TCustomComboBox; Options: TYTDOptions; o
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 function SelectConverter(Options: TYTDOptions; var SelectedID: string; Owner: TComponent = nil; const Caption: string = ''): boolean;
 var F: TFormSelectConverter;
@@ -73,6 +74,10 @@ var F: TFormSelectConverter;
 begin
   Result := False;
   F := TFormSelectConverter.Create(Owner);
+
+  F.Button1.Enabled := true;
+  F.Button2.Enabled := true;
+
   try
     if Caption <> '' then
       F.Caption := Caption;

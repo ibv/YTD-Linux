@@ -40,16 +40,9 @@ unit guiSetupVCL;
 interface
 
 uses
-{$ifdef mswindows}
-  Windows,  ShellApi,
-  ShlObj,
-{$ELSE}
-  LCLIntf, LCLType, LMessages,
-{$ENDIF}
-
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls,
-  uLanguages, uMessages, uFunctions, {uDialogs,} uCompatibility,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ShellApi, ShlObj,
+  uLanguages, uMessages, uFunctions, uDialogs, uCompatibility,
   guiFunctions;
 
 type
@@ -75,7 +68,7 @@ type
 
 implementation
 
-{$R *.dfm}
+{$R *.DFM}
 
 { TFormSetup }
 

@@ -34,34 +34,69 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************)
 
-unit guiDownloaderOptions;
+unit guiOptionsLCL_Downloader;
 {$INCLUDE 'ytd.inc'}
 
 interface
 
 uses
-  {$IFDEF GUI_WINAPI}
-    guiOptionsWINAPI_Downloader
-  {$ELSE}
-    {$IFNDEF GUI_LCL}
-      guiOptionsVCL_Downloader
-    {$ELSE}
-      guiOptionsLCL_Downloader
-    {$ENDIF}
-  {$ENDIF}
-  ;
+  LCLIntf, LCLType, LMessages,
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls,
+  uOptions;
 
 type
-  TFrameDownloaderOptionsPage = {$IFDEF GUI_WINAPI} guiOptionsWINAPI_Downloader.TFrameDownloaderOptionsPage
-    														{$ELSE}
-                                  {$IFDEF GUI_LCL}
-                                    guiOptionsLCL_Downloader.TFrameDownloaderOptionsPage
-                                	{$ELSE}
-                                    guiOptionsVCL_Downloader.TFrameDownloaderOptionsPage
-                                  {$ENDIF}
-                                {$ENDIF} ;
-  TFrameDownloaderOptionsPageClass = class of TFrameDownloaderOptionsPage;
+  TFrameDownloaderOptionsPage = class(TFrame)
+  private
+    fOptions: TYTDOptions;
+    fProvider: string;
+  protected
+    function GetProvider: string; virtual;
+    procedure SetProvider(const Value: string); virtual;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure LoadFromOptions; virtual;
+    procedure SaveToOptions; virtual;
+    property Options: TYTDOptions read fOptions write fOptions;
+    property Provider: string read GetProvider write SetProvider;
+  end;
 
 implementation
+
+{$R *.dfm}
+
+uses
+  uCommonDownloader;
+
+{ TFrameDownloaderOptionsPage }
+
+constructor TFrameDownloaderOptionsPage.Create(AOwner: TComponent);
+begin
+  inherited;
+end;
+
+destructor TFrameDownloaderOptionsPage.Destroy;
+begin
+  inherited;
+end;
+
+function TFrameDownloaderOptionsPage.GetProvider: string;
+begin
+  Result := fProvider;
+end;
+
+procedure TFrameDownloaderOptionsPage.SetProvider(const Value: string);
+begin
+  fProvider := Value;
+end;
+
+procedure TFrameDownloaderOptionsPage.LoadFromOptions;
+begin
+end;
+
+procedure TFrameDownloaderOptionsPage.SaveToOptions;
+begin
+end;
 
 end.

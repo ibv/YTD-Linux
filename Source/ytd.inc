@@ -43,6 +43,9 @@
   // share flags should not apply). This define provides a workaround, allowing
   // files being played while they are still downloading.
 
+{$DEFINE GUI_LCL}
+  // GUI is created with LCL, Linux 
+
 {.$DEFINE GUI_WINAPI} 
   // GUI is created with WinAPI. Otherwise GUI is created with VCL. The WinAPI
   // GUI has several advantages, such as a double-buffered download list or
@@ -164,6 +167,7 @@
   {$UNDEF CONVERTERS}
   {$UNDEF THREADEDVERSION}
   {$UNDEF GUI_WINAPI}
+  {$UNDEF GUI_LCL}
   {$UNDEF SETUP}
 {$ENDIF}
 

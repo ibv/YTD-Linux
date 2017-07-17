@@ -1,152 +1,149 @@
 object FormAbout: TFormAbout
   Left = 208
+  Height = 300
   Top = 104
   Width = 430
-  Height = 300
   Caption = 'About YTD'
+  ClientHeight = 300
+  ClientWidth = 430
   Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
-  Font.Style = []
-  OldCreateOrder = False
   Position = poOwnerFormCenter
-  Scaled = False
-  PixelsPerInch = 96
-  TextHeight = 13
+  LCLVersion = '1.8.0.3'
   object LabelYTD: TLabel
     Left = 8
+    Height = 22
     Top = 8
-    Width = 41
-    Height = 24
+    Width = 43
     Caption = 'YTD'
-    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -19
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold, fsUnderline]
+    ParentColor = False
     ParentFont = False
   end
   object LabelVersionLabel: TLabel
     Left = 8
-    Top = 40
-    Width = 38
     Height = 13
+    Top = 40
+    Width = 46
     Caption = 'Version:'
+    ParentColor = False
   end
   object LabelVersion: TLabel
-    Left = 112
-    Top = 40
-    Width = 74
+    Left = 127
     Height = 13
-    Anchors = [akTop, akRight]
+    Top = 40
+    Width = 82
     Caption = 'LabelVersion'
-    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
+    ParentColor = False
     ParentFont = False
   end
   object LabelNewestVersionLabel: TLabel
     Left = 8
-    Top = 56
-    Width = 76
     Height = 13
+    Top = 56
+    Width = 92
     Caption = 'Newest version:'
+    ParentColor = False
   end
   object LabelNewestVersion: TLabel
-    Left = 112
-    Top = 56
-    Width = 55
+    Left = 127
     Height = 13
-    Anchors = [akTop, akRight]
+    Top = 56
+    Width = 62
     Caption = 'not found'
-    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
+    ParentColor = False
     ParentFont = False
     OnClick = LabelNewestVersionClick
   end
   object LabelHomepageLabel: TLabel
     Left = 8
-    Top = 72
-    Width = 55
     Height = 13
+    Top = 72
+    Width = 65
     Caption = 'Homepage:'
+    ParentColor = False
   end
   object LabelHomepage: TLabel
-    Left = 112
-    Top = 72
-    Width = 150
+    Left = 127
     Height = 13
-    Anchors = [akTop, akRight]
+    Top = 72
+    Width = 162
     Caption = 'http://www.pepak.net/ytd'
-    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
+    ParentColor = False
     ParentFont = False
     OnClick = LabelHomepageClick
   end
   object LabelMediaProviders: TLabel
     Left = 8
-    Top = 96
-    Width = 78
     Height = 13
+    Top = 96
+    Width = 95
     Caption = 'Media providers:'
+    ParentColor = False
   end
   object LabelDefsVersion: TLabel
-    Left = 192
-    Top = 40
-    Width = 100
+    Left = 210
     Height = 13
-    Anchors = [akTop, akRight]
+    Top = 40
+    Width = 111
     Caption = 'LabelDefsVersion'
-    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
+    ParentColor = False
     ParentFont = False
   end
   object LabelNewestDefsVersion: TLabel
-    Left = 192
-    Top = 56
-    Width = 55
+    Left = 210
     Height = 13
-    Anchors = [akTop, akRight]
+    Top = 56
+    Width = 62
     Caption = 'not found'
-    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
+    ParentColor = False
     ParentFont = False
     OnClick = LabelNewestDefsVersionClick
   end
   object ListProviders: TListView
     Left = 8
+    Height = 153
     Top = 112
     Width = 409
-    Height = 153
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    Columns = <
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Columns = <    
       item
         Caption = 'Provider'
         Width = 100
-      end
+      end    
       item
         Caption = 'Components'
-        Width = 264
+        Width = 288
       end>
     OwnerData = True
     ReadOnly = True
     RowSelect = True
+    ScrollBars = ssVertical
     TabOrder = 0
     ViewStyle = vsReport
     OnData = ListProvidersData

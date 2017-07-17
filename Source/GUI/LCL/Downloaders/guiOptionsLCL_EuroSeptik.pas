@@ -34,34 +34,60 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************)
 
-unit guiDownloaderOptions;
+unit guiOptionsLCL_EuroSeptik;
 {$INCLUDE 'ytd.inc'}
 
 interface
 
-uses
-  {$IFDEF GUI_WINAPI}
-    guiOptionsWINAPI_Downloader
-  {$ELSE}
-    {$IFNDEF GUI_LCL}
-      guiOptionsVCL_Downloader
-    {$ELSE}
-      guiOptionsLCL_Downloader
-    {$ENDIF}
-  {$ENDIF}
-  ;
+uses 
+  LCLIntf, LCLType, LMessages,
+
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls,
+  uDownloader, guiOptionsLCL_Downloader, guiOptionsLCL_CommonDownloader;
 
 type
-  TFrameDownloaderOptionsPage = {$IFDEF GUI_WINAPI} guiOptionsWINAPI_Downloader.TFrameDownloaderOptionsPage
-    														{$ELSE}
-                                  {$IFDEF GUI_LCL}
-                                    guiOptionsLCL_Downloader.TFrameDownloaderOptionsPage
-                                	{$ELSE}
-                                    guiOptionsVCL_Downloader.TFrameDownloaderOptionsPage
-                                  {$ENDIF}
-                                {$ENDIF} ;
-  TFrameDownloaderOptionsPageClass = class of TFrameDownloaderOptionsPage;
+  TFrameDownloaderOptionsPage_EuroSeptik = class(TFrameDownloaderOptionsPageCommon)
+    LabelSubtitleHeaderText: TLabel;
+    EditSubtitleHeaderText: TEdit;
+  private
+  protected
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure LoadFromOptions; override;
+    procedure SaveToOptions; override;
+  end;
 
 implementation
+
+{$R *.dfm}
+
+uses
+  downEuroSeptik;
+
+{ TFrameDownloaderOptionsPage_EuroSeptik }
+
+constructor TFrameDownloaderOptionsPage_EuroSeptik.Create(AOwner: TComponent);
+begin
+  inherited;
+end;
+
+destructor TFrameDownloaderOptionsPage_EuroSeptik.Destroy;
+begin
+  inherited;
+end;
+
+procedure TFrameDownloaderOptionsPage_EuroSeptik.LoadFromOptions;
+begin
+  inherited;
+  EditSubtitleHeaderText.Text := Options.ReadProviderOptionDef(Provider, OPTION_EUROSEPTIK_SUBTITLELANGUAGE, '');
+end;
+
+procedure TFrameDownloaderOptionsPage_EuroSeptik.SaveToOptions;
+begin
+  inherited;
+  Options.WriteProviderOption(Provider, OPTION_EUROSEPTIK_SUBTITLELANGUAGE, EditSubtitleHeaderText.Text);
+end;
 
 end.

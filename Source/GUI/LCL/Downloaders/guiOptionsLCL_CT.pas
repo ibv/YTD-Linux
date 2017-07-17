@@ -34,34 +34,59 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************)
 
-unit guiDownloaderOptions;
+unit guiOptionsLCL_CT;
 {$INCLUDE 'ytd.inc'}
 
 interface
 
-uses
-  {$IFDEF GUI_WINAPI}
-    guiOptionsWINAPI_Downloader
-  {$ELSE}
-    {$IFNDEF GUI_LCL}
-      guiOptionsVCL_Downloader
-    {$ELSE}
-      guiOptionsLCL_Downloader
-    {$ENDIF}
-  {$ENDIF}
-  ;
+uses 
+  LCLIntf, LCLType, LMessages,
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls,
+  uDownloader, guiOptionsLCL_Downloader, guiOptionsLCL_CommonDownloader;
 
 type
-  TFrameDownloaderOptionsPage = {$IFDEF GUI_WINAPI} guiOptionsWINAPI_Downloader.TFrameDownloaderOptionsPage
-    														{$ELSE}
-                                  {$IFDEF GUI_LCL}
-                                    guiOptionsLCL_Downloader.TFrameDownloaderOptionsPage
-                                	{$ELSE}
-                                    guiOptionsVCL_Downloader.TFrameDownloaderOptionsPage
-                                  {$ENDIF}
-                                {$ENDIF} ;
-  TFrameDownloaderOptionsPageClass = class of TFrameDownloaderOptionsPage;
+  TFrameDownloaderOptionsPage_CT = class(TFrameDownloaderOptionsPageCommon)
+    LabelMaximumVideoBitrate: TLabel;
+    EditMaximumVideoBitrate: TEdit;
+  private
+  protected
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure LoadFromOptions; override;
+    procedure SaveToOptions; override;
+  end;
 
 implementation
+
+{$R *.dfm}
+
+uses
+  downCT;
+
+{ TFrameDownloaderOptionsPage_CT }
+
+constructor TFrameDownloaderOptionsPage_CT.Create(AOwner: TComponent);
+begin
+  inherited;
+end;
+
+destructor TFrameDownloaderOptionsPage_CT.Destroy;
+begin
+  inherited;
+end;
+
+procedure TFrameDownloaderOptionsPage_CT.LoadFromOptions;
+begin
+  inherited;
+  EditMaximumVideoBitrate.Text := IntToStr(Options.ReadProviderOptionDef(Provider, OPTION_CT_MAXBITRATE, OPTION_CT_MAXBITRATE_DEFAULT));
+end;
+
+procedure TFrameDownloaderOptionsPage_CT.SaveToOptions;
+begin
+  inherited;
+  Options.WriteProviderOption(Provider, OPTION_CT_MAXBITRATE, StrToIntDef(EditMaximumVideoBitrate.Text, 0));
+end;
 
 end.

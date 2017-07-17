@@ -40,13 +40,7 @@ unit guiOptionsVCL_EuroSeptik;
 interface
 
 uses 
-  {$ifdef mswindows}
-    Windows,
-  {$ELSE}
-    LCLIntf, LCLType, LMessages,
-  {$ENDIF}
-
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
   uDownloader, guiOptionsVCL_Downloader, guiOptionsVCL_CommonDownloader;
 
@@ -65,7 +59,7 @@ type
 
 implementation
 
-{$R *.dfm}
+{$R *.DFM}
 
 uses
   downEuroSeptik;

@@ -57,7 +57,11 @@ uses
     {$IFDEF GUI_WINAPI}
       guiOptionsWINAPI_YouTube,
     {$ELSE}
+      {$IFNDEF GUI_LCL}
       guiOptionsVCL_YouTube,
+      {$ELSE}
+  		guiOptionsLCL_YouTube,
+      {$ENDIF}
     {$ENDIF}
   {$ENDIF}
   uDownloader, uCommonDownloader, uNestedDownloader;

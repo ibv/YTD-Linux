@@ -34,34 +34,60 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************)
 
-unit guiDownloaderOptions;
+unit guiOptionsLCL_Joj;
 {$INCLUDE 'ytd.inc'}
 
 interface
 
-uses
-  {$IFDEF GUI_WINAPI}
-    guiOptionsWINAPI_Downloader
-  {$ELSE}
-    {$IFNDEF GUI_LCL}
-      guiOptionsVCL_Downloader
-    {$ELSE}
-      guiOptionsLCL_Downloader
-    {$ENDIF}
-  {$ENDIF}
-  ;
+uses 
+  LCLIntf, LCLType, LMessages,
+
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls,
+  uDownloader, guiOptionsLCL_Downloader, guiOptionsLCL_CommonDownloader;
 
 type
-  TFrameDownloaderOptionsPage = {$IFDEF GUI_WINAPI} guiOptionsWINAPI_Downloader.TFrameDownloaderOptionsPage
-    														{$ELSE}
-                                  {$IFDEF GUI_LCL}
-                                    guiOptionsLCL_Downloader.TFrameDownloaderOptionsPage
-                                	{$ELSE}
-                                    guiOptionsVCL_Downloader.TFrameDownloaderOptionsPage
-                                  {$ENDIF}
-                                {$ENDIF} ;
-  TFrameDownloaderOptionsPageClass = class of TFrameDownloaderOptionsPage;
+  TFrameDownloaderOptionsPage_Joj = class(TFrameDownloaderOptionsPageCommon)
+    LabelServer: TLabel;
+    EditServer: TEdit;
+  private
+  protected
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure LoadFromOptions; override;
+    procedure SaveToOptions; override;
+  end;
 
 implementation
+
+{$R *.dfm}
+
+uses
+  downJoj;
+
+{ TFrameDownloaderOptionsPage_Joj }
+
+constructor TFrameDownloaderOptionsPage_Joj.Create(AOwner: TComponent);
+begin
+  inherited;
+end;
+
+destructor TFrameDownloaderOptionsPage_Joj.Destroy;
+begin
+  inherited;
+end;
+
+procedure TFrameDownloaderOptionsPage_Joj.LoadFromOptions;
+begin
+  inherited;
+  EditServer.Text := Options.ReadProviderOptionDef(Provider, OPTION_JOJ_SERVER, OPTION_JOJ_SERVER_DEFAULT);
+end;
+
+procedure TFrameDownloaderOptionsPage_Joj.SaveToOptions;
+begin
+  inherited;
+  Options.WriteProviderOption(Provider, OPTION_JOJ_SERVER, EditServer.Text);
+end;
 
 end.

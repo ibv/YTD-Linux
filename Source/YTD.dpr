@@ -127,21 +127,39 @@ uses
       guiConverterWINAPI in 'GUI\WinAPI\guiConverterWINAPI.pas',
       {$ENDIF}
     {$ELSE}
-      guiMainVCL in 'GUI\VCL\guiMainVCL.pas' {FormYTD},
-      guiAboutVCL in 'GUI\VCL\guiAboutVCL.pas' {FormAbout},
-      {$IFDEF SETUP_GUI}
-      guiSetupVCL in 'GUI\VCL\guiSetupVCL.pas' {FormSetup},
-      {$ENDIF}
-      guiOptionsVCL in 'GUI\VCL\guiOptionsVCL.pas' {FormOptions},
-      guiOptionsVCL_Downloader in 'GUI\VCL\Downloaders\guiOptionsVCL_Downloader.pas' {FrameDownloaderOptionsPageVCL: TFrame},
-      guiOptionsVCL_CommonDownloader in 'GUI\VCL\Downloaders\guiOptionsVCL_CommonDownloader.pas' {FrameDownloaderOptionsPageCommonVCL: TFrame},
-      //guiOptionsVCL_CT in 'GUI\VCL\Downloaders\guiOptionsVCL_CT.pas' {FrameDownloaderOptionsPage_CT: TFrame},
-      guiOptionsVCL_EuroSeptik in 'GUI\VCL\Downloaders\guiOptionsVCL_EuroSeptik.pas' {FrameDownloaderOptionsPage_EuroSeptik: TFrame},
-      guiOptionsVCL_Joj in 'GUI\VCL\Downloaders\guiOptionsVCL_Joj.pas' {FrameDownloaderOptionsPage_Joj: TFrame},
-      guiOptionsVCL_YouTube in 'GUI\VCL\Downloaders\guiOptionsVCL_YouTube.pas' {FrameDownloaderOptionsPage_YouTube: TFrame},
-      {$IFDEF CONVERTERS}
-      guiConverterVCL in 'GUI\VCL\guiConverterVCL.pas' {FormSelectConverter},
-      {$ENDIF}
+      {$IFDEF GUI_LCL}
+        guiMainLCL in 'GUI\LCL\guiMainLCL.pas' {FormYTD},
+        guiAboutLCL in 'GUI\LCL\guiAboutLCL.pas' {FormAbout},
+        {$IFDEF SETUP_GUI}
+        guiSetupLCL in 'GUI\LCL\guiSetupLCL.pas' {FormSetup},
+        {$ENDIF}
+        guiOptionsLCL in 'GUI\LCL\guiOptionsLCL.pas' {FormOptions},
+        guiOptionsLCL_Downloader in 'GUI\LCL\Downloaders\guiOptionsLCL_Downloader.pas' {FrameDownloaderOptionsPageLCL: TFrame},
+        guiOptionsLCL_CommonDownloader in 'GUI\LCL\Downloaders\guiOptionsLCL_CommonDownloader.pas' {FrameDownloaderOptionsPageCommonLCL: TFrame},
+        //guiOptionsLCL_CT in 'GUI\LCL\Downloaders\guiOptionsLCL_CT.pas' {FrameDownloaderOptionsPage_CT: TFrame},
+        guiOptionsLCL_EuroSeptik in 'GUI\LCL\Downloaders\guiOptionsLCL_EuroSeptik.pas' {FrameDownloaderOptionsPage_EuroSeptik: TFrame},
+        guiOptionsLCL_Joj in 'GUI\LCL\Downloaders\guiOptionsLCL_Joj.pas' {FrameDownloaderOptionsPage_Joj: TFrame},
+        guiOptionsLCL_YouTube in 'GUI\LCL\Downloaders\guiOptionsLCL_YouTube.pas' {FrameDownloaderOptionsPage_YouTube: TFrame},
+        {$IFDEF CONVERTERS}
+        guiConverterLCL in 'GUI\LCL\guiConverterLCL.pas' {FormSelectConverter},
+        {$ENDIF}
+      {$ELSE}
+        guiMainVCL in 'GUI\VCL\guiMainVCL.pas' {FormYTD},
+        guiAboutVCL in 'GUI\VCL\guiAboutVCL.pas' {FormAbout},
+        {$IFDEF SETUP_GUI}
+        guiSetupVCL in 'GUI\VCL\guiSetupVCL.pas' {FormSetup},
+        {$ENDIF}
+        guiOptionsVCL in 'GUI\VCL\guiOptionsVCL.pas' {FormOptions},
+        guiOptionsVCL_Downloader in 'GUI\VCL\Downloaders\guiOptionsVCL_Downloader.pas' {FrameDownloaderOptionsPageVCL: TFrame},
+        guiOptionsVCL_CommonDownloader in 'GUI\VCL\Downloaders\guiOptionsVCL_CommonDownloader.pas' {FrameDownloaderOptionsPageCommonVCL: TFrame},
+        //guiOptionsVCL_CT in 'GUI\VCL\Downloaders\guiOptionsVCL_CT.pas' {FrameDownloaderOptionsPage_CT: TFrame},
+        guiOptionsVCL_EuroSeptik in 'GUI\VCL\Downloaders\guiOptionsVCL_EuroSeptik.pas' {FrameDownloaderOptionsPage_EuroSeptik: TFrame},
+        guiOptionsVCL_Joj in 'GUI\VCL\Downloaders\guiOptionsVCL_Joj.pas' {FrameDownloaderOptionsPage_Joj: TFrame},
+        guiOptionsVCL_YouTube in 'GUI\VCL\Downloaders\guiOptionsVCL_YouTube.pas' {FrameDownloaderOptionsPage_YouTube: TFrame},
+        {$IFDEF CONVERTERS}
+        guiConverterVCL in 'GUI\VCL\guiConverterVCL.pas' {FormSelectConverter},
+        {$ENDIF}
+       {$ENDIF}
     {$ENDIF}
     guiConsts in 'GUI\guiConsts.pas',
     guiDownloaderOptions in 'GUI\guiDownloaderOptions.pas',

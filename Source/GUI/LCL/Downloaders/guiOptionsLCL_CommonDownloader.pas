@@ -34,15 +34,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************)
 
-unit guiOptionsVCL_CommonDownloader;
+unit guiOptionsLCL_CommonDownloader;
 {$INCLUDE 'ytd.inc'}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  LCLIntf, LCLType, LMessages,
+
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
-  uDownloader, uOptions, guiOptionsVCL_Downloader;
+  uDownloader, uOptions, guiOptionsLCL_Downloader;
 
 type
   TFrameDownloaderOptionsPageCommon = class(TFrameDownloaderOptionsPage)
@@ -75,7 +77,7 @@ type
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 uses
   uCommonDownloader;

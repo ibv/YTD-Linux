@@ -34,68 +34,81 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************)
 
-unit guiOptionsVCL_Downloader;
+unit guiOptionsLCL_YouTube;
 {$INCLUDE 'ytd.inc'}
 
 interface
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls,
-  uOptions;
+uses 
+  LCLIntf, LCLType, LMessages,
+
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls,
+  uDownloader, guiOptionsLCL_Downloader, guiOptionsLCL_CommonDownloader;
 
 type
-  TFrameDownloaderOptionsPage = class(TFrame)
+  TFrameDownloaderOptionsPage_YouTube = class(TFrameDownloaderOptionsPageCommon)
+    LabelPreferredLanguages: TLabel;
+    EditPreferredLanguages: TEdit;
+    LabelMaximumVideoWidth: TLabel;
+    EditMaximumVideoWidth: TEdit;
+    LabelMaximumVideoHeight: TLabel;
+    EditMaximumVideoHeight: TEdit;
+    CheckAvoidWebM: TCheckBox;
   private
-    fOptions: TYTDOptions;
-    fProvider: string;
   protected
-    function GetProvider: string; virtual;
-    procedure SetProvider(const Value: string); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure LoadFromOptions; virtual;
-    procedure SaveToOptions; virtual;
-    property Options: TYTDOptions read fOptions write fOptions;
-    property Provider: string read GetProvider write SetProvider;
+    procedure LoadFromOptions; override;
+    procedure SaveToOptions; override;
   end;
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 uses
-  uCommonDownloader;
+  downYouTube;
 
-{ TFrameDownloaderOptionsPage }
+{ TFrameDownloaderOptionsPage_YouTube }
 
-constructor TFrameDownloaderOptionsPage.Create(AOwner: TComponent);
+constructor TFrameDownloaderOptionsPage_YouTube.Create(AOwner: TComponent);
+begin
+  inherited;
+  {$IFNDEF SUBTITLES}
+  EditPreferredLanguages.Enabled := False;
+  {$ENDIF}
+end;
+
+destructor TFrameDownloaderOptionsPage_YouTube.Destroy;
 begin
   inherited;
 end;
 
-destructor TFrameDownloaderOptionsPage.Destroy;
+procedure TFrameDownloaderOptionsPage_YouTube.LoadFromOptions;
 begin
   inherited;
+  {$IFDEF SUBTITLES}
+  EditPreferredLanguages.Text := Options.ReadProviderOptionDef(Provider, OPTION_YOUTUBE_PREFERREDLANGUAGES, OPTION_YOUTUBE_PREFERREDLANGUAGES_DEFAULT);
+  if Supports(dfSubtitles, [EditPreferredLanguages, LabelPreferredLanguages]) then
+    ;
+  {$ENDIF}
+  EditMaximumVideoWidth.Text := IntToStr(Options.ReadProviderOptionDef(Provider, OPTION_YOUTUBE_MAXVIDEOWIDTH, OPTION_YOUTUBE_MAXVIDEOWIDTH_DEFAULT));
+  EditMaximumVideoHeight.Text := IntToStr(Options.ReadProviderOptionDef(Provider, OPTION_YOUTUBE_MAXVIDEOHEIGHT, OPTION_YOUTUBE_MAXVIDEOHEIGHT_DEFAULT));
+  CheckAvoidWebM.Checked := Options.ReadProviderOptionDef(Provider, OPTION_YOUTUBE_AVOIDWEBM, OPTION_YOUTUBE_AVOIDWEBM_DEFAULT);
 end;
 
-function TFrameDownloaderOptionsPage.GetProvider: string;
+procedure TFrameDownloaderOptionsPage_YouTube.SaveToOptions;
 begin
-  Result := fProvider;
-end;
-
-procedure TFrameDownloaderOptionsPage.SetProvider(const Value: string);
-begin
-  fProvider := Value;
-end;
-
-procedure TFrameDownloaderOptionsPage.LoadFromOptions;
-begin
-end;
-
-procedure TFrameDownloaderOptionsPage.SaveToOptions;
-begin
+  inherited;
+  {$IFDEF SUBTITLES}
+  if EditPreferredLanguages.Enabled then
+    Options.WriteProviderOption(Provider, OPTION_YOUTUBE_PREFERREDLANGUAGES, EditPreferredLanguages.Text);
+  {$ENDIF}
+  Options.WriteProviderOption(Provider, OPTION_YOUTUBE_MAXVIDEOWIDTH, StrToIntDef(EditMaximumVideoWidth.Text, 0));
+  Options.WriteProviderOption(Provider, OPTION_YOUTUBE_MAXVIDEOHEIGHT, StrToIntDef(EditMaximumVideoHeight.Text, 0));
+  Options.WriteProviderOption(Provider, OPTION_YOUTUBE_AVOIDWEBM, CheckAvoidWebM.Checked);
 end;
 
 end.

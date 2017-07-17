@@ -34,20 +34,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************)
 
-unit guiOptionsVCL;
+unit guiOptionsLCL;
 {$INCLUDE 'ytd.inc'}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, ActnList, ComCtrls, ShlObj,
+  LCLIntf, LCLType, LMessages,
+
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls, ActnList, ComCtrls,
   {$IFDEF DELPHIXE4_UP}
   UITypes,
   {$ENDIF}
-  uLanguages, uMessages, uOptions, uDialogs, uFunctions, guiFunctions,
+  uLanguages, uMessages, uOptions, {uDialogs,} uFunctions, guiFunctions,
   uDownloadClassifier, uDownloader, guiOptions,
-  guiDownloaderOptions, guiOptionsVCL_Downloader, guiOptionsVCL_CommonDownloader;
+  guiDownloaderOptions, guiOptionsLCL_Downloader, guiOptionsLCL_CommonDownloader;
   
 type
   TFormOptions = class(TForm)
@@ -133,11 +135,11 @@ type
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 uses
   {$IFDEF CONVERTERS}
-    guiConverterVCL,
+    guiConverterLCL,
   {$ENDIF}
   {$IFDEF SETUP}
     uSetup,
@@ -160,6 +162,10 @@ begin
   ComboAddIndexToNames.Items.Add(ADDINDEXTONAMES_END);
   PageOptions.ActivePageIndex := 0;
   DestroyDownloaderOptions;
+
+  //BtnOK.Enabled := true;
+  //btnCancel.Enabled := true;
+  //actCancel.Enabled := true;
 end;
 
 procedure TFormOptions.FormDestroy(Sender: TObject);
@@ -180,7 +186,7 @@ begin
     CheckIgnoreOpenSSLWarning.Checked := Options.IgnoreMissingOpenSSL;
     CheckIgnoreRtmpDumpWarning.Checked := Options.IgnoreMissingRtmpDump;
     CheckIgnoreMSDLWarning.Checked := Options.IgnoreMissingMSDL;
-    CheckMinimizeToTray.Checked := Options.MinimizeToTray;
+    ///CheckMinimizeToTray.Checked := Options.MinimizeToTray;
     EditLanguage.Text := Options.Language;
     // Download options
     CheckAutoDownload.Checked := Options.AutoStartDownloads;
@@ -305,7 +311,7 @@ begin
   Options.IgnoreMissingOpenSSL := CheckIgnoreOpenSSLWarning.Checked;
   Options.IgnoreMissingRtmpDump := CheckIgnoreRtmpDumpWarning.Checked;
   Options.IgnoreMissingMSDL := CheckIgnoreMSDLWarning.Checked;
-  Options.MinimizeToTray := CheckMinimizeToTray.Checked;
+  ///Options.MinimizeToTray := CheckMinimizeToTray.Checked;
   // Download options
   Options.AutoStartDownloads := CheckAutoDownload.Checked;
   Options.AutoDeleteFinishedDownloads := CheckAutoDeleteFinishedDownloads.Checked;
@@ -359,12 +365,12 @@ end;
 
 procedure TFormOptions.actDesktopShortcutExecute(Sender: TObject);
 begin
-  CreateShortcut(APPLICATION_SHORTCUT, '', CSIDL_DESKTOPDIRECTORY, ParamStr(0), ''{SETUP_PARAM_GUI});
+  ///CreateShortcut(APPLICATION_SHORTCUT, '', CSIDL_DESKTOPDIRECTORY, ParamStr(0), ''{SETUP_PARAM_GUI});
 end;
 
 procedure TFormOptions.actStartMenuShortcutExecute(Sender: TObject);
 begin
-  CreateShortcut(APPLICATION_SHORTCUT, '', CSIDL_PROGRAMS, ParamStr(0), ''{SETUP_PARAM_GUI});
+  ///CreateShortcut(APPLICATION_SHORTCUT, '', CSIDL_PROGRAMS, ParamStr(0), ''{SETUP_PARAM_GUI});
 end;
 
 procedure TFormOptions.ShowDownloaderOptionsPage(Index: integer);

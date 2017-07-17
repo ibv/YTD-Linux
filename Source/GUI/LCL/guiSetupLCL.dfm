@@ -1,50 +1,50 @@
 object FormSetup: TFormSetup
   Left = 18
+  Height = 200
   Top = 95
   Width = 411
-  Height = 200
   Caption = 'Setup'
+  ClientHeight = 200
+  ClientWidth = 411
   Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
-  Font.Style = []
-  OldCreateOrder = True
-  PixelsPerInch = 96
-  TextHeight = 13
+  LCLVersion = '1.7'
+  Visible = False
   object LabelDestinationDir: TLabel
     Left = 8
-    Top = 16
-    Width = 59
     Height = 13
+    Top = 16
+    Width = 75
     Caption = 'Install &folder:'
     FocusControl = EditDestinationDir
+    ParentColor = False
   end
   object EditDestinationDir: TEdit
     Left = 8
+    Height = 19
     Top = 32
     Width = 369
-    Height = 21
-    Anchors = [akLeft, akTop, akRight]
+    Anchors = [akTop, akLeft, akRight]
     TabOrder = 0
   end
   object BtnDestinationDir: TButton
     Left = 376
+    Height = 21
     Top = 32
     Width = 17
-    Height = 21
     Anchors = [akTop, akRight]
     Caption = '...'
-    TabOrder = 1
     OnClick = BtnDestinationDirClick
+    TabOrder = 1
   end
   object CheckDesktopShortcut: TCheckBox
     Left = 8
+    Height = 26
     Top = 64
     Width = 385
-    Height = 17
-    Anchors = [akLeft, akTop, akRight]
+    Anchors = [akTop, akLeft, akRight]
     Caption = 'Create shortcut on &desktop'
     Checked = True
     State = cbChecked
@@ -52,10 +52,10 @@ object FormSetup: TFormSetup
   end
   object CheckStartMenuShortcut: TCheckBox
     Left = 8
+    Height = 26
     Top = 80
     Width = 385
-    Height = 17
-    Anchors = [akLeft, akTop, akRight]
+    Anchors = [akTop, akLeft, akRight]
     Caption = 'Create shortcut in &Start menu'
     Checked = True
     State = cbChecked
@@ -63,10 +63,10 @@ object FormSetup: TFormSetup
   end
   object ButtonInstall: TButton
     Left = 8
+    Height = 25
     Top = 104
     Width = 385
-    Height = 25
-    Anchors = [akLeft, akTop, akRight]
+    Anchors = [akTop, akLeft, akRight]
     Caption = '&Install'
     Default = True
     ModalResult = 1
@@ -74,10 +74,10 @@ object FormSetup: TFormSetup
   end
   object ButtonRun: TButton
     Left = 8
+    Height = 25
     Top = 136
     Width = 385
-    Height = 25
-    Anchors = [akLeft, akTop, akRight]
+    Anchors = [akTop, akLeft, akRight]
     Caption = '&Run from current location without installing'
     ModalResult = 5
     TabOrder = 5

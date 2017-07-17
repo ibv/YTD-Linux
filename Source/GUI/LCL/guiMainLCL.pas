@@ -34,16 +34,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************)
 
-unit guiMainVCL;
+unit guiMainLCL;
 {$INCLUDE 'ytd.inc'}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  LCLIntf, LCLType, LMessages,
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ComCtrls, ClipBrd, Menus, ImgList, ActnList,
-  ToolWin, CommDlg, ShellApi, CommCtrl,
-  {$IFNDEF DELPHI2009_UP}
+  ToolWin,  {CommDlg, CommCtrl,}
+  {$IFNDEF DELPHI7_UP}
   FileCtrl,
   {$ENDIF}
   {$IFDEF DELPHIXE4_UP}
@@ -54,7 +55,7 @@ uses
   {$ENDIF}
   SynaCode,
   uLanguages, uFunctions, uMessages, uOptions, uStrings, uCompatibility,
-  guiOptions, guiFunctions, uDialogs, uUpgrade,
+  guiOptions, guiFunctions, {uDialogs,} uUpgrade,
   uDownloadList, uDownloadListItem, uDownloadThread;
 
 {$IFDEF SYSTRAY}
@@ -186,8 +187,8 @@ type
     {$ENDIF}
     procedure StartClipboardMonitor;
     procedure StopClipboardMonitor;
-    procedure WMDrawClipboard(var msg: TMessage); message WM_DRAWCLIPBOARD;
-    procedure WMChangeCbChain(var msg: TMessage); message WM_CHANGECBCHAIN;
+    ///procedure WMDrawClipboard(var msg: TMessage); message LWM_DRAWCLIPBOARD;
+    ///procedure WMChangeCbChain(var msg: TMessage); message WM_CHANGECBCHAIN;
     {$IFDEF SINGLEINSTANCE}
     procedure WMCopyData(var msg: TMessage); message WM_COPYDATA;
     {$ENDIF}
@@ -230,11 +231,21 @@ var FormYTD: TFormYTD;
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 uses
-  guiConsts, guiAboutVCL, {$IFDEF CONVERTERS} guiConverterVCL, {$ENDIF} guiOptionsVCL,
+  guiConsts, guiAboutLCL, {$IFDEF CONVERTERS} guiConverterLCL, {$ENDIF} guiOptionsLCL,
   uScriptedDownloader;
+
+const
+
+  LVM_FIRST                    = $1000;
+  LVM_GETHEADER                = LVM_FIRST + 31;
+  LVM_SETEXTENDEDLISTVIEWSTYLE = LVM_FIRST + 54;
+  LVM_GETEXTENDEDLISTVIEWSTYLE = LVM_FIRST + 55;
+  LVM_GETSUBITEMRECT           = LVM_FIRST + 56;
+  LVM_SETHOVERTIME             = LVM_FIRST + 71;
+  LVM_GETHOVERTIME             = LVM_FIRST + 72;
 
 
 { TFormYTD }
@@ -413,21 +424,22 @@ begin
   else
     LastClipboardText := '';
   if Options.MonitorClipboard then
-    NextClipboardViewer := SetClipboardViewer(Self.Handle)
+    ///NextClipboardViewer := SetClipboardViewer(Self.Handle)
   else
     NextClipboardViewer := 0;
 end;
 
 procedure TFormYTD.StopClipboardMonitor;
 begin
-  ChangeClipboardChain(Self.Handle, NextClipboardViewer);
+  ///ChangeClipboardChain(Self.Handle, NextClipboardViewer);
   NextClipboardViewer := 0;
 end;
 
+{$ifdef mswindows}
 procedure TFormYTD.WMDrawClipboard(var msg: TMessage);
 begin
-  if NextClipboardViewer <> 0 then
-    SendMessage(NextClipboardViewer, WM_DRAWCLIPBOARD, 0, 0);
+  ///if NextClipboardViewer <> 0 then
+  ///  SendMessage(NextClipboardViewer, WM_DRAWCLIPBOARD, 0, 0);
   try
     DownloadList.AutoTryHtmlParserTemporarilyDisabled := True;
     AddFromClipboard(True);
@@ -443,6 +455,7 @@ begin
     NextClipboardViewer := Msg.lParam;
   msg.Result := 0;
 end;
+{$endif}
 
 {$IFDEF SINGLEINSTANCE}
 procedure TFormYTD.WMCopyData(var msg: TMessage);
@@ -502,7 +515,7 @@ begin
   Downloads.Items.Count := Sender.Count;
   if Idx >= 0 then
     begin
-    Downloads.UpdateItems(Idx, Idx);
+    ///Downloads.UpdateItems(Idx, Idx);
     if (DownloadList <> nil) and (DownloadList[Idx] <> nil) then
       if DownloadList[Idx].State = dtsFinished then
         SaveSettings;
@@ -512,7 +525,7 @@ end;
 procedure TFormYTD.DownloadListProgress(Sender: TDownloadList; Item: TDownloadListItem);
 var Ticks: DWORD;
 begin
-  Ticks := GetTickCount;
+  Ticks := GetTickCount64;
   if (Ticks > NextProgressUpdate) or ((NextProgressUpdate > $f0000000) and (Ticks < $10000000)) then
     begin
     NextProgressUpdate := Ticks + 250; // 0.25 sec.
@@ -763,7 +776,8 @@ end;
 
 procedure TFormYTD.Refresh;
 begin
-  {$IFDEF FPC}
+  ///{$IFDEF FPC}
+  {$IFNDEF FPC}
   if Downloads.Items.Count <> DownloadList.Count then
     begin
     if Downloads.Items.Count > DownloadList.Count then
@@ -961,8 +975,12 @@ procedure TFormYTD.actEditConfigFileExecute(Sender: TObject);
 begin
   Options.Save;
   MessageDlg(_(MAINFORM_EDIT_CONFIG), mtWarning, [mbOK], 0);
+  {$ifdef mswindows}
   if ShellExecute(Handle, 'edit', PChar(Options.FileName), nil, nil, SW_SHOWNORMAL) <= 32 then
     Run('notepad', '"' + Options.FileName + '"', Handle);
+  {$else}
+    Run('leafpad',  Options.FileName  , Handle);
+  {$endif}
 end;
 
 procedure TFormYTD.actOptionsExecute(Sender: TObject);
