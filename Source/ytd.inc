@@ -6,10 +6,10 @@
 {$DEFINE MULTIDOWNLOADS}
   // Allow multiple downloads per URL (needed for some downloaders)
 
-{.$DEFINE SYSTRAY}
+{$DEFINE SYSTRAY}
   // Minimize to systray
 
-{.$DEFINE GETTEXT}
+{$DEFINE GETTEXT}
   // Multilanguage support
 
 {$DEFINE THREADEDVERSION}
@@ -184,7 +184,7 @@
 // I can't get the systray icon to work under FreePascal.
 
 {$IFDEF FPC}
-  {$UNDEF SYSTRAY}
+  {.$UNDEF SYSTRAY}
 {$ENDIF}
 
 

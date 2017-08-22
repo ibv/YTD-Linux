@@ -43,7 +43,7 @@ uses
   LCLIntf, LCLType, LMessages,
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ComCtrls, ClipBrd, Menus, ImgList, ActnList,
-  ToolWin,  {CommDlg, CommCtrl,}
+  ToolWin, ExtCtrls,  {CommDlg, CommCtrl,}
   {$IFNDEF DELPHI7_UP}
   FileCtrl,
   {$ENDIF}
@@ -64,8 +64,12 @@ const
 {$ENDIF}
 
 type
+
+  { TFormYTD }
+
   TFormYTD = class(TForm)
     Downloads: TListView;
+    TrayIcon: TTrayIcon;
     YTDActions: TActionList;
     ActionImages: TImageList;
     actAddNewUrl: TAction;
@@ -175,14 +179,15 @@ type
     procedure actPlayExecute(Sender: TObject);
     procedure actExploreFolderExecute(Sender: TObject);
     procedure actMenuExecute(Sender: TObject);
+    procedure TrayIconClick(Sender: TObject);
   protected
     fLoading: boolean;
     fNextTotalRecalculation: TDateTime;
     fTotalProgress: int64;
     fTotalData: int64;
     {$IFDEF SYSTRAY}
-    fNotifyIconData: TNotifyIconData;
-    procedure WMClickIcon(var msg: TMessage); message WM_NOTIFYICON;
+    ///fNotifyIconData: TNotifyIconData;
+    ///procedure WMClickIcon(var msg: TMessage); message WM_NOTIFYICON;
     procedure ApplicationMinimize(Sender: TObject);
     {$ENDIF}
     procedure StartClipboardMonitor;
@@ -288,7 +293,7 @@ begin
     {$IFDEF SYSTRAY}
     if Options.MinimizeToTray then
       begin
-      Shell_NotifyIcon(NIM_DELETE, @fNotifyIconData);
+      { ///Shell_NotifyIcon(NIM_DELETE, @fNotifyIconData);
       fNotifyIconData.cbSize := Sizeof(fNotifyIconData);
       fNotifyIconData.Wnd := Self.Handle;
       fNotifyIconData.uID := Integer(Self);
@@ -296,7 +301,8 @@ begin
       fNotifyIconData.uCallbackMessage := WM_NOTIFYICON;
       fNotifyIconData.hIcon := Application.Icon.Handle;
       StrPCopy(fNotifyIconData.szTip, Copy(Caption, 1, Pred(Length(fNotifyIconData.szTip))));
-      Shell_NotifyIcon(NIM_ADD, @fNotifyIconData);
+      Shell_NotifyIcon(NIM_ADD, @fNotifyIconData);}
+      TrayIcon.ShowBalloonHint;
       Application.OnMinimize := ApplicationMinimize;
       end;
     {$ENDIF}
@@ -347,7 +353,7 @@ begin
   StopClipboardMonitor;
   {$IFDEF SYSTRAY}
   if Options.MinimizeToTray then
-    Shell_NotifyIcon(NIM_DELETE, @fNotifyIconData);
+    ///Shell_NotifyIcon(NIM_DELETE, @fNotifyIconData);
   {$ENDIF}
   FreeAndNil(DownloadList);
   {$IFDEF THREADEDVERSION}
@@ -400,6 +406,7 @@ begin
 end;
 
 {$IFDEF SYSTRAY}
+{$ifdef mswindows}
 procedure TFormYTD.WMClickIcon(var msg: TMessage);
 begin
   case Msg.lParam of
@@ -410,9 +417,11 @@ begin
       end;
     end;
 end;
+{$endif}
 
 procedure TFormYTD.ApplicationMinimize(Sender: TObject);
 begin
+  WindowState:=wsMinimized;
   Hide;
 end;
 {$ENDIF}
@@ -1020,6 +1029,15 @@ var
 begin
   P := ClientToScreen(Point(0, 0));
   DownloadsPopup.Popup(P.X, P.Y);
+end;
+
+procedure TFormYTD.TrayIconClick(Sender: TObject);
+begin
+  if WindowState = wsMinimized then
+    begin
+      WindowState:=wsNormal;
+      Show;
+    end;
 end;
 
 end.
