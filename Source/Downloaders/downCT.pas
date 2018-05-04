@@ -108,6 +108,7 @@ uses
   uStringConsts,
   uStrings,
   uDownloadClassifier,
+  uFunctions,
   uMessages;
 
 const
@@ -188,6 +189,22 @@ var
   {$ELSE}
   Url: string;
   {$ENDIF}
+
+  function getRedirectUrl(Http: THttpSend; Url: string): string;
+  var MethodStr: string;
+      res: boolean;
+  begin
+    repeat
+      Url := Trim(Url);
+      SetLastUrl(Url);
+      ClearHttp(Http);
+      MethodStr := 'HEAD';
+      res:=Http.HttpMethod(MethodStr, Url);
+    until (not Res) or (not CheckRedirect(Http, Url));
+    result:=url;
+  end;
+
+
 begin
   inherited AfterPrepareFromPage(Page, PageXml, Http);
   Result := False;
@@ -222,6 +239,7 @@ begin
     SetLastErrorMsg(ERR_FAILED_TO_LOCATE_MEDIA_TITLE)
   else
     begin
+    Urls[0]:=getRedirectUrl(Http, JSDecode(Urls[0]));
     Title := AnsiEncodedUtf8ToString( {$IFDEF UNICODE} AnsiString {$ENDIF} (JSDecode(Title)));
     if GetRegExpVar(StreamTitle2RegExp, Playlist, 'TITLE', Title2) and (Title2 <> '') then
       Title := AnsiEncodedUtf8ToString( {$IFDEF UNICODE} AnsiString {$ENDIF} (JSDecode(Title2)));
