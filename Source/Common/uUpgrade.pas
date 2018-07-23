@@ -46,7 +46,7 @@ uses
   {$ifdef mswindows}
     Windows
   {$ELSE}
-    LCLIntf, LCLType, LMessages,
+    LCLIntf, LCLType, LMessages, uXml,
   {$ENDIF}
   HttpSend, SynaUtil,
   uCompatibility, uOptions, {$IFDEF SETUP} uSetup, {$ENDIF} uFunctions, uPCRE;
@@ -97,7 +97,8 @@ type
 implementation
 
 const
-  BASE_UPGRADE_URL = 'http://ytd.pepak.net/';
+  ///BASE_UPGRADE_URL = 'http://ytd.pepak.net/';
+  BASE_UPGRADE_URL = 'https://ibv.github.io/YTD/';
   NEWEST_VERSION_URL {$IFDEF MINIMIZESIZE} : string {$ENDIF} = BASE_UPGRADE_URL {$IFNDEF XXX} + 'lite' {$ELSE} {$IFDEF UNICODE} + 'unicode' {$ELSE} + 'ansi' {$ENDIF} {$ENDIF} ;
   NEWEST_DEFS_VERSION_URL {$IFDEF MINIMIZESIZE} : string {$ENDIF} = BASE_UPGRADE_URL + 'defs' ;
 
@@ -272,7 +273,7 @@ begin
     OnNewDefsFound(Self);
 end;
 
-function TYTDUpgrade.GetNewestVersionUrl(const BaseUrl: string; out Version, Url: string): boolean;
+{function TYTDUpgrade.GetNewestVersionUrl(const BaseUrl: string; out Version, Url: string): boolean;
   // Note: Must be thread-safe
 var
   Http: THttpSend;
@@ -307,7 +308,50 @@ begin
   except
     Version := '';
     end;
+end;}
+
+
+function TYTDUpgrade.GetNewestVersionUrl(const BaseUrl: string; out Version, Url: string): boolean;
+  // Note: Must be thread-safe
+var
+  Http: THttpSend;
+  Ver, Protocol, User, Password, Host, Port, Path, Parameters: string;
+  IsRedirect: boolean;
+  fXml: TXmlDoc;
+  Node: TXmlNode;
+begin
+  Result := False;
+  Version := '';
+  ///Url := BaseUrl;
+  Url := BASE_UPGRADE_URL+'update.xml';
+  Parameters := StringReplace(BaseUrl,BASE_UPGRADE_URL,'',[]);
+  try
+    Http := Options.CreateHttp;
+    try
+      fXml := TXmlDoc.Create;
+      if Http.HttpMethod('GET', Url) then
+        if (Http.ResultCode >= 200) and (Http.ResultCode < 400) then
+          begin
+          //http.Document.SaveToFile('u.xml');
+          fXml.LoadFromStream(Http.Document);
+          fXml.Root.Name := 'program';
+          if fXml.NodeByPath('ytd-'+Parameters+'/verze', Node) then
+            begin
+              Version := XmlValueIncludingCData(Node);
+              fXml.NodeByPath('ytd-'+Parameters+'/file', Node);
+              Url := BASE_UPGRADE_URL + XmlValueIncludingCData(Node);
+              Result:=true;
+            end;
+          end;
+    finally
+      FreeAndNil(Http);
+      FreeAndNil(fXml);
+      end;
+  except
+    Version := '';
+    end;
 end;
+
 
 function TYTDUpgrade.GetNewestVersion(const BaseUrl: string; out Version, Url: string; out Data: TStream): boolean;
 begin

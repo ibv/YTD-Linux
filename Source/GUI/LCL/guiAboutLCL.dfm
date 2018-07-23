@@ -11,7 +11,7 @@ object FormAbout: TFormAbout
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Position = poOwnerFormCenter
-  LCLVersion = '1.8.0.3'
+  LCLVersion = '1.8.4.0'
   object LabelYTD: TLabel
     Left = 8
     Height = 22
@@ -80,8 +80,8 @@ object FormAbout: TFormAbout
     Left = 127
     Height = 13
     Top = 72
-    Width = 162
-    Caption = 'http://www.pepak.net/ytd'
+    Width = 157
+    Caption = 'https://ibv.github.io/YTD/'
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
