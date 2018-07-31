@@ -60,6 +60,7 @@ type
       fDownloadedThisFragment: int64;
       fDownloadedPreviousFragments: int64;
       fAborted: boolean;
+      fMaxBitRate: integer;
     protected
       QualityRegExp: TRegExp;
     protected
@@ -74,6 +75,7 @@ type
       property VideoDownloader: THttpSend read fVideoDownloader;
       property Fragments: TStringList read fFragments;
       property Aborted: boolean read fAborted write fAborted;
+      property MaxBitRate: integer read fMaxBitRate write fMaxBitRate;
     public
       constructor Create(const AMovieID: string); override;
       destructor Destroy; override;
@@ -102,6 +104,7 @@ begin
   fFragments := TStringList.Create;
   fRetryCount := 3;
   QualityRegExp := RegExCreate(REGEXP_QUALITY);
+  fMaxBitRate := MaxInt;
 end;
 
 destructor THLSDownloader.Destroy;
@@ -147,7 +150,7 @@ begin
           if GetRegExpVar(QualityRegExp, Line, 'QUALITY', sQuality) then
             begin
             Quality := StrToIntDef(sQuality, 0);
-            if Quality > BestPlaylistQuality then
+            if (fMaxBitRate-Quality >=0) and (Quality > BestPlaylistQuality) then
               while PlaylistStream.ReadLine(Line) do
                 if Line <> '' then
                   if Line[1] <> '#' then
