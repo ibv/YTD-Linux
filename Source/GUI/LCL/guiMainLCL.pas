@@ -267,7 +267,8 @@ begin
     {$IFDEF SINGLEINSTANCE}
     RegisterMainInstance(Self.Handle);
     {$ENDIF}
-    Caption := APPLICATION_CAPTION {$IFDEF UNICODE} + ' (Unicode)' {$ELSE} + ' (ANSI)' {$ENDIF} ;
+    ///Caption := APPLICATION_CAPTION {$IFDEF UNICODE} + ' (Unicode)' {$ELSE} + ' (ANSI)' {$ENDIF} ;
+    Caption := APPLICATION_CAPTION + ' (Linux)' ;
     Options := TYTDOptionsGUI.Create;
     TScriptedDownloader.InitMainScriptEngine(Options.ScriptFileName);
     UseLanguage(Options.Language);
@@ -302,7 +303,7 @@ begin
       fNotifyIconData.hIcon := Application.Icon.Handle;
       StrPCopy(fNotifyIconData.szTip, Copy(Caption, 1, Pred(Length(fNotifyIconData.szTip))));
       Shell_NotifyIcon(NIM_ADD, @fNotifyIconData);}
-      TrayIcon.ShowBalloonHint;
+      //TrayIcon.ShowBalloonHint;
       Application.OnMinimize := ApplicationMinimize;
       end;
     {$ENDIF}
@@ -352,10 +353,13 @@ begin
   DownloadList.StopAll;
   StopClipboardMonitor;
   {$IFDEF SYSTRAY}
-  if Options.MinimizeToTray then
+  ///if Options.MinimizeToTray then
     ///Shell_NotifyIcon(NIM_DELETE, @fNotifyIconData);
   {$ENDIF}
+  try
   FreeAndNil(DownloadList);
+  except
+  end;
   {$IFDEF THREADEDVERSION}
   FreeAndNil(Upgrade);
   {$ENDIF}
@@ -1039,5 +1043,6 @@ begin
       Show;
     end;
 end;
+
 
 end.

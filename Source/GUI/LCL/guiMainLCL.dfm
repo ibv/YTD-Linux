@@ -1,7 +1,7 @@
 object FormYTD: TFormYTD
-  Left = 203
+  Left = 373
   Height = 392
-  Top = 139
+  Top = 159
   Width = 719
   Caption = 'YTD'
   ClientHeight = 392
@@ -15,7 +15,7 @@ object FormYTD: TFormYTD
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   ShowHint = True
-  LCLVersion = '1.8.0.4'
+  LCLVersion = '1.8.4.0'
   object ToolBar1: TToolBar
     Left = 0
     Height = 29
@@ -1860,7 +1860,7 @@ object FormYTD: TFormYTD
     top = 208
   end
   object TrayIcon: TTrayIcon
-    BalloonHint = 'YTD v. 1.59 Linux'
+    BalloonHint = 'YTD 1.59 Linux'
     BalloonTimeout = 2000
     BalloonTitle = 'Pepak youtube downloader'
     Icon.Data = {
@@ -2330,7 +2330,7 @@ object FormYTD: TFormYTD
       0000000000000000000000000000000000000000000000000000000000000000
       0000
     }
-    Hint = 'YTD v. 1.59 Linux'
+    Hint = 'YTD 1.59 Linux'
     Visible = True
     OnClick = TrayIconClick
     left = 616
