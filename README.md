@@ -35,7 +35,7 @@ Netestované (nestabilní) funkce:
 
 ## Jak zkompilovat
 - nainstalovat Lazarus (1.6 a vyšší) dle návodu - http://wiki.freepascal.org/Installing_Lazarus
-- získat zdrojový kod z https://github.com/ibv/YTD
+- získat zdrojový kod z https://github.com/ibv/YTD-Linux
 - v Lazarus IDE, menu - File -> Open -> "/cesta/k/YTD.lpi"
 - v Lazarus IDE, menu - Run -> F9 (run) or Ctrl+F9 (compile) or Shift+F9 (link)
 
