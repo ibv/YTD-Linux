@@ -311,12 +311,12 @@ begin
         SetLength(MyArray, Splitted.Count);
         For i := 0 To Splitted.Count-1 Do
           MyArray[i] := Splitted[i];
-        Splitted.free;
+	Splitted.free;
 
- 				if RunCommand(FindDefaultExecutablePath(Converter.ExePath), MyArray, s) then
+	if RunCommand(FindDefaultExecutablePath(Converter.ExePath), MyArray, s) then
         begin
           SetConvertState(ctsConverting);
-        	Result := True;
+          Result := True;
         end
         else SetConvertState(ctsFailedRun);
       end;
@@ -417,7 +417,7 @@ begin
     {$ENDIF}
     Thread.Terminate;
     {$IFDEF DELPHITHREADS}
-    Thread.WaitFor;
+    ///Thread.WaitFor;
     {$ENDIF}
     end;
 end;

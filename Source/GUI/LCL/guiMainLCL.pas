@@ -549,7 +549,7 @@ end;
 procedure TFormYTD.DownloadsData(Sender: TObject; Item: TListItem);
 var DlItem: TDownloadListItem;
     sState, sTitle, sSize, sProgress: string;
-    {$IFNDEF FPC}
+    {$IFNDEF F-PC}
     iStateImage: integer;
     {$ENDIF}
     Progress, Total: int64;
@@ -559,12 +559,12 @@ begin
       begin
       DlItem := DownloadList[Item.Index];
       Item.Caption := DownloadList.Urls[Item.Index];
-      {$IFNDEF FPC}
+      {$IFNDEF F-PC}
       Item.StateIndex := Integer(DlItem.State);
       {$ENDIF}
       Item.SubItems.Add(DlItem.Downloader.Provider);
       sState := _(ThreadStates[DlItem.State]);
-      {$IFNDEF FPC}
+      {$IFNDEF F-PC}
       iStateImage := ThreadStateImgs[DlItem.State];
       {$ENDIF}
       sTitle := '';
@@ -584,7 +584,7 @@ begin
           if DlItem.Paused then
             begin
             sState := _(THREADSTATE_PAUSED); // Download thread state: Paused
-            {$IFNDEF FPC}
+            {$IFNDEF F-PC}
             iStateImage := 4;
             {$ENDIF}
             end;
@@ -595,7 +595,7 @@ begin
           if DlItem.Paused then
             begin
             sState := _(THREADSTATE_PAUSED); // Download thread state: Paused
-            {$IFNDEF FPC}
+            {$IFNDEF F-PC}
             iStateImage := 4;
             {$ENDIF}
             end;
@@ -606,7 +606,7 @@ begin
             if (DlItem.ConvertState <> ctsWaiting) or (Options.SelectedConverterID <> '') then
               begin
               sState := _(ConvertThreadStates[DlItem.ConvertState]);
-              {$IFNDEF FPC}
+              {$IFNDEF F-PC}
               iStateImage := ConvertThreadStateImgs[DlItem.ConvertState];
               {$ENDIF}
               end;
@@ -617,7 +617,7 @@ begin
         dtsAborted:
           sProgress := GetProgressStr(DlItem.DownloadedSize, DlItem.TotalSize);
         end;
-      {$IFNDEF FPC}
+      {$IFNDEF F-PC}
       Item.StateIndex := iStateImage;
       {$ENDIF}
       Item.SubItems.Add(sState);
@@ -688,7 +688,7 @@ end;
 
 procedure TFormYTD.actReportBugExecute(Sender: TObject);
 begin
-  if Downloads.SelCount < 1 then
+  ///if Downloads.SelCount < 1 then
     Exit;
   if not IsSSLAvailable then
     MessageDlg(_(MAINFORM_NOBUGREPORTIFDOWNLOADSTARTED), mtError, [mbOK], 0)
@@ -701,7 +701,7 @@ end;
 
 procedure TFormYTD.actDonateExecute(Sender: TObject);
 begin
-  Run(DONATE_URL, Handle);
+  ///Run(DONATE_URL, Handle);
 end;
 
 procedure TFormYTD.actConvertExecute(Sender: TObject);
