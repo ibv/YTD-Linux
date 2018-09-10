@@ -71,8 +71,8 @@ type
       fDownloadIndex: integer;
       {$ENDIF}
     protected
-      PlaylistInfoRegExp: TRegExp;
-      PlaylistUrlRegExp: TRegExp;
+      ///PlaylistInfoRegExp: TRegExp;
+      ///PlaylistUrlRegExp: TRegExp;
       StreamUrlRegExp: TRegExp;
       StreamTitleRegExp: TRegExp;
       StreamTitle2RegExp: TRegExp;
@@ -124,13 +124,11 @@ const
 
 const
   ///REGEXP_PLAYLIST_INFO = '\bgetPlaylistUrl\s*\(\s*\[\s*\{\s*"type"\s*:\s*"(?P<TYP>.+?)"\s*,\s*"id"\s*:\s*"(?P<ID>\d+)"';
-  REGEXP_PLAYLIST_INFO = 'mb-5(?:.|\s)+?"e-title">(?P<TITLE>.+?)</h3>';
   ///REGEXP_PLAYLIST_URL = '"url"\s*:\s*"(?P<URL>https?:.+?)"';
-  REGEXP_PLAYLIST_URL = '<iframe\s+src="(?P<URL>(.+?))" style';
   REGEXP_STREAM_URL = 'bitrates\s*=(?:.|\s)+?:\s"(?P<URLS>.+?)"';
   ///REGEXP_STREAM_TITLE = '"playlist"\s*:\s*\[.*?"title"\s*:\s*"(?P<TITLE>.*?)"';
   REGEXP_STREAM_TITLE = 'mb-5(?:.|\s)+?"e-title">(?P<TITLE>.+?)</h3>';
-  REGEXP_STREAM_TITLE_BETTER = '"playlist"\s*:\s*\[.*?"gemius"\s*:\s*\{[^}]*"NAZEV"\s*:\s*"(?P<TITLE>.*?)"';
+  ///REGEXP_STREAM_TITLE_BETTER = '"playlist"\s*:\s*\[.*?"gemius"\s*:\s*\{[^}]*"NAZEV"\s*:\s*"(?P<TITLE>.*?)"';
   ///REGEXP_IFRAME_URL = '<(?:iframe\b[^>]*\ssrc|a\b[^>]*\shref)="(?P<URL>(?:https?://[^/]+)?/ivysilani/.+?)"';
   REGEXP_IFRAME_URL = '<iframe\s+src="(?P<URL>(.+?))" style';
   REGEXP_STREAM_TITLEFROMPAGE = REGEXP_TITLE_TITLE;
@@ -161,11 +159,11 @@ begin
   fUrlList := TStringList.Create;
   {$ENDIF}
   InfoPageEncoding := peUTF8;
-  PlaylistInfoRegExp := RegExCreate(REGEXP_PLAYLIST_INFO);
-  PlaylistUrlRegExp := RegExCreate(REGEXP_PLAYLIST_URL);
+  ///PlaylistInfoRegExp := RegExCreate(REGEXP_PLAYLIST_INFO);
+  ///PlaylistUrlRegExp := RegExCreate(REGEXP_PLAYLIST_URL);
   StreamUrlRegExp := RegExCreate(REGEXP_STREAM_URL);
   StreamTitleRegExp := RegExCreate(REGEXP_STREAM_TITLE);
-  StreamTitle2RegExp := RegExCreate(REGEXP_STREAM_TITLE_BETTER);
+  ///StreamTitle2RegExp := RegExCreate(REGEXP_STREAM_TITLE_BETTER);
   StreamTitleFromPageRegExp := RegExCreate(REGEXP_STREAM_TITLEFROMPAGE);
   IFrameUrlRegExp := RegExCreate(REGEXP_IFRAME_URL);
   Referer := GetMovieInfoUrl;
@@ -173,11 +171,11 @@ end;
 
 destructor TDownloader_Markiza.Destroy;
 begin
-  RegExFreeAndNil(PlaylistInfoRegExp);
-  RegExFreeAndNil(PlaylistUrlRegExp);
+  ///RegExFreeAndNil(PlaylistInfoRegExp);
+  ///RegExFreeAndNil(PlaylistUrlRegExp);
   RegExFreeAndNil(StreamUrlRegExp);
   RegExFreeAndNil(StreamTitleRegExp);
-  RegExFreeAndNil(StreamTitle2RegExp);
+  ///RegExFreeAndNil(StreamTitle2RegExp);
   RegExFreeAndNil(StreamTitleFromPageRegExp);
   RegExFreeAndNil(IFrameUrlRegExp);
   {$IFDEF MULTIDOWNLOADS}
@@ -227,8 +225,8 @@ begin
   else
     begin
     Title := trim(AnsiEncodedUtf8ToString( {$IFDEF UNICODE} AnsiString {$ENDIF} (JSDecode(Title))));
-    if GetRegExpVar(StreamTitle2RegExp, Playlist, 'TITLE', Title2) and (Title2 <> '') then
-      Title := AnsiEncodedUtf8ToString( {$IFDEF UNICODE} AnsiString {$ENDIF} (JSDecode(Title2)));
+    ///if GetRegExpVar(StreamTitle2RegExp, Playlist, 'TITLE', Title2) and (Title2 <> '') then
+    ///  Title := AnsiEncodedUtf8ToString( {$IFDEF UNICODE} AnsiString {$ENDIF} (JSDecode(Title2)));
     if Title = '' then
       if not GetRegExpVar(StreamTitleFromPageRegExp, Page, 'TITLE', Title) then
         SetLastErrorMsg(ERR_FAILED_TO_LOCATE_MEDIA_TITLE);
