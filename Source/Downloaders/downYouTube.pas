@@ -83,6 +83,7 @@ type
       YouTubeStsRegExp: TRegExp;
       YouTubeJsRegExp: TRegExp;
       YouTubeDecipherRegExp: TRegExp;
+      YouTubeDecipherBodyRegExp: TRegExp;
       Extension: string;
       MaxWidth, MaxHeight: integer;
       AvoidWebM: boolean;
@@ -169,7 +170,8 @@ const
   REGEXP_FORMAT_URL_MAP_VARS = '(?:^|&)(?P<VARNAME>[^=]+)=(?P<VARVALUE>[^&]*)';
   REGEXP_EXTRACT_STS = '"sts":(?P<STS>.+?),';
   REGEXP_EXTRACT_JS = '"js":"(?P<JS>.+?)"';
-  REGEXP_EXTRACT_DECIPHER = 'a=a\.split\(""\);(?P<FCE>.+?);return a.join\(""\)};';
+  REGEXP_EXTRACT_DECIPHER_FCE = 'a=a\.split\(""\);(?P<FCE>.+?);return a.join\(""\)};';
+  REGEXP_EXTRACT_DECIPHER_BODY = ';var %s={(?P<FCEBODY>[.|\s|\S]+?)};';
 
 const
   EXTENSION_FLV {$IFDEF MINIMIZESIZE} : string {$ENDIF} = '.flv';
@@ -234,7 +236,8 @@ begin
   {$ENDIF}
   YouTubeStsRegExp := RegExCreate(REGEXP_EXTRACT_STS);
   YouTubeJsRegExp := RegExCreate(REGEXP_EXTRACT_JS);
-  YouTubeDecipherRegExp := RegExCreate(REGEXP_EXTRACT_DECIPHER);
+  YouTubeDecipherRegExp := RegExCreate(REGEXP_EXTRACT_DECIPHER_FCE);
+  ///YouTubeDecipherBodyRegExp := RegExCreate(REGEXP_EXTRACT_DECIPHER_BODY);
 end;
 
 destructor TDownloader_YouTube.Destroy;
@@ -251,6 +254,7 @@ begin
   RegExFreeAndNil(YouTubeStsRegExp);
   RegExFreeAndNil(YouTubeJsRegExp);
   RegExFreeAndNil(YouTubeDecipherRegExp);
+  ///RegExFreeAndNil(YouTubeDecipherBodyRegExp);
   inherited;
 end;
 
@@ -584,7 +588,7 @@ begin
   if not InfoFound then
   begin
     if DownloadPage(Http, 'https://www.youtube.com/get_video_info?video_id=' + MovieID + '&sts='+sts+'&el=detailpage', FlashVars) then
-    InfoFound := ProcessFlashVars(Http, FlashVarsParserRegExp, FlashVarsDecode, FlashVars, Title, Url);
+      InfoFound := ProcessFlashVars(Http, FlashVarsParserRegExp, FlashVarsDecode, FlashVars, Title, Url);
   end;
   if not InfoFound then
     if GetRegExpVar(YouTubeConfigJSRegExp, Page, 'FLASHVARS', FlashVars) then
@@ -616,7 +620,8 @@ end;
 function TDownloader_YouTube.UpdateVevoSignature(const Signature: string): string;
 var
     i: integer;
-    fce,s,p:string;
+    fce,body,s,p:string;
+    RE,SW,SL:string;
     List: TStrings;
 
   function GetParam(s:string):integer;
@@ -667,24 +672,42 @@ begin
   // v "assets"\s*:\s*\{\s*"js"\s*:\s*"(?P<URL>\\/\\/s.ytimg.com\\/[^"]+?)"
   // (pozor, neobsahuje protokol, jen server a cestu).
 
+  RE:='';
+  SW:='';
+  SL:='';
   Result := Signature;
   GetRegExpVar(YouTubeDecipherRegExp, JsCode, 'FCE', fce);
+  p:=copy(fce,1,2);
+  YouTubeDecipherBodyRegExp := RegExCreate(Format(REGEXP_EXTRACT_DECIPHER_BODY,[p]));
+  GetRegExpVar(YouTubeDecipherBodyRegExp, JsCode, 'FCEBODY', body);
+
   List := TStringList.Create;
   try
+    ExtractStrings([#10], [], PChar(body), List);
+    for i:=0 to List.count-1 do
+    begin
+    if AnsiContainsStr(List[i], 'reverse') then
+       RE:=copy(List[i],1,2)
+    else
+      if AnsiContainsStr(List[i], 'splice') then
+        SL:=copy(List[i],1,2)
+      else SW:=copy(List[i],1,2);
+    end;
+    List.Clear;
     ExtractStrings([';'], [], PChar(fce), List);
     for i:=0 to List.count-1 do
       begin
         s:=copy(list[i],4,length(list[i]));
-        if AnsiStartsStr('Ed', s) then Slice(Result,GetParam(s));
-        if AnsiStartsStr('SR', s) then Reverse(Result);
-        if AnsiStartsStr('Q3', s) then YoutubeSwap(Result,GetParam(s));
+        if AnsiStartsStr(SL, s) then Slice(Result,GetParam(s))
+        else
+          if AnsiStartsStr(RE, s) then Reverse(Result)
+          else
+            if AnsiStartsStr(SW, s) then YoutubeSwap(Result,GetParam(s));
       end;
   finally
     List.Free;
+    RegExFreeAndNil(YouTubeDecipherBodyRegExp);
   end;
-  ///Slice(Result,1);
-  ///YoutubeSwap(Result,55);
-  ///YoutubeSwap(Result,49);
 
 end;
 
