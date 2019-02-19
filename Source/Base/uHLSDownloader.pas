@@ -143,6 +143,8 @@ begin
     else
       begin
       BestPlaylistUrl := '';
+      /// pro JihoCeskaTV, funguje i pro default;
+      BestPlaylistUrl := MovieUrl;
       BestPlaylistQuality := -1;
       PlaylistStream := TTextStream.Create(TStringStream.Create(Playlist), True);
       try
