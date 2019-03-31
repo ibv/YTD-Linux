@@ -100,6 +100,7 @@ uses
   uHLSDownloader in 'Base\uHLSDownloader.pas',
   uHLSDirectDownloader in 'Base\uHLSDirectDownloader.pas',
   uScriptedDownloader in 'Base\uScriptedDownloader.pas',
+  uDASHDownloader in 'Base\uDASHDownloader.pas',
   // Command Line Version
   {$IFDEF CLI}
     uYTD in 'CLI\uYTD.pas',
@@ -136,10 +137,11 @@ uses
         guiOptionsLCL in 'GUI\LCL\guiOptionsLCL.pas' {FormOptions},
         guiOptionsLCL_Downloader in 'GUI\LCL\Downloaders\guiOptionsLCL_Downloader.pas' {FrameDownloaderOptionsPageLCL: TFrame},
         guiOptionsLCL_CommonDownloader in 'GUI\LCL\Downloaders\guiOptionsLCL_CommonDownloader.pas' {FrameDownloaderOptionsPageCommonLCL: TFrame},
-        //guiOptionsLCL_CT in 'GUI\LCL\Downloaders\guiOptionsLCL_CT.pas' {FrameDownloaderOptionsPage_CT: TFrame},
+        guiOptionsLCL_CT in 'GUI\LCL\Downloaders\guiOptionsLCL_CT.pas' {FrameDownloaderOptionsPage_CT: TFrame},
         guiOptionsLCL_EuroSeptik in 'GUI\LCL\Downloaders\guiOptionsLCL_EuroSeptik.pas' {FrameDownloaderOptionsPage_EuroSeptik: TFrame},
         guiOptionsLCL_Joj in 'GUI\LCL\Downloaders\guiOptionsLCL_Joj.pas' {FrameDownloaderOptionsPage_Joj: TFrame},
         guiOptionsLCL_YouTube in 'GUI\LCL\Downloaders\guiOptionsLCL_YouTube.pas' {FrameDownloaderOptionsPage_YouTube: TFrame},
+        guiOptionsLCL_Prima in 'GUI\LCL\Downloaders\guiOptionsLCL_Prima.pas' {FrameDownloaderOptionsPage_Prima: TFrame},
         {$IFDEF CONVERTERS}
         guiConverterLCL in 'GUI\LCL\guiConverterLCL.pas' {FormSelectConverter},
         {$ENDIF}
@@ -272,7 +274,7 @@ uses
   downLiveLeakEmbedded in 'Downloaders\downLiveLeakEmbedded.pas',
   downLiveVideo in 'Downloaders\downLiveVideo.pas',
   downLoupak in 'Downloaders\downLoupak.pas',
-  downMarkiza in 'Downloaders\downMarkiza.pas',
+  ///downMarkiza in 'Downloaders\downMarkiza.pas',
   downMarkizaParticka in 'Downloaders\downMarkizaParticka.pas',
   downMatrix2001 in 'Downloaders\downMatrix2001.pas',
   downMediaSport in 'Downloaders\downMediaSport.pas',
@@ -327,6 +329,7 @@ uses
   downPrazdninyVTelci in 'Downloaders\downPrazdninyVTelci.pas',
   downProglas in 'Downloaders\downProglas.pas',
   downProstoPleer in 'Downloaders\downProstoPleer.pas',
+  downPrima in 'Downloaders\downPrima.pas',
   downPublicTV in 'Downloaders\downPublicTV.pas',
   downQipRu_Embed in 'Downloaders\downQipRu_Embed.pas',
   downRaajje in 'Downloaders\downRaajje.pas',
@@ -487,6 +490,8 @@ uses
   listGameAnyone in 'Playlists\listGameAnyone.pas',
   listYouTube in 'Playlists\listYouTube.pas',
   listYouTubePage in 'Playlists\listYouTubePage.pas';
+
+{$R *.res}
 
 begin
   Main;
