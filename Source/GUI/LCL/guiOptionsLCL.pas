@@ -52,6 +52,9 @@ uses
   guiDownloaderOptions, guiOptionsLCL_Downloader, guiOptionsLCL_CommonDownloader;
   
 type
+
+  { TFormOptions }
+
   TFormOptions = class(TForm)
     LabelOverwriteMode: TLabel;
     ComboOverwriteMode: TComboBox;
@@ -105,6 +108,7 @@ type
     Label1: TLabel;
     ComboAddIndexToNames: TComboBox;
     CheckAutoDeleteFinishedDownloads: TCheckBox;
+    procedure actCancelExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure actOKExecute(Sender: TObject);
@@ -164,7 +168,7 @@ begin
   DestroyDownloaderOptions;
 
   //BtnOK.Enabled := true;
-  //btnCancel.Enabled := true;
+  btnCancel.Enabled := true;
   //actCancel.Enabled := true;
 end;
 
@@ -212,10 +216,12 @@ begin
     EditProxyPort.Text := Options.ProxyPort;
     EditProxyUser.Text := Options.ProxyUser;
     EditProxyPass.Text := Options.ProxyPassword;
+
     // Downloader options
     CreateDownloaderOptions;
   finally
     fLoading := False;
+    btnCancel.Enabled := true;
     end;
 end;
 
@@ -341,6 +347,12 @@ begin
     DownloaderOptionsPages[i].SaveToOptions;
     end;
 end;
+
+procedure TFormOptions.actCancelExecute(Sender: TObject);
+begin
+  close;
+end;
+
 
 procedure TFormOptions.actDownloadDirExecute(Sender: TObject);
 var Dir: string;
