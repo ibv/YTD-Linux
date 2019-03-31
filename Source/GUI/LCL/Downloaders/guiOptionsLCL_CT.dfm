@@ -50,7 +50,7 @@ inherited FrameDownloaderOptionsPage_CT: TFrameDownloaderOptionsPage_CT
     object LabelMaximumVideoBitrate: TLabel[0]
       Left = 8
       Height = 15
-      Top = 0
+      Top = 19
       Width = 172
       Caption = 'Maximum video &resolution:'
       FocusControl = EditMaximumVideoBitrate
@@ -59,7 +59,7 @@ inherited FrameDownloaderOptionsPage_CT: TFrameDownloaderOptionsPage_CT
     object EditMaximumVideoBitrate: TEdit[1]
       Left = 185
       Height = 21
-      Top = 0
+      Top = 19
       Width = 79
       TabOrder = 0
       Text = '0'
@@ -67,10 +67,18 @@ inherited FrameDownloaderOptionsPage_CT: TFrameDownloaderOptionsPage_CT
     object Label1: TLabel[2]
       Left = 9
       Height = 15
-      Top = 16
+      Top = 35
       Width = 170
       Caption = '(512,720,1024,1280,1920)'
       ParentColor = False
+    end
+    object CheckDash: TCheckBox[3]
+      Left = 9
+      Height = 26
+      Top = -6
+      Width = 261
+      Caption = 'Support MPEG-DASH (experimental)'
+      TabOrder = 1
     end
   end
 end
