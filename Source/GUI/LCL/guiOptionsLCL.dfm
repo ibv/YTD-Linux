@@ -1,10 +1,10 @@
 object FormOptions: TFormOptions
   Left = 284
-  Height = 465
+  Height = 396
   Top = 158
   Width = 551
   Caption = 'Options'
-  ClientHeight = 465
+  ClientHeight = 396
   ClientWidth = 551
   Color = clBtnFace
   Font.Color = clWindowText
@@ -14,12 +14,11 @@ object FormOptions: TFormOptions
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poOwnerFormCenter
-  LCLVersion = '1.7'
-  Visible = False
+  LCLVersion = '2.0.0.4'
   object BtnOK: TButton
-    Left = 375
+    Left = 391
     Height = 25
-    Top = 402
+    Top = 365
     Width = 75
     Action = actOK
     Anchors = [akRight, akBottom]
@@ -28,9 +27,9 @@ object FormOptions: TFormOptions
     TabOrder = 0
   end
   object btnCancel: TButton
-    Left = 455
+    Left = 471
     Height = 25
-    Top = 402
+    Top = 365
     Width = 75
     Action = actCancel
     Anchors = [akRight, akBottom]
@@ -40,7 +39,7 @@ object FormOptions: TFormOptions
   end
   object PageOptions: TPageControl
     Left = 0
-    Height = 389
+    Height = 320
     Top = 0
     Width = 543
     ActivePage = TabMain
@@ -49,7 +48,7 @@ object FormOptions: TFormOptions
     TabOrder = 2
     object TabMain: TTabSheet
       Caption = 'Main settings'
-      ClientHeight = 354
+      ClientHeight = 285
       ClientWidth = 535
       object LabelLanguage: TLabel
         Left = 8
@@ -88,7 +87,7 @@ object FormOptions: TFormOptions
       object BtnDesktopShortcut: TButton
         Left = 8
         Height = 25
-        Top = 294
+        Top = 225
         Width = 512
         Action = actDesktopShortcut
         Anchors = [akLeft, akRight, akBottom]
@@ -97,7 +96,7 @@ object FormOptions: TFormOptions
       object BtnStartMenuShortcut: TButton
         Left = 8
         Height = 25
-        Top = 326
+        Top = 257
         Width = 512
         Action = actStartMenuShortcut
         Anchors = [akLeft, akRight, akBottom]
@@ -151,13 +150,13 @@ object FormOptions: TFormOptions
     end
     object TabDownloadOptions: TTabSheet
       Caption = 'Download settings'
-      ClientHeight = 354
+      ClientHeight = 285
       ClientWidth = 535
       ImageIndex = 1
       object LabelOverwriteMode: TLabel
         Left = 8
         Height = 13
-        Top = 188
+        Top = 193
         Width = 76
         Caption = '&Existing files:'
         FocusControl = ComboOverwriteMode
@@ -175,7 +174,7 @@ object FormOptions: TFormOptions
       object LabelConverter: TLabel
         Left = 8
         Height = 13
-        Top = 244
+        Top = 246
         Width = 60
         Caption = '&Converter:'
         FocusControl = ComboConverter
@@ -184,7 +183,7 @@ object FormOptions: TFormOptions
       object LabelRetryCount: TLabel
         Left = 8
         Height = 13
-        Top = 212
+        Top = 221
         Width = 68
         Caption = '&Retry count:'
         FocusControl = EditRetryCount
@@ -193,7 +192,7 @@ object FormOptions: TFormOptions
       object Label1: TLabel
         Left = 8
         Height = 13
-        Top = 164
+        Top = 165
         Width = 175
         Caption = 'Append &index to playlist items:'
         FocusControl = ComboAddIndexToNames
@@ -211,7 +210,7 @@ object FormOptions: TFormOptions
       object ComboOverwriteMode: TComboBox
         Left = 176
         Height = 25
-        Top = 184
+        Top = 189
         Width = 352
         Anchors = [akTop, akLeft, akRight]
         ItemHeight = 0
@@ -238,7 +237,7 @@ object FormOptions: TFormOptions
       object ComboConverter: TComboBox
         Left = 176
         Height = 25
-        Top = 240
+        Top = 242
         Width = 352
         Anchors = [akTop, akLeft, akRight]
         ItemHeight = 0
@@ -285,7 +284,7 @@ object FormOptions: TFormOptions
       object EditRetryCount: TEdit
         Left = 176
         Height = 19
-        Top = 208
+        Top = 218
         Width = 49
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 10
@@ -312,14 +311,14 @@ object FormOptions: TFormOptions
     end
     object TabNetworkOptions: TTabSheet
       Caption = 'Network settings'
-      ClientHeight = 354
+      ClientHeight = 285
       ClientWidth = 535
       ImageIndex = 2
       object LabelProxyHost: TLabel
         Left = 8
         Height = 13
         Top = 40
-        Width = 52
+        Width = 64
         Caption = 'Proxy &host:'
         FocusControl = EditProxyHost
         ParentColor = False
@@ -328,7 +327,7 @@ object FormOptions: TFormOptions
         Left = 8
         Height = 13
         Top = 64
-        Width = 50
+        Width = 62
         Caption = 'Proxy &port:'
         FocusControl = EditProxyPort
         ParentColor = False
@@ -337,7 +336,7 @@ object FormOptions: TFormOptions
         Left = 8
         Height = 13
         Top = 88
-        Width = 78
+        Width = 97
         Caption = 'Proxy &username:'
         FocusControl = EditProxyUser
         ParentColor = False
@@ -346,14 +345,14 @@ object FormOptions: TFormOptions
         Left = 8
         Height = 13
         Top = 112
-        Width = 77
+        Width = 95
         Caption = 'Proxy pass&word:'
         FocusControl = EditProxyPass
         ParentColor = False
       end
       object CheckUseProxy: TCheckBox
         Left = 8
-        Height = 17
+        Height = 26
         Top = 8
         Width = 520
         Anchors = [akTop, akLeft, akRight]
@@ -362,28 +361,28 @@ object FormOptions: TFormOptions
       end
       object EditProxyHost: TEdit
         Left = 112
-        Height = 21
+        Height = 19
         Top = 36
         Width = 177
         TabOrder = 1
       end
       object EditProxyPort: TEdit
         Left = 112
-        Height = 21
+        Height = 19
         Top = 60
         Width = 177
         TabOrder = 2
       end
       object EditProxyUser: TEdit
         Left = 112
-        Height = 21
+        Height = 19
         Top = 84
         Width = 177
         TabOrder = 3
       end
       object EditProxyPass: TEdit
         Left = 112
-        Height = 21
+        Height = 19
         Top = 108
         Width = 177
         TabOrder = 4
@@ -391,12 +390,12 @@ object FormOptions: TFormOptions
     end
     object TabDownloaderOptions: TTabSheet
       Caption = 'Downloader settings'
-      ClientHeight = 354
+      ClientHeight = 285
       ClientWidth = 535
       ImageIndex = 3
       object ListDownloaderOptions: TListBox
         Left = 0
-        Height = 361
+        Height = 285
         Top = 0
         Width = 169
         Align = alLeft
@@ -409,7 +408,7 @@ object FormOptions: TFormOptions
       end
       object PanelDownloaderOptions: TPanel
         Left = 169
-        Height = 361
+        Height = 285
         Top = 0
         Width = 366
         Align = alClient
@@ -419,8 +418,8 @@ object FormOptions: TFormOptions
     end
   end
   object ActionList: TActionList
-    left = 456
-    top = 48
+    left = 416
+    top = 40
     object actOK: TAction
       Caption = '&OK'
       OnExecute = actOKExecute
@@ -428,6 +427,8 @@ object FormOptions: TFormOptions
     end
     object actCancel: TAction
       Caption = '&Cancel'
+      DisableIfNoHandler = False
+      OnExecute = actCancelExecute
       ShortCut = 27
     end
     object actDownloadDir: TAction
