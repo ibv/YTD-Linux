@@ -451,7 +451,7 @@ end;
 
 function TDownloader_YouTube.GetDownloader(Http: THttpSend; const VideoFormat, FormatUrlMap: string; Live, Vevo: boolean; out Url: string; out Downloader: TDownloader): boolean;
 var
-  FoundFormat, Server, Stream, Signature, Signature2: string;
+  FoundFormat, Server, Stream, Signature, Signature2, sp: string;
   Formats: TStringArray;
   i: integer;
   HTTPDownloader: TDownloader_YouTube_HTTP;
@@ -462,7 +462,7 @@ begin
   Downloader := nil;
   if GetRegExpAllVar(FormatUrlMapRegExp, FormatUrlMap, 'ITEM', Formats) then
     for i := 0 to Pred(Length(Formats)) do
-      if GetRegExpVarPairs(FormatUrlMapVarsRegExp, Formats[i], ['itag', 'url', 'conn', 'stream', 'sig', 's'], [@FoundFormat, @Url, @Server, @Stream, @Signature, @Signature2]) then
+      if GetRegExpVarPairs(FormatUrlMapVarsRegExp, Formats[i], ['itag', 'url', 'conn', 'stream', 'sig', 's', 'sp'], [@FoundFormat, @Url, @Server, @Stream, @Signature, @Signature2, @sp]) then
         if FoundFormat = VideoFormat then
           begin
           if Url <> '' then
@@ -473,8 +473,11 @@ begin
             if Signature <> '' then
             begin
               ///if Vevo then
-              Signature := UpdateVevoSignature(Signature);
-              Url := Url + '&signature=' + UrlDecode(Signature);
+              Signature := UpdateVevoSignature(UrlDecode(Signature));
+              if sp='sig' then
+                Url := Url + '&sig=' + Signature
+              else
+                Url := Url + '&signature=' + Signature;
             end;
             HTTPDownloader := TDownloader_YouTube_HTTP.Create(Url);
             HTTPDownloader.Cookies.Assign(Http.Cookies);
