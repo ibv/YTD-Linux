@@ -474,10 +474,8 @@ begin
             begin
               ///if Vevo then
               Signature := UpdateVevoSignature(UrlDecode(Signature));
-              if sp='sig' then
-                Url := Url + '&sig=' + Signature
-              else
-                Url := Url + '&signature=' + Signature;
+              if sp='' then sp:='signature';
+              Url := Url + Format('&%s=%s',[sp,signature]);
             end;
             HTTPDownloader := TDownloader_YouTube_HTTP.Create(Url);
             HTTPDownloader.Cookies.Assign(Http.Cookies);
