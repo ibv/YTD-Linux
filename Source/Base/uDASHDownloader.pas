@@ -7,7 +7,7 @@ https://ibv.github.io/YTD/
 ______________________________________________________________________________
 
 
-Copyright (c) 201 ibv (https://ibv.github.io/YTD/)
+Copyright (c) 2019 ibv (https://ibv.github.io/YTD/)
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -47,45 +47,9 @@ uses
   LCLIntf, LCLType, {LMessages,}
   {$ENDIF}
   uPCRE, uXml, uHttp, HttpSend, blcksock,
-  uDownloader, uCommonDownloader;
+  uDownloader, uCommonDownloader,uMPD;
 
 type
-  TMPDObject = class
-    private
-      fBaseURL:  String;
-      fAudioList: TList;
-      fVideoList: TList;
-      fXml: TXmlDoc;
-      fMedia,fInit,
-      fAMedia,fAInit: string;
-      fAudioStartNumber,
-      fAudioEndNumber,
-      fVideoStartNumber,
-      fVideoEndNumber : integer;
-
-      procedure ParseMPD;
-    public
-      fm:  string;
-      constructor Create(Xml: TXmlDoc);
-      destructor Destroy;
-
-      function GetBestID(BandWidth:integer;Video:boolean = true):string;
-
-      property AudioList: TList read fAudioList;
-      property VideoList: TList read fVideoList;
-      property BaseURL: String read fBaseURL write fBaseURL;
-      property VideoMedia: string read fMedia;
-      property VideoInit: string read fInit;
-      property VideoStartNumber: integer read fVideoStartNumber;
-      property VideoEndNumber: integer read fVideoEndNumber;
-      property AudioMedia: string read fAMedia;
-      property AudioInit: string read fAInit;
-      property AudioStartNumber: integer read fAudioStartNumber;
-      property AudioEndNumber: integer read fAudioEndNumber;
-
-  end;
-
-
   TDASHDownloader = class(TCommonDownloader)
     private
       fCookies: TStringList;
@@ -131,140 +95,6 @@ uses
 
 
 
-{ TMPDObject }
-
-constructor TMPDObject.Create(Xml:TXmlDoc);
-begin
-  fXml := Xml;
-  fAudioList:=TList.Create;
-  fVideoList:=TList.Create;
-  fBaseURL := '';
-  fMedia:='';
-  fInit:='';
-  fAMedia:='';
-  fAInit:='';
-  fVideoStartNumber:=0;
-  fVideoEndNumber:=0;
-  fAudioStartNumber:=0;
-  fAudioEndNumber:=0;
-
-  ParseMPD;
-end;
-
-
-destructor TMPDObject.Destroy;
-begin
-  FreeAndNil(fAudioList);
-  FreeAndNil(fVideoList);
-end;
-
-
-procedure TMPDObject.ParseMPD;
-var
-  Node,Node1 : TXmlNode;
-  lang: string;
-begin
-  if fXml.NodeByPath('BaseURL', Node) then
-      BaseURL := XmlValueIncludingCData(Node);
-
-  if fxml.NodeByPathAndAttr('Period/AdaptationSet','mimeType','video/mp4',Node1) then
-  begin
-    if XmlNodeByPath(Node1,'SegmentTemplate',Node) then
-    begin
-      fmedia := XmlAttribute(Node, 'media');
-      finit := XmlAttribute(Node, 'initialization');
-      fVideostartNumber := Node.ReadAttributeInteger('startNumber',0);
-    end;
-
-    Node1.FindNodes('S',fVideoList);
-    fVideoEndNumber := TXMLNode(fVideoList[0]).ReadAttributeInteger('r',0);
-    inc(fVideoEndNumber,fVideoList.count-1);
-
-    Node1.FindNodes('Representation',fVideoList);
-  end;
-
-  if fxml.NodeByPathAndAttr('Period/AdaptationSet','mimeType','audio/mp4',Node1) then
-  begin
-    lang := XmlAttribute(Node1, 'lang');
-
-    if XmlNodeByPath(Node1,'SegmentTemplate',Node) then
-    begin
-      famedia := XmlAttribute(Node, 'media');
-      fainit := XmlAttribute(Node, 'initialization');
-      fAudiostartNumber := Node.ReadAttributeInteger('startNumber',0);
-    end;
-
-    Node1.FindNodes('S',fAudioList);
-    fAudioEndNumber := TXMLNode(fAudioList[0]).ReadAttributeInteger('r',0);
-    inc(fAudioEndNumber,fAudioList.count-1);
-
-    Node1.FindNodes('Representation',fAudioList);
-
-  end;
-end;
-
-
-function TMPDObject.GetBestID(BandWidth:integer;Video:boolean = true):string;
-var
-  i,j,k,quality: integer;
-  id,media,init:string;
-  Node: TXmlNode;
-  List: TList;
-begin
-  result:='';
-  List:=fVideoList;
-  media:=fmedia;
-  init :=finit;
-  if not Video then
-  begin
-    List:=fAudioList;
-    media:=famedia;
-    init:=fainit;
-  end;
-  for i:=0 to List.Count-1 do
-  begin
-     Node := TXMLNode(List[i]);
-     id := XmlAttribute(node, 'id');
-     Quality := Node.ReadAttributeInteger('bandwidth',0);
-     if (BandWidth-Quality <= 0)  then  break;
-  end;
-  if id <> '' then result:=id;
-
-  Init := StringReplace(init,'$RepresentationID$',id,[]);
-  Media := StringReplace(media,'$RepresentationID$',id,[]);
-  // time based segment
-  if AnsiContainsStr(media, '$Time') then
-  begin
-    // ToDo
-  end
-  else
-  // id based segment
-  if AnsiContainsStr(media, '$Number') then
-  begin
-    //%06d$
-    media := StringReplace(media,'$Number','',[]);
-    j := pos('%',media);
-    k := LastDelimiter('$', media);
-    fm := copy(media,j+1,k-j-1);
-  end;
-
-  if Video then
-  begin
-    fmedia:=media;
-    finit:=init;
-  end
-  else
-  begin
-    famedia:=media;
-    fainit:=init;
-  end;
-
-
-end;
-
-
-
-
 { TDASHDownloader }
 
 constructor TDASHDownloader.Create(const AMovieID: string);
@@ -305,6 +135,7 @@ var
   init, id: string;
   i : integer;
   Xml: TXmlDoc;
+  Prot, User, Pass, Host, Port, Path, Para, URI: string;
 begin
   Result := False;
   CleanupDownloadInfo;
@@ -319,6 +150,17 @@ begin
       fMPD := TMPDObject.Create(Xml);
       // video stream
       id   := fMPD.GetBestID(fMaxBitRate);
+      // without baseurl
+      if fMPD.BaseURL = '' then
+      begin
+        URI := ParseURL( MovieURL, Prot, User, Pass, Host, Port, Path, Para);
+        if (port='80') or (port='443') then
+          port:=''
+        else
+          port:=':'+port;
+        fMPD.BaseURL := Prot+'://'+host+port+copy(path,1,LastDelimiter('/',Path));
+      end;
+
       Fragments.Add(GetRelativeUrl(fMPD.BaseURL, fMPD.VideoInit));
       for i:=0 to fMPD.VideoEndNumber do
       begin
@@ -331,7 +173,11 @@ begin
           fDownloadedPreviousFragments := 0;
           Result := True;
         end;
-        init := StringReplace(fMPD.VideoMedia,'%'+fMPD.fm+'$',format('%.'+fMPD.fm, [i+fMPD.VideoStartNumber]),[]);
+        if pos('%',fMPD.VideoMedia) >0 then
+           init := StringReplace(fMPD.VideoMedia,'%'+fMPD.fm+'$',format('%.'+fMPD.fm, [i+fMPD.VideoStartNumber]),[]);
+        if pos('$Time$',fMPD.VideoMedia) >0 then
+           init := StringReplace(fMPD.VideoMedia,'$Time$',format('%d', [fMPD.VideoTimeT + i*fMPD.VideoTimeD]),[]);
+
         Fragments.Add(GetRelativeUrl(fMPD.BaseURL, init));
       end;
 
@@ -340,7 +186,11 @@ begin
       Fragments.Add(GetRelativeUrl(fMPD.BaseURL, fMPD.AudioInit));
       for i:=0 to fMPD.AudioEndNumber do
       begin
-        init := StringReplace(fMPD.AudioMedia,'%'+fMPD.fm+'$',format('%.'+fMPD.fm, [i+fMPD.AudioStartNumber]),[]);
+        if pos('%',fMPD.AudioMedia) >0 then
+           init := StringReplace(fMPD.AudioMedia,'%'+fMPD.fm+'$',format('%.'+fMPD.fm, [i+fMPD.AudioStartNumber]),[]);
+        if pos('$Time$',fMPD.AudioMedia) >0 then
+           init := StringReplace(fMPD.AudioMedia,'$Time$',format('%d', [fMPD.AudioTimeT + i*fMPD.AudioTimeD]),[]);
+
         Fragments.Add(GetRelativeUrl(fMPD.BaseURL, init));
       end;
 
