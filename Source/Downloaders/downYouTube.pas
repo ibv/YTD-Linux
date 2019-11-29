@@ -80,7 +80,7 @@ type
       JSONParserRegExp: TRegExp;
       FormatUrlMapRegExp: TRegExp;
       FormatUrlMapVarsRegExp: TRegExp;
-      YouTubeStsRegExp: TRegExp;
+      ///YouTubeStsRegExp: TRegExp;
       YouTubeJsRegExp: TRegExp;
       YouTubeDecipherRegExp: TRegExp;
       YouTubeDecipherBodyRegExp: TRegExp;
@@ -161,7 +161,7 @@ const
   REGEXP_EXTRACT_CONFIG = '<embed\b[^>]*\sflashvars="(?P<FLASHVARS>[^"]+)"';
   REGEXP_EXTRACT_CONFIG_JS = '\bflashvars\s*=(?P<QUOTE>\\?["''])(?P<FLASHVARS>.+?)(?P=QUOTE)';
   REGEXP_EXTRACT_CONFIG_JSON = '(?:\.playerConfig|\bytplayer\.config)\s*=\s*\{(?P<JSON>.+?)\}\s*;';
-  REGEXP_MOVIE_TITLE = '<meta\s+name="title"\s+content="(?P<TITLE>.*?)"';
+  ///REGEXP_MOVIE_TITLE = '<meta\s+name="title"\s+content="(?P<TITLE>.*?)"';
   REGEXP_FLASHVARS_PARSER = '(?:^|&amp;|&)(?P<VARNAME>[^&]+?)=(?P<VARVALUE>[^&]+)';
   REGEXP_JSON_PARSER = REGEXP_PARSER_FLASHVARS_JS;
   ///REGEXP_FORMAT_LIST = '(?P<FORMAT>[0-9]+)/(?P<WIDTH>[0-9]+)x(?P<HEIGHT>[0-9]+)/(?P<VIDEOQUALITY>[0-9]+)/(?P<AUDIOQUALITY>[0-9]+)/(?P<LENGTH>[0-9]+)'; //'34/640x360/9/0/115,5/0/7/0/0'
@@ -170,7 +170,10 @@ const
   REGEXP_FORMAT_URL_MAP_VARS = '(?:^|&)(?P<VARNAME>[^=]+)=(?P<VARVALUE>[^&]*)';
   REGEXP_EXTRACT_STS = '"sts":(?P<STS>.+?),';
   REGEXP_EXTRACT_JS = '"js":"(?P<JS>.+?)"';
-  REGEXP_EXTRACT_DECIPHER_FCE = 'a=a\.split\(""\);(?P<FCE>.+?);return a.join\(""\)};';
+  ///REGEXP_MOVIE_TITLE = '"title":"(?P<TITLE>.*?)"';
+  REGEXP_MOVIE_TITLE = '.*?"title"\s*:\s*"(?P<TITLE>.+?)"';
+  ///REGEXP_EXTRACT_DECIPHER_FCE = 'a=a\.split\(""\);(?P<FCE>.+?);return a.join\(""\)};';
+  REGEXP_EXTRACT_DECIPHER_FCE = '.=.\.split\(""\);(?P<FCE>.+?);return ..join\(""\)};';
   REGEXP_EXTRACT_DECIPHER_BODY = ';var %s={(?P<FCEBODY>[.|\s|\S]+?)};';
 
 const
@@ -234,7 +237,7 @@ begin
   {$IFDEF SUBTITLES}
     PreferredLanguages := OPTION_YOUTUBE_PREFERREDLANGUAGES_DEFAULT;
   {$ENDIF}
-  YouTubeStsRegExp := RegExCreate(REGEXP_EXTRACT_STS);
+  ///YouTubeStsRegExp := RegExCreate(REGEXP_EXTRACT_STS);
   YouTubeJsRegExp := RegExCreate(REGEXP_EXTRACT_JS);
   YouTubeDecipherRegExp := RegExCreate(REGEXP_EXTRACT_DECIPHER_FCE);
   ///YouTubeDecipherBodyRegExp := RegExCreate(REGEXP_EXTRACT_DECIPHER_BODY);
@@ -251,7 +254,7 @@ begin
   RegExFreeAndNil(FormatListRegExp);
   RegExFreeAndNil(FormatUrlMapRegExp);
   RegExFreeAndNil(FormatUrlMapVarsRegExp);
-  RegExFreeAndNil(YouTubeStsRegExp);
+  ///RegExFreeAndNil(YouTubeStsRegExp);
   RegExFreeAndNil(YouTubeJsRegExp);
   RegExFreeAndNil(YouTubeDecipherRegExp);
   ///RegExFreeAndNil(YouTubeDecipherBodyRegExp);
@@ -424,7 +427,9 @@ begin
   Result := False;
   Title := '';
   Url := '';
-  if GetRegExpVarPairs(Parser, FlashVars, ['status', 'reason', 'fmt_list', 'title', 'url_encoded_fmt_stream_map', 'ps', 'ptk'], [@Status, @Reason, @FmtList, @Title, @FmtUrlMap, @PS, @PTK]) then
+
+  ///if GetRegExpVarPairs(Parser, TextDecoder(FlashVars), ['status', 'reason', 'fmt_list', 'title', 'url_encoded_fmt_stream_map', 'ps', 'ptk'], [@Status, @Reason, @FmtList, @Title, @FmtUrlMap, @PS, @PTK]) then
+  if GetRegExpVarPairs(Parser, TextDecoder(FlashVars), ['status', 'reason', 'fmt_list', 'url_encoded_fmt_stream_map', 'ps', 'ptk'], [@Status, @Reason, @FmtList, @FmtUrlMap, @PS, @PTK]) then
     if Status = 'fail' then
       SetLastErrorMsg(Format(ERR_SERVER_ERROR, [Utf8ToString(Utf8String(UrlDecode(Reason)))]))
     else if FmtList = '' then
@@ -443,6 +448,8 @@ begin
         SetLastErrorMsg(ERR_FAILED_TO_LOCATE_MEDIA_URL)
       else if CreateNestedDownloaderFromDownloader(D) then
         begin
+        if not GetRegExpVar(MovieTitleRegExp, TextDecoder(FlashVars), 'TITLE', Title) then
+          SetLastErrorMsg(ERR_FAILED_TO_LOCATE_MEDIA_TITLE);
         Title := UrlDecode(Title, peUtf8);
         Result := True;
         end;
@@ -578,17 +585,16 @@ begin
   inherited AfterPrepareFromPage(Page, PageXml, Http);
   Result := False;
   InfoFound := False;
-  GetRegExpVar(YouTubeStsRegExp, Page, 'STS', sts);
   GetRegExpVar(YouTubeJsRegExp, Page, 'JS', js);
   js := StringReplace(js,'\','',[rfReplaceAll, rfIgnoreCase]);
   if AnsiStartsStr('/', js) then
     js:='https://www.youtube.com'+js;
   if js <> '' then Downloadpage(Http, js, JsCode);
-  if DownloadPage(Http, 'https://www.youtube.com/get_video_info?video_id=' + MovieID + '&sts='+sts+'&el=embedded', FlashVars) then
+  if DownloadPage(Http, 'https://www.youtube.com/get_video_info?video_id=' + MovieID + '&el=embedded', FlashVars) then
     InfoFound := ProcessFlashVars(Http, FlashVarsParserRegExp, FlashVarsDecode, FlashVars, Title, Url);
   if not InfoFound then
   begin
-    if DownloadPage(Http, 'https://www.youtube.com/get_video_info?video_id=' + MovieID + '&sts='+sts+'&el=detailpage', FlashVars) then
+    if DownloadPage(Http, 'https://www.youtube.com/get_video_info?video_id=' + MovieID + '&el=detailpage', FlashVars) then
       InfoFound := ProcessFlashVars(Http, FlashVarsParserRegExp, FlashVarsDecode, FlashVars, Title, Url);
   end;
   if not InfoFound then
