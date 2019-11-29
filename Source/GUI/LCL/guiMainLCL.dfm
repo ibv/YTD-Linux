@@ -1,11 +1,11 @@
 object FormYTD: TFormYTD
-  Left = 373
-  Height = 392
-  Top = 159
-  Width = 719
+  Left = 465
+  Height = 399
+  Top = 213
+  Width = 734
   Caption = 'YTD'
-  ClientHeight = 392
-  ClientWidth = 719
+  ClientHeight = 399
+  ClientWidth = 734
   Color = clBtnFace
   Font.Color = clWindowText
   Font.Height = -11
@@ -15,12 +15,12 @@ object FormYTD: TFormYTD
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   ShowHint = True
-  LCLVersion = '1.8.4.0'
+  LCLVersion = '2.0.2.0'
   object ToolBar1: TToolBar
     Left = 0
     Height = 29
     Top = 0
-    Width = 719
+    Width = 734
     ButtonHeight = 23
     ButtonWidth = 23
     Images = ActionImages
@@ -119,45 +119,52 @@ object FormYTD: TFormYTD
       Action = actEditConfigFile
     end
     object ToolButton4: TToolButton
-      Left = 332
+      Left = 355
       Height = 23
       Top = 2
       ImageIndex = 15
       Style = tbsSeparator
     end
     object ToolRefresh: TToolButton
-      Left = 340
+      Left = 363
       Top = 2
       Action = actRefresh
     end
     object ToolButton3: TToolButton
-      Left = 363
+      Left = 386
       Height = 23
       Top = 2
       ImageIndex = 9
       Style = tbsSeparator
     end
     object ToolReportBug: TToolButton
-      Left = 371
-      Top = 2
-      Action = actReportBug
-    end
-    object ToolDonate: TToolButton
       Left = 394
       Top = 2
-      Action = actDonate
+      Action = actReportBug
+      Enabled = False
     end
-    object ToolAbout: TToolButton
+    object ToolDonate: TToolButton
       Left = 417
       Top = 2
+      Action = actDonate
+      Enabled = False
+    end
+    object ToolAbout: TToolButton
+      Left = 440
+      Top = 2
       Action = actAbout
+    end
+    object ToolVQuality: TToolButton
+      Left = 332
+      Top = 2
+      Action = actVQuality
     end
   end
   object Downloads: TListView
     Left = 0
-    Height = 344
+    Height = 351
     Top = 29
-    Width = 719
+    Width = 734
     Align = alClient
     Columns = <    
       item
@@ -184,7 +191,7 @@ object FormYTD: TFormYTD
       end    
       item
         Caption = 'Progress'
-        Width = 131
+        Width = 146
       end>
     GridLines = True
     HideSelection = False
@@ -199,12 +206,13 @@ object FormYTD: TFormYTD
     ViewStyle = vsReport
     OnData = DownloadsData
     OnDblClick = DownloadsDblClick
+    OnMouseDown = DownloadsMouseDown
   end
   object StatusBar1: TStatusBar
     Left = 0
     Height = 19
-    Top = 373
-    Width = 719
+    Top = 380
+    Width = 734
     AutoHint = True
     Panels = <>
   end
@@ -350,6 +358,11 @@ object FormYTD: TFormYTD
       OnExecute = actOptionsExecute
       ShortCut = 120
     end
+    object actVQuality: TAction
+      Caption = 'Video resolution'
+      Hint = 'Change video resolution'
+      ImageIndex = 17
+    end
     object actPlay: TAction
       Caption = 'Play'
       OnExecute = actPlayExecute
@@ -365,12 +378,15 @@ object FormYTD: TFormYTD
       OnExecute = actMenuExecute
       ShortCut = 121
     end
+    object actQClick: TAction
+      Caption = 'actQClick'
+    end
   end
   object ActionImages: TImageList
     left = 168
     top = 144
     Bitmap = {
-      4C69110000001000000010000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      4C69120000001000000010000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFECF6
       EFFFB9DDC5FF82C095FF71B786FF6EB582FF79B98AFFB1D6BAFFE9F3EBFFFFFF
@@ -914,7 +930,39 @@ object FormYTD: TFormYTD
       71FFDFA481FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDC9B73FFD58351FFD17D4BFFDFA3
       7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000004242427F1D1D1DFF373027FF373128FF3731
+      28FF373229FF373229FF373229FF373229FF373229FF363228FF363128FF3531
+      27FF353027FF1E1E1EFF4646467F4141417F232323FFF2B872FFF3BB75FFF3BF
+      77FFF4C279FFF5C67CFFF6C97EFFF7CD81FFF7D083FFF7D284FFF8D284FFF8D2
+      84FFF8D283FF222222FF4646467F4141417F212121FFEFAD67FFF0B169FFF1B4
+      6BFFF1B76EFFF2BB70FFF3BE73FFF4C275FFF5C578FFF6C97AFFF7CD7DFFF7CF
+      7FFFF7D07FFF202020FF4646467F4141417F1E1E1EFFEDA25AFFEEA55DFFEEA9
+      5FFFEFAC62FFF0B064FFF1B367FFF2B76AFFF3BA6CFFF3BE6FFFF4C271FFF5C6
+      74FFF6C975FF191919FF4646467F4141417F171717FFE99348FFEA994FFFEB9D
+      53FFEDA155FFEEA458FFEFA85BFFEFAB5DFFF0AE5EFFF0B15FFFF1B35FFFF2B6
+      5FFFF3B960FF141414FF4646467F4141417F111111FFE68232FFE68434FFE789
+      38FFE88D3CFFE99240FFEA9643FFEB9945FFEC9E49FFEDA24DFFEEA650FFEFAB
+      54FFF0AF57FF141414FF4646467F4141417F111111FFE68232FFE68232FFE682
+      32FFE68333FFE78736FFE88B39FFE98F3DFFEA9441FFEB9844FFEC9C48FFEDA1
+      4BFFEEA54FFF141414FF4646467F4141417F111111FFAC6125FFAC6125FFAC61
+      25FFAC6125FFAC6125FFAC6226FFAD6528FFAE682BFFAE6B2EFFAF6F30FFB072
+      33FFB17536FF141414FF4646467F2C2B2B7F161616FF0E0D0DFF0E0D0DFF0E0D
+      0DFF0E0D0DFF0E0D0DFF1E1E1EFF202020FF0E0D0DFF0E0D0DFF0E0D0DFF0E0D
+      0DFF101010FF181717FF2F2E2E7F3E3D3C1D5A5856445F5D5A515F5D5A5C6260
+      5E666967647073716E765D5C5AFB5D5C5AFB73716E766A68657062605E665F5D
+      5A5C5F5D5A515A5956444342401D00000000000000050000000F0B0B0B362725
+      2485333231B63F3E3EDB474544FC474544FC3C3B3BDB1A1A1AB6151414850C0C
+      0B360000000F0000000500000000000000000000000000000000000000000000
+      0000000000001313120126252401272524011110100100000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000
     }
   end
   object StateImages: TImageList
@@ -2335,5 +2383,33 @@ object FormYTD: TFormYTD
     OnClick = TrayIconClick
     left = 616
     top = 299
+  end
+  object VQualityPopUp: TPopupMenu
+    left = 416
+    top = 144
+    object Item1: TMenuItem
+      Caption = 'Auto'
+      OnClick = Item1Click
+    end
+    object Item2: TMenuItem
+      Caption = 'Full HD'
+      OnClick = Item2Click
+    end
+    object Item3: TMenuItem
+      Caption = 'HD'
+      OnClick = Item3Click
+    end
+    object item4: TMenuItem
+      Caption = 'High'
+      OnClick = item4Click
+    end
+    object Item5: TMenuItem
+      Caption = 'Med'
+      OnClick = Item5Click
+    end
+    object Item6: TMenuItem
+      Caption = 'Low'
+      OnClick = Item6Click
+    end
   end
 end
