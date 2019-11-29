@@ -44,7 +44,7 @@ uses
   {$ifdef mswindows}
     Windows
   {$ELSE}
-    LCLIntf, LCLType, LMessages,
+    LCLIntf, LCLType, {LMessages,}
   {$ENDIF}
   uPCRE, uXML, uJSON, HttpSend, blcksock,
   uDownloader, uOptions, uScripts;
@@ -131,7 +131,7 @@ type
     public
       class function MainScriptEngine: TScriptEngine;
       class procedure InitMainScriptEngine(const FileName: string);
-      class function IsSupportedUrl(const AUrl: string; out AMovieID: string): boolean; override;
+      class function IsSupportedUrl(const AUrl: string; out AMovieID, Provider: string): boolean; override;
       class function Provider: string; override;
       class function UrlRegExp: string; override;
       constructor Create(const AScriptID, AMovieID: string; AScriptEngine: TScriptEngine = nil); reintroduce; overload;
@@ -149,7 +149,7 @@ type
 implementation
 
 uses
-  uCompatibility,
+  ///uCompatibility,
   uMessages,
   uLanguages,
   uStrings,
@@ -162,7 +162,8 @@ uses
   uNestedDirectDownloader,
   uHDSDirectDownloader,
   uHLSDirectDownloader,
-  NativeXml;
+  NativeXml  ;
+
 
 const
   SCRIPTVAR_MOVIE_ID = '_movie_id';
@@ -196,15 +197,17 @@ begin
   Raise EScriptedDownloaderError.Create(_('TScriptedDownloader.UrlRegExp may not be called.'));
 end;
 
-class function TScriptedDownloader.IsSupportedUrl(const AUrl: string; out AMovieID: string): boolean;
+class function TScriptedDownloader.IsSupportedUrl(const AUrl: string; out AMovieID, Provider: string): boolean;
 var
   ScriptNode: TXmlNode;
+  s: string;
 begin
   Result := False;
   if MainScriptEngine <> nil then
     if MainScriptEngine.GetScriptForUrl(AUrl, ScriptNode, AMovieID) then
       begin
       AMovieID := XmlAttribute(ScriptNode, 'id') + #0 + AMovieID;
+      Provider:=XmlAttribute(ScriptNode, 'provider');
       Result := True;
       end;
 end;
@@ -612,6 +615,7 @@ begin
   Downloader := THLSDirectDownloader.CreateWithName(Url, Title);
   try
     Downloader.SetFileNameExt(Ext);
+    Downloader.MaxVBitRate:=self.MaxVBitRate;
     AddDownloader(Downloader);
   except
     FreeAndNil(Downloader);

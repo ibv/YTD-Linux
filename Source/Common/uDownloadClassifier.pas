@@ -61,7 +61,7 @@ type
       function GetNameCount: integer; virtual;
       function GetNames(Index: integer): string; virtual;
       function GetNameClasses(Index: integer): string; virtual;
-      function FindDownloader(const AUrl: string; out DownloaderClass: TDownloaderClass; out MovieID: string): boolean;
+      function FindDownloader(const AUrl: string; out DownloaderClass: TDownloaderClass; out MovieID, Provid: string): boolean;
       procedure SetUrl(const Value: string); virtual;
     public
       constructor Create; virtual;
@@ -122,13 +122,13 @@ begin
     fDownloader := nil;
 end;
 
-function TDownloadClassifier.FindDownloader(const AUrl: string; out DownloaderClass: TDownloaderClass; out MovieID: string): boolean;
+function TDownloadClassifier.FindDownloader(const AUrl: string; out DownloaderClass: TDownloaderClass; out MovieID, Provid: string): boolean;
 var
   i: integer;
 begin
   Result := False;
   for i := 0 to Pred(ProviderCount) do
-    if Providers[i].IsSupportedUrl(AUrl, MovieID) then
+    if Providers[i].IsSupportedUrl(AUrl, MovieID, Provid) then
       begin
       DownloaderClass := Providers[i];
       Result := True;
@@ -141,6 +141,7 @@ var DC: TDownloaderClass;
     i: integer;
     ID: string;
     b: boolean;
+    provider: string;
 begin
   Clear;
   i := Pos('#', Value);
@@ -148,14 +149,17 @@ begin
     fUrl := Value
   else
     fUrl := Copy(Value, 1, Pred(i));
-  b := FindDownloader(fUrl, DC, ID);
+  b := FindDownloader(fUrl, DC, ID, provider);
   if (not b) and (fUrl <> Value) then
     begin
     fUrl := Value;
-    b := FindDownloader(fUrl, DC, ID);
+    b := FindDownloader(fUrl, DC, ID, provider);
     end;
   if b then
+  begin
     fDownloader := DC.Create(ID);
+    fDownLoader.ProviderName := provider;
+  end;
 end;
 
 function TDownloadClassifier.GetProviderCount: integer;

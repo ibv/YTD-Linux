@@ -101,6 +101,7 @@ uses
   uHLSDirectDownloader in 'Base\uHLSDirectDownloader.pas',
   uScriptedDownloader in 'Base\uScriptedDownloader.pas',
   uDASHDownloader in 'Base\uDASHDownloader.pas',
+  uMPD in 'Base\uMPD.pas',
   // Command Line Version
   {$IFDEF CLI}
     uYTD in 'CLI\uYTD.pas',
@@ -145,6 +146,7 @@ uses
         {$IFDEF CONVERTERS}
         guiConverterLCL in 'GUI\LCL\guiConverterLCL.pas' {FormSelectConverter},
         {$ENDIF}
+        ///guiVQuality in 'GUI\LCL\guiVQuality.pas' {FormVQuality},
       {$ELSE}
         guiMainVCL in 'GUI\VCL\guiMainVCL.pas' {FormYTD},
         guiAboutVCL in 'GUI\VCL\guiAboutVCL.pas' {FormAbout},
@@ -214,6 +216,7 @@ uses
   downCT in 'Downloaders\downCT.pas',
   downCurrent in 'Downloaders\downCurrent.pas',
   downDailyHaha in 'Downloaders\downDailyHaha.pas',
+  downDash in 'Downloaders\downDash.pas',
   downDeutscheBahn in 'Downloaders\downDeutscheBahn.pas',
   downDenik in 'Downloaders\downDenik.pas',
   downDevilDucky in 'Downloaders\downDevilDucky.pas',
@@ -329,7 +332,7 @@ uses
   downPrazdninyVTelci in 'Downloaders\downPrazdninyVTelci.pas',
   downProglas in 'Downloaders\downProglas.pas',
   downProstoPleer in 'Downloaders\downProstoPleer.pas',
-  downPrima in 'Downloaders\downPrima.pas',
+  ///downPrima in 'Downloaders\downPrima.pas',
   downPublicTV in 'Downloaders\downPublicTV.pas',
   downQipRu_Embed in 'Downloaders\downQipRu_Embed.pas',
   downRaajje in 'Downloaders\downRaajje.pas',

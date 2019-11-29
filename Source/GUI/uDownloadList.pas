@@ -197,6 +197,7 @@ end;
 
 function TDownloadList.AddNewItem(const Source, Title: string; Downloader: TDownloader): integer; 
 var Item: TDownloadListItem;
+    s:string;
 begin
   Item := TDownloadListItem.Create(Downloader, True);
   Item.Title := Title;
@@ -210,6 +211,8 @@ begin
   {$IFDEF CONVERTERS}
   Item.OnConvertThreadFinished := DownloadItemConvertThreadFinished;
   {$ENDIF}
+  Item.Downloader.MaxVResolution := Options.ReadProviderOptionDef(Downloader.ProviderName, 'max_video_width', 0);
+  Item.Downloader.MaxVBitrate := Options.ReadProviderOptionDef(Downloader.ProviderName, 'max_video_bitrate', MaxInt);
   Result := List.AddObject(Source, Item);
   NotifyList;
   if Options.AutoStartDownloads then

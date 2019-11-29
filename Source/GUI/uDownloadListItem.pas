@@ -153,6 +153,7 @@ begin
   fDownloader := ADownloader;
   fDownloaderOwned := ADownloaderOwned;
   fThread := nil;
+  fDownLoader.MaxVResolution := 0;
   InitStatus;
 end;
 
