@@ -105,6 +105,7 @@ resourcestring
   ERR_FAILED_TO_LOCATE_MEDIA_INFO = 'Failed to locate media info.';
   ERR_FAILED_TO_LOCATE_MEDIA_TITLE = 'Failed to find media title.';
   ERR_FAILED_TO_LOCATE_MEDIA_URL = 'Failed to find media URL.';
+  ERR_FAILED_TO_LOCATE_MEDIA_AUDIO_URL = 'Failed to find media Audio URL.';
   ERR_FAILED_TO_LOCATE_MEDIA_SERVER = 'Failed to find media server.';
   ERR_FAILED_TO_LOCATE_MEDIA_STREAM = 'Failed to find media stream.';
 

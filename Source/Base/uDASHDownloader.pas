@@ -62,6 +62,7 @@ type
       fAborted: boolean;
       fMaxBitRate: integer;
       fMPD: TMPDObject;
+      VideoEndNumber: integer;
     protected
       QualityRegExp: TRegExp;
     protected
@@ -93,6 +94,12 @@ uses
   SynaUtil, strutils,
   uLanguages, uMessages, uFunctions;
 
+const
+
+  //--
+  OPTION_DASH_VIDEO_SUPPORT {$IFDEF MINIMIZESIZE} : string {$ENDIF} = 'dash_video_support';
+  OPTION_DASH_AUDIO_SUPPORT {$IFDEF MINIMIZESIZE} : string {$ENDIF} = 'dash_audio_support';
+
 
 
 { TDASHDownloader }
@@ -105,6 +112,7 @@ begin
   fFragments := TStringList.Create;
   fRetryCount := 3;
   fMaxBitRate := MaxInt;
+  VideoEndNumber:=-2;
 end;
 
 destructor TDASHDownloader.Destroy;
@@ -148,7 +156,7 @@ begin
       id:='';
 
       fMPD := TMPDObject.Create(Xml);
-      // video stream
+
       id   := fMPD.GetBestID(fMaxBitRate);
       // without baseurl
       if fMPD.BaseURL = '' then
@@ -161,39 +169,56 @@ begin
         fMPD.BaseURL := Prot+'://'+host+port+copy(path,1,LastDelimiter('/',Path));
       end;
 
-      Fragments.Add(GetRelativeUrl(fMPD.BaseURL, fMPD.VideoInit));
-      for i:=0 to fMPD.VideoEndNumber do
+      if not Result then
       begin
-        if not Result then
+        fVideoDownloader := CreateHttp;
+        fVideoDownloader.Cookies.Assign(Http.Cookies);
+        fVideoDownloader.Sock.OnStatus := SockStatusMonitor;
+        fDownloadedThisFragment := 0;
+        fDownloadedPreviousFragments := 0;
+        Result := True;
+      end;
+
+      // video stream
+      if Options.ReadProviderOptionDef(Provider, OPTION_DASH_VIDEO_SUPPORT, false) then
+      begin
+        VideoEndNumber := fMPD.VideoEndNumber;
+        Fragments.Add(GetRelativeUrl(fMPD.BaseURL, fMPD.VideoInit));
+        for i:=0 to fMPD.VideoEndNumber do
         begin
-          fVideoDownloader := CreateHttp;
-          fVideoDownloader.Cookies.Assign(Http.Cookies);
-          fVideoDownloader.Sock.OnStatus := SockStatusMonitor;
-          fDownloadedThisFragment := 0;
-          fDownloadedPreviousFragments := 0;
-          Result := True;
-        end;
-        if pos('%',fMPD.VideoMedia) >0 then
+          {if not Result then
+          begin
+            fVideoDownloader := CreateHttp;
+            fVideoDownloader.Cookies.Assign(Http.Cookies);
+            fVideoDownloader.Sock.OnStatus := SockStatusMonitor;
+            fDownloadedThisFragment := 0;
+            fDownloadedPreviousFragments := 0;
+            Result := True;
+          end;}
+          if pos('%',fMPD.VideoMedia) >0 then
            init := StringReplace(fMPD.VideoMedia,'%'+fMPD.fm+'$',format('%.'+fMPD.fm, [i+fMPD.VideoStartNumber]),[]);
-        if pos('$Time$',fMPD.VideoMedia) >0 then
+          if pos('$Time$',fMPD.VideoMedia) >0 then
            init := StringReplace(fMPD.VideoMedia,'$Time$',format('%d', [fMPD.VideoTimeT + i*fMPD.VideoTimeD]),[]);
 
-        Fragments.Add(GetRelativeUrl(fMPD.BaseURL, init));
+          Fragments.Add(GetRelativeUrl(fMPD.BaseURL, init));
+        end;
       end;
 
       // audio stream
-      id   := fMPD.GetBestID(128000,false);
-      Fragments.Add(GetRelativeUrl(fMPD.BaseURL, fMPD.AudioInit));
-      for i:=0 to fMPD.AudioEndNumber do
+      if Options.ReadProviderOptionDef(Provider, OPTION_DASH_AUDIO_SUPPORT, false) then
       begin
-        if pos('%',fMPD.AudioMedia) >0 then
+        id   := fMPD.GetBestID(128000,false);
+        Fragments.Add(GetRelativeUrl(fMPD.BaseURL, fMPD.AudioInit));
+        for i:=0 to fMPD.AudioEndNumber do
+        begin
+          if pos('%',fMPD.AudioMedia) >0 then
            init := StringReplace(fMPD.AudioMedia,'%'+fMPD.fm+'$',format('%.'+fMPD.fm, [i+fMPD.AudioStartNumber]),[]);
-        if pos('$Time$',fMPD.AudioMedia) >0 then
+          if pos('$Time$',fMPD.AudioMedia) >0 then
            init := StringReplace(fMPD.AudioMedia,'$Time$',format('%d', [fMPD.AudioTimeT + i*fMPD.AudioTimeD]),[]);
 
-        Fragments.Add(GetRelativeUrl(fMPD.BaseURL, init));
+          Fragments.Add(GetRelativeUrl(fMPD.BaseURL, init));
+        end;
       end;
-
     end;
   finally
     FreeAndNil(Http);
@@ -248,6 +273,14 @@ begin
         begin
           FragmentDownloaded := False;
           Retry := RetryCount;
+
+          if  (i=VideoEndNumber+2) and Options.ReadProviderOptionDef(Provider, OPTION_DASH_AUDIO_SUPPORT, false) then
+          begin
+            FN:=ChangeFileExt(FN, '.mpa');
+            FInalFN:=FN;
+            FreeAndNil(Stream);
+          end;
+
           while Retry >= 0 do
             if DownloadBinary(VideoDownloader, Fragments[i], FragmentData) then
             begin
@@ -276,12 +309,12 @@ begin
           if not FragmentDownloaded then
             Exit;
 
-          if i=fMPD.VideoEndNumber+1 then
+          {if i=fMPD.VideoEndNumber+1 then
           begin
             FN:=ChangeFileExt(FN, '.mpa');
             FInalFN:=FN;
             FreeAndNil(Stream);
-          end;
+          end;}
 
         end;
         Result := True;

@@ -47,7 +47,12 @@ uses
   uDownloader, guiOptionsLCL_Downloader, guiOptionsLCL_CommonDownloader;
 
 type
+
+  { TFrameDownloaderOptionsPage_YouTube }
+
   TFrameDownloaderOptionsPage_YouTube = class(TFrameDownloaderOptionsPageCommon)
+    CheckDashAudio: TCheckBox;
+    CheckDashVideo: TCheckBox;
     LabelPreferredLanguages: TLabel;
     EditPreferredLanguages: TEdit;
     LabelMaximumVideoWidth: TLabel;
@@ -97,6 +102,9 @@ begin
   EditMaximumVideoWidth.Text := IntToStr(Options.ReadProviderOptionDef(Provider, OPTION_YOUTUBE_MAXVIDEOWIDTH, OPTION_YOUTUBE_MAXVIDEOWIDTH_DEFAULT));
   EditMaximumVideoHeight.Text := IntToStr(Options.ReadProviderOptionDef(Provider, OPTION_YOUTUBE_MAXVIDEOHEIGHT, OPTION_YOUTUBE_MAXVIDEOHEIGHT_DEFAULT));
   CheckAvoidWebM.Checked := Options.ReadProviderOptionDef(Provider, OPTION_YOUTUBE_AVOIDWEBM, OPTION_YOUTUBE_AVOIDWEBM_DEFAULT);
+  CheckDashVideo.Checked := Options.ReadProviderOptionDef(Provider,OPTION_DASH_VIDEO_SUPPORT,false);
+  CheckDashAudio.Checked := Options.ReadProviderOptionDef(Provider,OPTION_DASH_AUDIO_SUPPORT,false);
+
 end;
 
 procedure TFrameDownloaderOptionsPage_YouTube.SaveToOptions;
@@ -109,6 +117,9 @@ begin
   Options.WriteProviderOption(Provider, OPTION_YOUTUBE_MAXVIDEOWIDTH, StrToIntDef(EditMaximumVideoWidth.Text, 0));
   Options.WriteProviderOption(Provider, OPTION_YOUTUBE_MAXVIDEOHEIGHT, StrToIntDef(EditMaximumVideoHeight.Text, 0));
   Options.WriteProviderOption(Provider, OPTION_YOUTUBE_AVOIDWEBM, CheckAvoidWebM.Checked);
+  Options.WriteProviderOption(Provider, OPTION_DASH_VIDEO_SUPPORT, CheckDashVideo.Checked);
+  Options.WriteProviderOption(Provider, OPTION_DASH_AUDIO_SUPPORT, CheckDashAudio.Checked);
+
 end;
 
 end.
