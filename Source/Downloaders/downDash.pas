@@ -52,11 +52,11 @@ uses
   uPCRE, uXml, HttpSend, SynaUtil,
   uOptions,
   {$IFDEF GUI}
-    ///guiDownloaderOptions,
+    guiDownloaderOptions,
     {$IFDEF GUI_WINAPI}
 //      guiOptionsWINAPI_CT,
     {$ELSE}
-      ///guiOptionsLCL_CT,
+      guiOptionsLCL_DASH,
     {$ENDIF}
   {$ENDIF}
   uDownloader, uCommonDownloader, uHLSDownloader, uDASHDownloader;
@@ -86,12 +86,13 @@ type
       function GetMovieInfoUrl: string; override;
       function GetFileNameExt: string; override;
       function AfterPrepareFromPage(var Page: string; PageXml: TXmlDoc; Http: THttpSend): boolean; override;
+      procedure SetOptions(const Value: TYTDOptions); override;
     public
       class function Provider: string; override;
       class function UrlRegExp: string; override;
       class function Features: TDownloaderFeatures; override;
       {$IFDEF GUI}
-      ///class function GuiOptionsClass: TFrameDownloaderOptionsPageClass; override;
+      class function GuiOptionsClass: TFrameDownloaderOptionsPageClass; override;
       {$ENDIF}
       constructor Create(const AMovieID: string); override;
       destructor Destroy; override;
@@ -105,9 +106,8 @@ type
 
 
 const
-  OPTION_CT_MAX_VIDEO_WIDTH {$IFDEF MINIMIZESIZE} : string {$ENDIF} = 'max_video_width';
-  OPTION_CT_MAX_VIDEO_WIDTH_DEFAULT = 0;
-  OPTION_CT_DASH_SUPPORT {$IFDEF MINIMIZESIZE} : string {$ENDIF} = 'dash_support';
+  OPTION_DASH_VIDEO_SUPPORT {$IFDEF MINIMIZESIZE} : string {$ENDIF} = 'dash_video_support';
+  OPTION_DASH_AUDIO_SUPPORT {$IFDEF MINIMIZESIZE} : string {$ENDIF} = 'dash_audio_support';
 
 
 implementation
@@ -140,6 +140,12 @@ begin
 end;
 
 
+{$IFDEF GUI}
+class function TDownloader_DASH.GuiOptionsClass: TFrameDownloaderOptionsPageClass;
+begin
+  Result := TFrameDownloaderOptionsPage_DASH;
+end;
+{$ENDIF}
 
 
 constructor TDownloader_Dash.Create(const AMovieID: string);
@@ -187,6 +193,15 @@ begin
   SetPrepared(True);
   Result := True;
 end;
+
+
+procedure TDownloader_Dash.SetOptions(const Value: TYTDOptions);
+var
+  Bitrate: integer;
+begin
+  inherited;
+end;
+
 
 function TDownloader_Dash.GetFileNameExt: string;
 begin
