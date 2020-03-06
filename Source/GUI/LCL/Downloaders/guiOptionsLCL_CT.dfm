@@ -8,40 +8,43 @@ inherited FrameDownloaderOptionsPage_CT: TFrameDownloaderOptionsPage_CT
     ClientWidth = 384
     inherited LabelSecureToken: TLabel
       Height = 15
-      Width = 89
+      Width = 84
     end
     inherited LabelUserName: TLabel
       Height = 15
-      Width = 75
+      Width = 69
     end
     inherited LabelPassword: TLabel
       Height = 15
-      Width = 63
+      Width = 59
     end
     inherited CheckDownloadSubtitles: TCheckBox
-      Height = 26
+      Height = 23
       Width = 369
     end
     inherited CheckConvertSubtitles: TCheckBox
-      Height = 26
+      Height = 23
       Width = 369
     end
     inherited CheckLiveStream: TCheckBox
-      Height = 26
-      Width = 348
+      Height = 23
+      Width = 329
     end
     inherited EditSecureToken: TEdit
+      Height = 26
       Width = 257
     end
     inherited EditUserName: TEdit
+      Height = 26
       Width = 257
     end
     inherited EditPassword: TEdit
+      Height = 26
       Width = 257
     end
     inherited CheckRealtime: TCheckBox
-      Height = 26
-      Width = 373
+      Height = 23
+      Width = 354
     end
   end
   inherited PanelSpecificOptions: TPanel
@@ -51,14 +54,14 @@ inherited FrameDownloaderOptionsPage_CT: TFrameDownloaderOptionsPage_CT
       Left = 8
       Height = 15
       Top = 19
-      Width = 172
+      Width = 162
       Caption = 'Maximum video &resolution:'
       FocusControl = EditMaximumVideoBitrate
       ParentColor = False
     end
     object EditMaximumVideoBitrate: TEdit[1]
       Left = 185
-      Height = 21
+      Height = 26
       Top = 19
       Width = 79
       TabOrder = 0
@@ -74,10 +77,10 @@ inherited FrameDownloaderOptionsPage_CT: TFrameDownloaderOptionsPage_CT
     end
     object CheckDash: TCheckBox[3]
       Left = 9
-      Height = 26
-      Top = -6
-      Width = 261
-      Caption = 'Support MPEG-DASH (experimental)'
+      Height = 23
+      Top = -5
+      Width = 143
+      Caption = 'Enable MPEG-DASH'
       TabOrder = 1
     end
   end

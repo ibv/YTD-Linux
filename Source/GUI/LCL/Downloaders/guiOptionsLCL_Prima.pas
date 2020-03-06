@@ -40,8 +40,8 @@ unit guiOptionsLCL_Prima;
 interface
 
 uses 
-  LCLIntf, LCLType, LMessages,
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  LCLIntf, LCLType,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
   uDownloader, guiOptionsLCL_Downloader, guiOptionsLCL_CommonDownloader;
 
