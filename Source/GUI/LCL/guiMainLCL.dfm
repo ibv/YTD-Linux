@@ -1,7 +1,7 @@
 object FormYTD: TFormYTD
-  Left = 465
+  Left = 363
   Height = 399
-  Top = 213
+  Top = 194
   Width = 734
   Caption = 'YTD'
   ClientHeight = 399
@@ -15,7 +15,7 @@ object FormYTD: TFormYTD
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   ShowHint = True
-  LCLVersion = '2.0.2.0'
+  LCLVersion = '2.0.6.0'
   object ToolBar1: TToolBar
     Left = 0
     Height = 29
@@ -141,7 +141,6 @@ object FormYTD: TFormYTD
       Left = 394
       Top = 2
       Action = actReportBug
-      Enabled = False
     end
     object ToolDonate: TToolButton
       Left = 417
@@ -162,7 +161,7 @@ object FormYTD: TFormYTD
   end
   object Downloads: TListView
     Left = 0
-    Height = 351
+    Height = 353
     Top = 29
     Width = 734
     Align = alClient
@@ -191,7 +190,7 @@ object FormYTD: TFormYTD
       end    
       item
         Caption = 'Progress'
-        Width = 146
+        Width = 148
       end>
     GridLines = True
     HideSelection = False
@@ -210,8 +209,8 @@ object FormYTD: TFormYTD
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 19
-    Top = 380
+    Height = 17
+    Top = 382
     Width = 734
     AutoHint = True
     Panels = <>
