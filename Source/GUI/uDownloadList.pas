@@ -146,7 +146,7 @@ end;
 
 destructor TDownloadList.Destroy;
 begin
-  Clear;
+  ///Clear;
   FreeAndNil(fList);
   FreeAndNil(fDownloadingList);
   FreeAndNil(fDownloadClassifier);
