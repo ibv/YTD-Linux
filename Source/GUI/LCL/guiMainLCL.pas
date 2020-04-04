@@ -551,6 +551,7 @@ begin
   if Idx >= 0 then
     begin
     ///Downloads.UpdateItems(Idx, Idx);
+    Downloads.Update;
     if (DownloadList <> nil) and (DownloadList[Idx] <> nil) then
       if DownloadList[Idx].State = dtsFinished then
         SaveSettings;
@@ -710,7 +711,7 @@ end;
 
 procedure TFormYTD.actReportBugExecute(Sender: TObject);
 begin
-  ///if Downloads.SelCount < 1 then
+  if Downloads.SelCount < 1 then
     Exit;
   if not IsSSLAvailable then
     MessageDlg(_(MAINFORM_NOBUGREPORTIFDOWNLOADSTARTED), mtError, [mbOK], 0)
@@ -811,7 +812,6 @@ end;
 
 procedure TFormYTD.Refresh;
 begin
-  ///{$IFDEF FPC}
   {$IFNDEF FPC}
   if Downloads.Items.Count <> DownloadList.Count then
     begin
