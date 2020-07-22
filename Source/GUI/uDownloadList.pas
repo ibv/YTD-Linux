@@ -146,7 +146,7 @@ end;
 
 destructor TDownloadList.Destroy;
 begin
-  ///Clear;
+  Clear;
   FreeAndNil(fList);
   FreeAndNil(fDownloadingList);
   FreeAndNil(fDownloadClassifier);
@@ -161,8 +161,8 @@ begin
   try
     Options.AutoStartDownloads := False;
     StopAll;
-    for i := 0 to Pred(Count) do
-      Items[i].Free;
+    ///for i := 0 to Pred(Count) do
+      ///Items[i].Free;
     List.Clear;
     DownloadingList.Clear;
   finally
