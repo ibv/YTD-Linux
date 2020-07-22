@@ -304,19 +304,21 @@ resourcestring
 { TYTDOptions }
 
 constructor TYTDOptions.Create;
-var PathBuf: array[0..MAX_PATH+1] of Char;
-    LocalXml, ExeXml: string;
+///var PathBuf: array[0..MAX_PATH+1] of Char;
+///    LocalXml, ExeXml: string;
 begin
   inherited Create;
   fXml := TXmlDoc.Create;
-  LocalXml := ExtractFileName(ChangeFileExt(ParamStr(0), '.xml'));
+  {LocalXml := ExtractFileName(ChangeFileExt(ParamStr(0), '.xml'));
   ExeXml := ChangeFileExt(ParamStr(0), '.xml');
   if FileExists(LocalXml) then
     fMainXmlFileName := LocalXml
   else if FileExists(ExeXml) then
     fMainXmlFileName := ExeXml
   else
-    fMainXmlFileName := LocalXml;
+    fMainXmlFileName := LocalXml;}
+  fMainXmlFileName := 'ytd.xml';
+
   fUserXmlFileName := '';
   ///if SHGetSpecialFolderPath(0, PathBuf, CSIDL_APPDATA, False) then
   ///  fUserXmlFileName := PathBuf + '\YouTube Downloader\ytd.xml';
