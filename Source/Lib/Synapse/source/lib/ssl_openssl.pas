@@ -185,7 +185,9 @@ end;
 constructor TSSLOpenSSL.Create(const Value: TTCPBlockSocket);
 begin
   inherited Create(Value);
-  FCiphers := 'DEFAULT';
+  ///FCiphers := 'DEFAULT';
+  ///FCiphers := 'ECDHE-RSA-AES256-GCM-SHA384';
+  FCiphers := 'DEFAULT@SECLEVEL=1';
   FSsl := nil;
   Fctx := nil;
 end;
