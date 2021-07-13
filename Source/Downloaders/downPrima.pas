@@ -126,7 +126,10 @@ const
   URLREGEXP_AFTER_ID =  '';
 
 const
-  REGEXP_PRODUCTID1 = 'prehravac/embedded\?id=(?P<ID>.+?)"';
+  ///REGEXP_PRODUCTID1 = 'prehravac/embedded\?id=(?P<ID>.+?)"';
+  REGEXP_PRODUCTID1 = 'let videos = ''(?P<ID>.+?)'';';
+
+
   REGEXP_PRODUCTID2 = '_videoimport(?P<ID>\w+?)_';
   REGEXP_STATUS_CONTENT   = '^(?P<CONTENT>OK)$';
   REGEXP_OPTIONS_CONTENT  = '\bvar\s+\w*[pP]layerOptions\s*=\s*(?P<CONTENT>\{.*?\})\s*;';
