@@ -640,7 +640,7 @@ begin
     Secondary := 'plain';
     Description := 'Message text';
     Disposition := 'inline';
-    CharsetCode := IdealCharsetCoding(Value.Text, TargetCharset, IdealCharsets);
+    CharsetCode := IdealCharsetCoding( {$IFDEF UNICODE} AnsiString {$ENDIF} (Value.Text), TargetCharset, IdealCharsets);
     EncodingCode := ME_QUOTED_PRINTABLE;
     EncodePart;
     EncodePartHeader;

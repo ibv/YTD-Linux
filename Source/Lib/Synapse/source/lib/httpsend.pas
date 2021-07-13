@@ -101,13 +101,13 @@ type
     FResultString: string;
     FUserAgent: string;
     FCookies: TStringList;
-    FDownloadSize: {$IFDEF PEPAK} int64 {$ELSE} integer {$ENDIF} ;
-    FUploadSize: {$IFDEF PEPAK} int64 {$ELSE} integer {$ENDIF} ;
-    FRangeStart: {$IFDEF PEPAK} int64 {$ELSE} integer {$ENDIF} ;
-    FRangeEnd: {$IFDEF PEPAK} int64 {$ELSE} integer {$ENDIF} ;
+    FDownloadSize: int64;
+    FUploadSize: int64;
+    FRangeStart: int64;
+    FRangeEnd: int64;
     FAddPortNumberToHost: Boolean;
     function ReadUnknown: Boolean; virtual;
-    function ReadIdentity(Size: {$IFDEF PEPAK} int64 {$ELSE} integer {$ENDIF} ): Boolean; virtual;
+    function ReadIdentity(Size: int64): Boolean; virtual;
     function ReadChunked: Boolean; virtual;
     procedure ParseCookies;
     function PrepareHeaders: AnsiString;
@@ -158,13 +158,13 @@ type
 
     {:If you need to download only part of a requested document, specify here
      the position of subpart begin. If 0, the full document is requested.}
-    property RangeStart: {$IFDEF PEPAK} int64 {$ELSE} integer {$ENDIF} read FRangeStart Write FRangeStart;
+    property RangeStart: int64 read FRangeStart Write FRangeStart;
 
     {:If you need to download only part of a requested document, specify here
      the position of subpart end. If 0, the document from rangeStart to end of
      document is requested.
      (Useful for resuming broken downloads, for example.)}
-    property RangeEnd: {$IFDEF PEPAK} int64 {$ELSE} integer {$ENDIF} read FRangeEnd Write FRangeEnd;
+    property RangeEnd: int64 read FRangeEnd Write FRangeEnd;
 
     {:Mime type of sending data. Default is: 'text/html'.}
     property MimeType: string read FMimeType Write FMimeType;
@@ -209,12 +209,12 @@ type
     {:if this value is not 0, then data download is pending. In this case you
      have here the total size of downloaded data. Useful for drawing download
      progressbar from OnStatus event.}
-    property DownloadSize: {$IFDEF PEPAK} int64 {$ELSE} integer {$ENDIF} read FDownloadSize;
+    property DownloadSize: int64 read FDownloadSize;
 
     {:if this value is not 0, then data upload is pending. In this case you have
      here the total size of uploaded data. Useful for drawing upload progressbar
      from OnStatus event.}
-    property UploadSize: {$IFDEF PEPAK} int64 {$ELSE} integer {$ENDIF} read FUploadSize;
+    property UploadSize: int64 read FUploadSize;
 
     {:Socket object used for TCP/IP operation.
      Good for setting OnStatus hook, etc.}
@@ -223,8 +223,6 @@ type
     {:Allows to switch off port number in 'Host:' HTTP header. By default @TRUE.
      Some buggy servers do not like port informations in this header.}
     property AddPortNumberToHost: Boolean read FAddPortNumberToHost write FAddPortNumberToHost;
-
-    {$IFDEF PEPAK}
   protected
     FInputStream, FOutputStream: TStream;
     function InputDocument: TStream;
@@ -232,7 +230,6 @@ type
   public
     property InputStream: TStream read FInputStream write FInputStream;
     property OutputStream: TStream read FOutputStream write FOutputStream;
-    {$ENDIF}
   end;
 
 {:A very useful function, and example of use can be found in the THTTPSend
@@ -306,10 +303,8 @@ begin
   FUploadSize := 0;
   FAddPortNumberToHost := true;
   FKeepAliveTimeout := 300;
-  {$IFDEF PEPAK}
   FInputStream := nil;
   FOutputStream := nil;
-  {$ENDIF}
   Clear;
 end;
 
@@ -322,7 +317,6 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF PEPAK}
 function THTTPSend.InputDocument: TStream;
 begin
   if InputStream <> nil then
@@ -338,17 +332,14 @@ begin
   else
     Result := Document;
 end;
-{$ENDIF}
 
 procedure THTTPSend.Clear;
 begin
   FRangeStart := 0;
   FRangeEnd := 0;
   FDocument.Clear;
-  {$IFDEF PEPAK}
   InputDocument.Size := 0;
   OutputDocument.Size := 0;
-  {$ENDIF}
   FHeaders.Clear;
   FMimeType := 'text/html';
 end;
@@ -419,7 +410,7 @@ var
   status100: Boolean;
   status100error: string;
   ToClose: Boolean;
-  Size: {$IFDEF PEPAK} int64 {$ELSE} Integer {$ENDIF} ;
+  Size: int64;
   Prot, User, Pass, Host, Port, Path, Para, URI: string;
   s, su: AnsiString;
   HttpTunnel: Boolean;
@@ -436,7 +427,7 @@ begin
   FDownloadSize := 0;
   FUploadSize := 0;
 
-  URI := ParseURL( {$IFDEF PEPAK} Trim(URL) {$ELSE} URL {$ENDIF}, Prot, User, Pass, Host, Port, Path, Para);
+  URI := ParseURL(Trim(URL), Prot, User, Pass, Host, Port, Path, Para);
   User := DecodeURL(user);
   Pass := DecodeURL(pass);
   if User = '' then
@@ -461,14 +452,14 @@ begin
     FSock.HTTPTunnelPass := '';
   end;
   UsingProxy := (FProxyHost <> '') and not(HttpTunnel);
-  Sending := {$IFDEF PEPAK} InputDocument {$ELSE} FDocument {$ENDIF}.Size > 0;
+  Sending := InputDocument.Size > 0;
   {Headers for Sending data}
   status100 := FStatus100 and Sending and (FProtocol = '1.1');
   if status100 then
     FHeaders.Insert(0, 'Expect: 100-continue');
   if Sending then
   begin
-    FHeaders.Insert(0, 'Content-Length: ' + IntToStr({$IFDEF PEPAK} InputDocument {$ELSE} FDocument {$ENDIF}.Size));
+    FHeaders.Insert(0, 'Content-Length: ' + IntToStr(InputDocument.Size));
     if FMimeType <> '' then
       FHeaders.Insert(0, 'Content-Type: ' + FMimeType);
   end;
@@ -550,7 +541,7 @@ begin
   end;
 
   { reading Status }
-  {$IFDEF PEPAK} OutputDocument {$ELSE} FDocument {$ENDIF}.Position := 0;
+  InputDocument.Position := 0;
   Status100Error := '';
   if status100 then
   begin
@@ -574,34 +565,23 @@ begin
     begin
       { we can upload content }
       Status100Error := '';
-      {$IFDEF PEPAK}
       FUploadSize := InputDocument.Size;
       FSock.SendStreamRaw(InputDocument);
-      {$ELSE}
-      FUploadSize := FDocument.Size;
-      FSock.SendBuffer(FDocument.Memory, FDocument.Size);
-      {$ENDIF}
     end;
   end
   else
     { upload content }
     if sending then
     begin
-//      if {$IFDEF PEPAK} True {$ELSE} FDocument.Size >= c64k {$ENDIF} then
-      if {$IFDEF PEPAK} InputDocument {$ELSE} FDocument {$ENDIF}.Size >= c64k then
+      if InputDocument.Size >= c64k then
       begin
         FSock.SendString(PrepareHeaders);
-        {$IFDEF PEPAK}
         FUploadSize := InputDocument.Size;
         FSock.SendStreamRaw(InputDocument);
-        {$ELSE}
-        FUploadSize := FDocument.Size;
-        FSock.SendBuffer(FDocument.Memory, FDocument.Size);
-        {$ENDIF}
       end
       else
       begin
-        s := PrepareHeaders + ReadStrFromStream({$IFDEF PEPAK} InputDocument, InputDocument.Size {$ELSE} FDocument, FDocument.Size {$ENDIF});
+        s := PrepareHeaders + ReadStrFromStream(InputDocument, InputDocument.Size);
         FUploadSize := Length(s);
         FSock.SendString(s);
       end;
@@ -637,7 +617,7 @@ begin
       begin
         { old HTTP 0.9 and some buggy servers not send result }
         s := s + CRLF;
-        WriteStrToStream({$IFDEF PEPAK} OutputDocument {$ELSE} FDocument {$ENDIF}, s);
+        WriteStrToStream(OutputDocument, s);
         FResultCode := 0;
       end;
     until (FSock.LastError <> 0) or (FResultCode <> 100);
@@ -665,7 +645,7 @@ begin
         su := UpperCase(s);
         if Pos('CONTENT-LENGTH:', su) = 1 then
         begin
-          Size := {$IFDEF PEPAK} StrToInt64Def {$ELSE} StrToIntDef {$ENDIF} (Trim(SeparateRight(s, ':')), -1);
+          Size := StrToInt64Def(Trim(SeparateRight(s, ':')), -1);
           if (Size <> -1) and (FTransferEncoding = TE_UNKNOWN) then
             FTransferEncoding := TE_IDENTITY;
         end;
@@ -718,7 +698,7 @@ begin
         Result := ReadChunked;
     end;
 
-  {$IFDEF PEPAK} OutputDocument {$ELSE} FDocument {$ENDIF}.Seek(0, soFromBeginning);
+  OutputDocument.Seek(0, soFromBeginning);
   if ToClose then
   begin
     FSock.CloseSocket;
@@ -736,7 +716,7 @@ begin
   repeat
     s := FSock.RecvPacket(FTimeout);
     if FSock.LastError = 0 then
-      WriteStrToStream({$IFDEF PEPAK} OutputDocument {$ELSE} FDocument {$ENDIF}, s);
+      WriteStrToStream(OutputDocument, s);
   until FSock.LastError <> 0;
   if FSock.LastError = WSAECONNRESET then
   begin
@@ -745,13 +725,13 @@ begin
   end;
 end;
 
-function THTTPSend.ReadIdentity(Size: {$IFDEF PEPAK} int64 {$ELSE} integer {$ENDIF} ): Boolean;
+function THTTPSend.ReadIdentity(Size: int64): Boolean;
 begin
   if Size > 0 then
   begin
     FDownloadSize := Size;
-    FSock.RecvStreamSize({$IFDEF PEPAK} OutputDocument {$ELSE} FDocument {$ENDIF}, FTimeout, Size);
-    {$IFDEF PEPAK} OutputDocument {$ELSE} FDocument {$ENDIF}.Position := {$IFDEF PEPAK} OutputDocument {$ELSE} FDocument {$ENDIF}.Size;
+    FSock.RecvStreamSize(OutputDocument, FTimeout, Size);
+    OutputDocument.Position := OutputDocument.Size;
     Result := FSock.LastError = 0;
   end
   else
@@ -761,7 +741,7 @@ end;
 function THTTPSend.ReadChunked: Boolean;
 var
   s: ansistring;
-  Size: {$IFDEF PEPAK} int64 {$ELSE} Integer {$ENDIF} ;
+  Size: int64;
 begin
   repeat
     repeat
@@ -771,7 +751,7 @@ begin
       Break;
     s := Trim(SeparateLeft(s, ' '));
     s := Trim(SeparateLeft(s, ';'));
-    Size := {$IFDEF PEPAK} StrToInt64Def {$ELSE} StrToIntDef {$ENDIF} ('$' + s, 0);
+    Size := StrToInt64Def('$' + s, 0);
     if Size = 0 then
       Break;
     if not ReadIdentity(Size) then

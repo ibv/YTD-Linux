@@ -86,12 +86,6 @@ uses
 {$ENDIF}
   Classes,
   synafpc,
-
-//SZ add Process
-{$IFDEF LINUX}
-  Process,
-{$ENDIF}
-
 {$IFNDEF MSWINDOWS}
   {$IFDEF FPC}
    {$IFDEF UNIX}
@@ -109,40 +103,58 @@ uses
 {$IFDEF CIL}
 const
   {$IFDEF LINUX}
-  DLLSSLName = 'libssl.so';
-  DLLUtilName = 'libcrypto.so';
+  DLLSSLNames: array[1..1] of string = ('libssl.so');
+  DLLUtilNames: array[1..1] of string = ('libcrypto.so');
   {$ELSE}
-  DLLSSLName = 'ssleay32.dll';
-  DLLUtilName = 'libeay32.dll';
+  DLLSSLNames: array[1..1] of string = ('ssleay32.dll');
+  DLLUtilNames: array[1..1] of string = ('libeay32.dll');
   {$ENDIF}
 {$ELSE}
 var
   {$IFNDEF MSWINDOWS}
     {$IFDEF DARWIN}
-    DLLSSLName: string = 'libssl.dylib';
-    DLLUtilName: string = 'libcrypto.dylib';
+    DLLSSLNames: array[1..1] of string = ('libssl.dylib');
+    DLLUtilNames: array[1..1] of string = ('libcrypto.dylib');
     {$ELSE}
      {$IFDEF OS2}
       {$IFDEF OS2GCC}
-    DLLSSLName: string = 'kssl.dll';
-    DLLUtilName: string = 'kcrypto.dll';
+      DLLSSLNames: array[1..1] of string = ('kssl.dll');
+      DLLUtilNames: array[1..1] of string = ('kcrypto.dll');
       {$ELSE OS2GCC}
-    DLLSSLName: string = 'ssl.dll';
-    DLLUtilName: string = 'crypto.dll';
+      DLLSSLNames: array[1..1] of string = ('ssl.dll');
+      DLLUtilNames: array[1..1] of string = ('crypto.dll');
       {$ENDIF OS2GCC}
      {$ELSE OS2}
-
-     //SZ 2017-04-17
-     // Note here that if used OpenSSL 1.1 will be added 1.1 later in the code!
-
-    DLLSSLName: string = 'libssl.so';
-    DLLUtilName: string = 'libcrypto.so';
+    DLLSSLNames: array[1..5] of string = ('libssl.so',
+                                          {above file only exist in dev-packages that are not installed by default on most distributions}
+                                          'libssl.so.1.1',
+                                          'libssl.so.1.0.2', 'libssl.so.1.0.0',
+                                          'libssl.so.10');
+    DLLUtilNames: array[1..5] of string = ('libcrypto.so',
+                                           {above file only exist in dev-packages that are not installed by default on most distributions}
+                                           'libcrypto.so.1.1',
+                                           'libcrypto.so.1.0.2', 'libcrypto.so.1.0.0',
+                                           'libcrypto.so.10'
+                                           );
      {$ENDIF OS2}
     {$ENDIF}
   {$ELSE}
-  DLLSSLName: string = 'ssleay32.dll';
-  DLLSSLName2: string = 'libssl32.dll';
-  DLLUtilName: string = 'libeay32.dll';
+    {$IFDEF WIN64}
+      DLLSSLNames: array[1..4] of string = ('libssl-1_1-x64.dll', 'ssleay32.dll', 'libssl32.dll',
+                                       {just in case someone renames them:}
+                                       'libssl.dll');
+      DLLUtilNames: array[1..4] of string = ('libcrypto-1_1-64.dll', 'libeay32.dll',
+                                       {just in case someone renames them:}
+                                        'libcrypto.dll', 'libeay.dll');
+    {$ELSE}
+      DLLSSLNames: array[1..4] of string = ('libssl-1_1.dll', 'ssleay32.dll', 'libssl32.dll',
+                                       {just in case someone renames them:}
+                                       'libssl.dll');
+      DLLUtilNames: array[1..4] of string = ('libcrypto-1_1.dll', 'libeay32.dll',
+                                       {just in case someone renames them:}
+                                        'libcrypto.dll', 'libeay.dll');
+
+    {$ENDIF}
   {$ENDIF}
 {$ENDIF}
 
@@ -254,13 +266,6 @@ var
   SSLUtilHandle: TLibHandle = 0;
   SSLLibFile: string = '';
   SSLUtilFile: string = '';
-
- //SZ If used OpenSSL by default on Linux
-{$IFDEF LINUX}
-  var
-    SZ_SSL_11_UseByDefault : Boolean;
-{$ENDIF}
-
 
 {$IFDEF CIL}
   [DllImport(DLLSSLName, CharSet = CharSet.Ansi,
@@ -1875,42 +1880,10 @@ begin
 {$ENDIF}
 end;
 
-{$IFDEF LINUX}
-//SZ Simple code to execute CMD on linux
-function SZExecute(Command: String): ansistring;
-var
-  s : ansistring;
-  len: integer;
-begin
-
-  RunCommand('/bin/bash',['-c', Command ], s);
-
-  len := length(s);
-
-  while (len > 0) do
-  begin
-    if (s[len] = #10) or (s[len] = #13) then
-      len:=len-1
-    else
-      break;
-  end;
-
-  SetLength(s,len);
-
-  Result := s;
-
-end;
-
-{$ENDIF }
-
-
 function InitSSLInterface: Boolean;
 var
-  s,lver: string;
-  x,lver1,lver2,lver3: integer;
-
-  //SZ Determinate OpenSSL 1.1 is used by default
-  SZ_SSL: string;
+  s: string;
+  x,i: integer;
 begin
   {pf}
   if SSLLoaded then
@@ -1927,56 +1900,14 @@ begin
       SSLLibHandle := 1;
       SSLUtilHandle := 1;
 {$ELSE}
-
-  //SZ Check if OpenSSL 1.1 is used by default
-  {$IFDEF LINUX}
-
-    SZ_SSL_11_UseByDefault := false;
-
-    SZ_SSL := SZExecute('openssl version');
-
-    if LeftStr(SZ_SSL,11)='OpenSSL 1.1' then
-    begin
-
-      SZ_SSL_11_UseByDefault := true;
-      DLLSSLName  := 'libssl.so.1.1';
-      DLLUtilName := 'libcrypto.so.1.1';
-    end;
-
-  {$ENDIF}
-
-  //SZ end
-
-      SSLUtilHandle := LoadLib(DLLUtilName);
-      SSLLibHandle := LoadLib(DLLSSLName);
-
-
-      {$IFDEF Linux}
-         if SSLLibHandle=0 then begin    // try versioned library name
-           for lver1:=1 downto 0 do begin
-             lver:='.'+IntToStr(lver1);
-             SSLLibHandle := LoadLib(DLLSSLName+lver);
-             if SSLLibHandle<>0 then break;
-             for lver2:=9 downto 0 do begin
-               lver:='.'+IntToStr(lver1)+'.'+IntToStr(lver2);
-               SSLLibHandle := LoadLib(DLLSSLName+lver);
-               if SSLLibHandle<>0 then break;
-               for lver3:=9 downto 0 do begin
-                 lver:='.'+IntToStr(lver1)+'.'+IntToStr(lver2)+'.'+IntToStr(lver3);
-                 SSLLibHandle := LoadLib(DLLSSLName+lver);
-                 if SSLLibHandle<>0 then break;
-               end;
-               if SSLLibHandle<>0 then break;
-             end;
-             if SSLLibHandle<>0 then break;
-           end;
-           SSLUtilHandle := LoadLib(DLLUtilName+lver);
-         end;
-      {$ENDIF}
-  {$IFDEF MSWINDOWS}
-      if (SSLLibHandle = 0) then
-        SSLLibHandle := LoadLib(DLLSSLName2);
-  {$ENDIF}
+      for i := low(DLLUtilNames) to high(DLLUtilNames) do begin
+        SSLUtilHandle := LoadLib(DLLUtilNames[i]);
+        if SSLUtilHandle <> 0 then break;
+      end;
+      for i := low(DLLSSLNames) to high(DLLSSLNames) do begin
+        SSLLibHandle := LoadLib(DLLSSLNames[i]);
+        if SSLLibHandle <> 0 then break;
+      end;
 {$ENDIF}
       if (SSLLibHandle <> 0) and (SSLUtilHandle <> 0) then
       begin
