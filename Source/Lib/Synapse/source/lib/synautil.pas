@@ -1311,14 +1311,16 @@ var
   s: string;
   s1, s2: string;
 begin
-  Prot := 'http';
+  ///Prot := 'http';
+  Prot := '';
   User := '';
   Pass := '';
-  Port := '80';
+  ///Port := '80';
+  Port := '';
   Para := '';
 
   x := Pos('://', URL);
-  if x > 0 then
+  if (x > 0) and (x <=10) then
   begin
     Prot := SeparateLeft(URL, '://');
     sURL := SeparateRight(URL, '://');
