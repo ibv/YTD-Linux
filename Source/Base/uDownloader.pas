@@ -487,9 +487,10 @@ begin
       hmGET:  MethodStr := 'GET';
       hmPOST: MethodStr := 'POST';
       hmHEAD: MethodStr := 'HEAD';
-      else    MethodStr := 'GET';
-      end;
+    else      MethodStr := 'GET';
+    end;
     Result := Http.HttpMethod(MethodStr, Url);
+    Method:=hmGET;
   until (not Result) or (not CheckRedirect(Http, Url));
   Http.Document.Seek(0, 0);
 end;
@@ -504,6 +505,7 @@ begin
     Http.Document.Seek(0, 0);
     end;
 end;
+
 
 function TDownloader.DownloadPage(Http: THttpSend; Url: string; const PostData: AnsiString; const PostMimeType: string; const Headers: array of string; Clear: boolean): boolean;
 var
