@@ -1,9 +1,9 @@
 {==============================================================================|
-| Project : Ararat Synapse                                       | 009.010.000 |
+| Project : Ararat Synapse                                       | 009.010.002 |
 |==============================================================================|
 | Content: Library base                                                        |
 |==============================================================================|
-| Copyright (c)1999-2017, Lukas Gebauer                                        |
+| Copyright (c)1999-2021, Lukas Gebauer                                        |
 | All rights reserved.                                                         |
 |                                                                              |
 | Redistribution and use in source and binary forms, with or without           |
@@ -33,7 +33,7 @@
 | DAMAGE.                                                                      |
 |==============================================================================|
 | The Initial Developer of the Original Code is Lukas Gebauer (Czech Republic).|
-| Portions created by Lukas Gebauer are Copyright (c)1999-2017.                |
+| Portions created by Lukas Gebauer are Copyright (c)1999-2021.                |
 | All Rights Reserved.                                                         |
 |==============================================================================|
 | Contributor(s):                                                              |
@@ -245,6 +245,7 @@ type
     LT_TLSv1,
     LT_TLSv1_1,
     LT_TLSv1_2,
+    LT_TLSv1_3,
     LT_SSHv2
     );
 
@@ -2528,7 +2529,7 @@ begin
       Exit;
     WriteStrToStream(Stream, s);
     {$ENDIF}
-    Dec(n);
+    dec(n);
   end;
   n := Size mod int64(FSendMaxChunk);
   if n > 0 then
@@ -3678,7 +3679,7 @@ begin
   begin
     ip6 := StrToIp6(MCastIP);
     for n := 0 to 15 do
-      Multicast6.ipv6mr_multiaddr.u6_addr8[n] := Ip6[n];
+      Multicast6.ipv6mr_multiaddr.s6_addr[n] := Ip6[n];
     Multicast6.ipv6mr_interface := 0;
     SockCheck(synsock.SetSockOpt(FSocket, IPPROTO_IPV6, IPV6_JOIN_GROUP,
       PAnsiChar(@Multicast6), SizeOf(Multicast6)));
@@ -3705,7 +3706,7 @@ begin
   begin
     ip6 := StrToIp6(MCastIP);
     for n := 0 to 15 do
-      Multicast6.ipv6mr_multiaddr.u6_addr8[n] := Ip6[n];
+      Multicast6.ipv6mr_multiaddr.s6_addr[n] := Ip6[n];
     Multicast6.ipv6mr_interface := 0;
     SockCheck(synsock.SetSockOpt(FSocket, IPPROTO_IPV6, IPV6_LEAVE_GROUP,
       PAnsiChar(@Multicast6), SizeOf(Multicast6)));

@@ -1,9 +1,9 @@
 {==============================================================================|
-| Project : Ararat Synapse                                       | 003.012.009 |
+| Project : Ararat Synapse                                       | 003.013.000 |
 |==============================================================================|
 | Content: HTTP client                                                         |
 |==============================================================================|
-| Copyright (c)1999-2015, Lukas Gebauer                                        |
+| Copyright (c)1999-2021, Lukas Gebauer                                        |
 | All rights reserved.                                                         |
 |                                                                              |
 | Redistribution and use in source and binary forms, with or without           |
@@ -33,7 +33,8 @@
 | DAMAGE.                                                                      |
 |==============================================================================|
 | The Initial Developer of the Original Code is Lukas Gebauer (Czech Republic).|
-| Portions created by Lukas Gebauer are Copyright (c) 1999-2015.               |
+| Portions created by Lukas Gebauer are Copyright (c) 1999-2021.               |
+| Portions created by Pepak are Copyright (c) 2020-2021.                       |
 | All Rights Reserved.                                                         |
 |==============================================================================|
 | Contributor(s):                                                              |
@@ -106,6 +107,7 @@ type
     FRangeStart: int64;
     FRangeEnd: int64;
     FAddPortNumberToHost: Boolean;
+    FInputStream, FOutputStream: TStream;
     function ReadUnknown: Boolean; virtual;
     function ReadIdentity(Size: int64): Boolean; virtual;
     function ReadChunked: Boolean; virtual;
@@ -113,6 +115,8 @@ type
     function PrepareHeaders: AnsiString;
     function InternalDoConnect(needssl: Boolean): Boolean;
     function InternalConnect(needssl: Boolean): Boolean;
+    function InputDocument: TStream;
+    function OutputDocument: TStream;
   public
     constructor Create;
     destructor Destroy; override;
@@ -223,12 +227,11 @@ type
     {:Allows to switch off port number in 'Host:' HTTP header. By default @TRUE.
      Some buggy servers do not like port informations in this header.}
     property AddPortNumberToHost: Boolean read FAddPortNumberToHost write FAddPortNumberToHost;
-  protected
-    FInputStream, FOutputStream: TStream;
-    function InputDocument: TStream;
-    function OutputDocument: TStream;
   public
+    {:for direct sending from any TStream. Defalut nil = use Document property instead.}
     property InputStream: TStream read FInputStream write FInputStream;
+
+    {:for direct dovnloading into any TStream. Defalut nil = use Document property instead.}
     property OutputStream: TStream read FOutputStream write FOutputStream;
   end;
 
@@ -427,7 +430,7 @@ begin
   FDownloadSize := 0;
   FUploadSize := 0;
 
-  URI := ParseURL(Trim(URL), Prot, User, Pass, Host, Port, Path, Para);
+  URI := ParseURL(trim(URL), Prot, User, Pass, Host, Port, Path, Para);
   User := DecodeURL(user);
   Pass := DecodeURL(pass);
   if User = '' then
@@ -698,7 +701,7 @@ begin
         Result := ReadChunked;
     end;
 
-  OutputDocument.Seek(0, soFromBeginning);
+  OutputDocument.Position := 0;
   if ToClose then
   begin
     FSock.CloseSocket;
@@ -807,7 +810,7 @@ begin
     Result := HTTP.HTTPMethod('GET', URL);
     if Result then
     begin
-      Response.Seek(0, soFromBeginning);
+      Response.Position := 0;
       Response.CopyFrom(HTTP.Document, 0);
     end;
   finally
@@ -827,7 +830,7 @@ begin
     Data.Size := 0;
     if Result then
     begin
-      Data.Seek(0, soFromBeginning);
+      Data.Position := 0;
       Data.CopyFrom(HTTP.Document, 0);
     end;
   finally
