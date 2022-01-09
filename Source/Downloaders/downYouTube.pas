@@ -84,6 +84,7 @@ type
       YouTubeJsRegExp: TRegExp;
       YouTubeDecipherRegExp: TRegExp;
       YouTubeDecipherBodyRegExp: TRegExp;
+      ApiKeyRegExp: TRegExp;
       Extension: string;
       MaxWidth, MaxHeight: integer;
       AvoidWebM: boolean;
@@ -178,7 +179,9 @@ const
   REGEXP_MOVIE_TITLE = '.*?"title"\s*:\s*"(?P<TITLE>.+?)"';
   REGEXP_EXTRACT_DECIPHER_FCE = '.=.\.split\(""\);(?P<FCE>.+?);return ..join\(""\)};';
   REGEXP_EXTRACT_DECIPHER_BODY = ';var %s={(?P<FCEBODY>[.|\s|\S]+?)};';
-  REGEX_EXTRACT_PLAYER_RESPONSE = 'player_response=(?P<PLRESPON>.+?)&csn=';
+  ///REGEX_EXTRACT_PLAYER_RESPONSE = 'player_response=(?P<PLRESPON>.+?)&csn=';
+  REGEX_EXTRACT_PLAYER_RESPONSE = 'ytInitialPlayerResponse\s*=\s*(?P<PLRESPON>\{.+?\})\s*;';
+  REGEX_EXTRACT_API_KEY = '"INNERTUBE_API_KEY":"(?P<APIKEY>.+?)"' ;
 
 const
   EXTENSION_FLV {$IFDEF MINIMIZESIZE} : string {$ENDIF} = '.flv';
@@ -186,6 +189,7 @@ const
   EXTENSION_MP4 {$IFDEF MINIMIZESIZE} : string {$ENDIF} = '.mp4';
   EXTENSION_MP4_AUDIO {$IFDEF MINIMIZESIZE} : string {$ENDIF} = '.mpa';
   EXTENSION_3GP {$IFDEF MINIMIZESIZE} : string {$ENDIF} = '.3gp';
+
 
 
 type
@@ -249,6 +253,8 @@ begin
   {$ENDIF}
   YouTubeJsRegExp := RegExCreate(REGEXP_EXTRACT_JS);
   YouTubeDecipherRegExp := RegExCreate(REGEXP_EXTRACT_DECIPHER_FCE);
+  ApiKeyRegExp := RegExCreate(REGEX_EXTRACT_API_KEY);
+
   fAudioURL:='';
   fAudioFormat:='';
 end;
@@ -267,6 +273,7 @@ begin
   RegExFreeAndNil(YouTubeJsRegExp);
   RegExFreeAndNil(YouTubeDecipherRegExp);
   RegExFreeAndNil(JSONPlayerRegExp);
+  RegExFreeAndNil(ApiKeyRegExp);
   ///RegExFreeAndNil(YouTubeDecipherBodyRegExp);
   inherited;
 end;
@@ -278,7 +285,7 @@ end;
 
 function TDownloader_YouTube.GetMovieInfoUrl: string;
 begin
-  Result := 'http://www.youtube.com/watch?v=' + MovieID;
+  Result := 'https://www.youtube.com/watch?v=' + MovieID;
 end;
 
 {$IFDEF SUBTITLES}
@@ -327,6 +334,7 @@ var Xml: TXmlDoc;
     {$ENDIF}
 begin
   Result := False;
+  exit;
   if DownloadXml(Http, 'http://video.google.com/timedtext?v=' + MovieID + '&type=list', Xml) then
     try
       BestLanguage := '';
@@ -456,19 +464,13 @@ begin
   if AFormats <> '' then
     Formats := Formats + ','+ AFormats;
 
-  ///if GetRegExpVarPairs(Parser, TextDecoder(FlashVars), ['status', 'reason', 'fmt_list', 'url_encoded_fmt_stream_map', 'ps', 'ptk'], [@Status, @Reason, @FmtList, @FmtUrlMap, @PS, @PTK]) then
   if GetRegExpVarPairs(Parser, TextDecoder(FlashVars), ['status', 'reason', 'ps', 'ptk'], [@Status, @Reason, @PS, @PTK]) then
     if Status = 'fail' then
       SetLastErrorMsg(Format(ERR_SERVER_ERROR, [Utf8ToString(Utf8String(UrlDecode(Reason)))]))
-    {else if FmtList = '' then
-      SetLastErrorMsg(Format(ERR_VARIABLE_NOT_FOUND, ['Format List']))
-    else if FmtUrlMap = '' then
-      SetLastErrorMsg(Format(ERR_VARIABLE_NOT_FOUND, ['Format-URL Map']))}
     else
       begin
         ObfuscationScheme := PTK;
-        FmtUrlMap := TextDecoder(Trim(Formats));///TextDecoder(FmtUrlMap);
-        ///VideoFormat := GetBestVideoFormat(TextDecoder(Trim(FmtList)), FmtUrlMap);
+        FmtUrlMap := TextDecoder(Trim(Formats));
         VideoFormat := GetBestVideoFormat(FmtUrlMap);
         charArray[0] := ',';
         strArray     := VideoFormat.Split(charArray);
@@ -476,21 +478,18 @@ begin
         fAudioFormat := strArray[1];
         if VideoFormat = '' then VideoFormat := '22';
         if StrToIntDef(VideoFormat, 0) <= 35 then fAudioFormat:='';
-        ///if fAudioFormat = VideoFormat then fAudioFormat:='';
 
         Extension := GetVideoFormatExt(VideoFormat);
         if fAudioFormat <> '' then Extension:='.mpv';
 
         if not GetDownloader(Http, VideoFormat, FmtUrlMap, PS = 'live', PTK = 'vevo', Url, D) then
           SetLastErrorMsg(ERR_FAILED_TO_LOCATE_MEDIA_URL)
-        else if fAudioFormat <> ''  then
-          if not GetDownloader(Http, fAudioFormat, FmtUrlMap, PS = 'live', PTK = 'vevo', fAudioURL, fADownloader) then
-            SetLastErrorMsg(ERR_FAILED_TO_LOCATE_MEDIA_AUDIO_URL)
-        else if CreateNestedDownloaderFromDownloader(D) then
+        else
         begin
-          {if not GetRegExpVar(MovieTitleRegExp, TextDecoder(FlashVars), 'TITLE', Title) then
-          SetLastErrorMsg(ERR_FAILED_TO_LOCATE_MEDIA_TITLE);
-          Title := UrlDecode(Title, peUtf8);}
+          if fAudioFormat <> ''  then
+            if not GetDownloader(Http, fAudioFormat, FmtUrlMap, PS = 'live', PTK = 'vevo', fAudioURL, fADownloader) then
+              SetLastErrorMsg(ERR_FAILED_TO_LOCATE_MEDIA_AUDIO_URL)
+            else if CreateNestedDownloaderFromDownloader(D) then ;
           Result := True;
         end;
       end;
@@ -687,33 +686,24 @@ begin
 end;
 
 
-///https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=-XIQKxA0cNk&format=xml
 function TDownloader_YouTube.AfterPrepareFromPage(var Page: string; PageXml: TXmlDoc; Http: THttpSend): boolean;
-var FlashVars, Title, Url, sts, js, jscore: string;
+var
+    FlashVars, Title, Url, sts, js, jscore, ApiKey: string;
     InfoFound: boolean;
+
 begin
   inherited AfterPrepareFromPage(Page, PageXml, Http);
   Result := False;
   InfoFound := False;
-  GetRegExpVar(YouTubeJsRegExp, Page, 'JS', js);
-  js := StringReplace(js,'\','',[rfReplaceAll, rfIgnoreCase]);
-  if AnsiStartsStr('/', js) then
-    js:='https://www.youtube.com'+js;
-  if js <> '' then Downloadpage(Http, js, JsCode);
-  if DownloadPage(Http, 'https://www.youtube.com/get_video_info?video_id=' + MovieID + '&el=embedded', FlashVars) then
-  ///if DownloadPage(Http, 'https://www.youtube.com/get_video_info?html5=1&video_id=' + MovieID , FlashVars) then
-    InfoFound := ProcessFlashVars(Http, FlashVarsParserRegExp, FlashVarsDecode, FlashVars, Title, Url);
+  GetRegExpVar(JSONPlayerRegExp, Page, 'PLRESPON', FlashVars);
+  GetRegExpVar(ApiKeyRegExp, Page, 'APIKEY', ApiKey);
+
+  InfoFound := ProcessFlashVars(Http, FlashVarsParserRegExp, FlashVarsDecode, FlashVars, Title, Url);
   if not InfoFound then
   begin
     if DownloadPage(Http, 'https://www.youtube.com/get_video_info?video_id=' + MovieID + '&el=detailpage', FlashVars) then
       InfoFound := ProcessFlashVars(Http, FlashVarsParserRegExp, FlashVarsDecode, FlashVars, Title, Url);
   end;
-  {if not InfoFound then
-    if GetRegExpVar(YouTubeConfigJSRegExp, Page, 'FLASHVARS', FlashVars) then
-      InfoFound := ProcessFlashVars(Http, FlashVarsParserRegExp, FlashVarsDecode, JSDecode(FlashVars), Title, Url);
-  if not InfoFound then
-    if GetRegExpVar(YouTubeConfigJSONRegExp, Page, 'JSON', FlashVars) then
-      InfoFound := ProcessFlashVars(Http, JSONParserRegExp, JSONVarsDecode, JSDecode(FlashVars), Title, Url);}
   if InfoFound then
     begin
     if Title <> '' then
@@ -723,6 +713,7 @@ begin
     Result := True;
     end;
 end;
+
 
 procedure TDownloader_YouTube.SetOptions(const Value: TYTDOptions);
 begin
