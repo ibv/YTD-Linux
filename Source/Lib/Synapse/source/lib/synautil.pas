@@ -1311,11 +1311,11 @@ var
   s: string;
   s1, s2: string;
 begin
-  ///Prot := 'http';
+  ///Prot := 'https';
   Prot := '';
   User := '';
   Pass := '';
-  ///Port := '80';
+  ///Port := '443';
   Port := '';
   Para := '';
 

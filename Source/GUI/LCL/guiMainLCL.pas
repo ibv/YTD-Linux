@@ -40,7 +40,12 @@ unit guiMainLCL;
 interface
 
 uses
+  {$ifdef mswindows}
+  Windows,
+  {$endif}
+  {$ifdef fpc}
   LCLIntf, LCLType, LMessages,
+  {$endif}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, ComCtrls, ClipBrd, Menus, ImgList, ActnList,
   ToolWin, ExtCtrls,  {CommDlg, CommCtrl,}
@@ -205,14 +210,18 @@ type
     fTotalData: int64;
     fMenuID: integer;
     {$IFDEF SYSTRAY}
-    ///fNotifyIconData: TNotifyIconData;
-    ///procedure WMClickIcon(var msg: TMessage); message WM_NOTIFYICON;
+    {$ifdef mswindows}
+    fNotifyIconData: TNotifyIconData;
+    procedure WMClickIcon(var msg: TMessage); message WM_NOTIFYICON;
+    {$endif}
     procedure ApplicationMinimize(Sender: TObject);
     {$ENDIF}
     procedure StartClipboardMonitor;
     procedure StopClipboardMonitor;
-    ///procedure WMDrawClipboard(var msg: TMessage); message LWM_DRAWCLIPBOARD;
-    ///procedure WMChangeCbChain(var msg: TMessage); message WM_CHANGECBCHAIN;
+    {$ifdef mswindows}
+    procedure WMDrawClipboard(var msg: TMessage); message WM_DRAWCLIPBOARD;
+    procedure WMChangeCbChain(var msg: TMessage); message WM_CHANGECBCHAIN;
+    {$endif}
     {$IFDEF SINGLEINSTANCE}
     procedure WMCopyData(var msg: TMessage); message WM_COPYDATA;
     {$ENDIF}
@@ -289,7 +298,11 @@ begin
     {$ENDIF}
     arch:='';
     if SizeOf(Pointer) > 4 then arch:=' x64';
+    {$ifdef mswindows}
+    Caption := APPLICATION_CAPTION + arch + ' (fpc)' ;
+    {$else}
     Caption := APPLICATION_CAPTION + arch + ' (Linux)' ;
+    {$endif}
     Options := TYTDOptionsGUI.Create;
     TScriptedDownloader.InitMainScriptEngine(Options.ScriptFileName);
     UseLanguage(Options.Language);
@@ -327,6 +340,10 @@ begin
       //TrayIcon.ShowBalloonHint;
       Application.OnMinimize := ApplicationMinimize;
       end;
+      {$ifdef mswindows}
+      TrayIcon.Hint:=Caption;
+      TrayIcon.BalloonHint:=Caption;
+      {$endif}
     {$ENDIF}
     // Use double-buffered listview (removes flickering)
     SendMessage(Downloads.Handle, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, SendMessage(Downloads.Handle, LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0) or LVS_EX_DOUBLEBUFFER);

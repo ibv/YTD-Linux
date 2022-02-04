@@ -25,9 +25,10 @@ implementation
 
 uses
   {$ifdef mswindows}
-    Windows;
-  {$ELSE}
-    LCLIntf, LCLType, LMessages, dl;
+    Windows,
+  {$ENDIF}
+  {$IFDEF fpc}
+    LCLIntf, LCLType {$IFDEF UNIX}, dl {$ENDIF};
   {$ENDIF}
 
 const
@@ -66,7 +67,7 @@ type
 type
   TRtmpDumpMainFn = function(Tag: integer; Callback: TRtmpDumpDownloadProgressCallback; OptionCount: integer; Options: PInternalRtmpDumpOption; LogFileName: PAnsiChar): integer; cdecl;
 
-var {$ifdef mswimdows}
+var {$ifdef mswindows}
     LibHandle: THandle;
     {$else}
     LibHandle: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
@@ -87,19 +88,28 @@ begin
     ///if LibHandle <> 0 then
     if LibHandle <> INVALID_MODULEHANDLE_VALUE then
       begin
-      ///RtmpDumpMain := GetProcAddress(LibHandle, 'RtmpDumpMain');
+      {$IFNDEF UNIX}
+      RtmpDumpMain := GetProcAddress(LibHandle, 'RtmpDumpMain');
+      {$ELSE}
       RtmpDumpMain := dlsym(LibHandle, 'RtmpDumpMain');
+      {$ENDIF}
       end;
-  ///Result := (LibHandle <> 0) and (@RtmpDumpMain <> nil);
+  {$IFNDEF UNIX}
+  Result := (LibHandle <> 0) and (@RtmpDumpMain <> nil);
+  {$ELSE}
   Result := (LibHandle <> INVALID_MODULEHANDLE_VALUE) or (@RtmpDumpMain <> nil);
+  {$ENDIF}
 end;
 
 procedure RtmpDump_Done;
 begin
   ///if LibHandle <> 0 then
   if LibHandle <> INVALID_MODULEHANDLE_VALUE then
-    ///FreeLibrary(LibHandle);
+    {$IFNDEF UNIX}
+    FreeLibrary(LibHandle);
+    {$ELSE}
     dlclose(Pointer(LibHandle));
+    {$ENDIF}
   ///LibHandle := 0;
   LibHandle := INVALID_MODULEHANDLE_VALUE;
   RtmpDumpMain := nil;

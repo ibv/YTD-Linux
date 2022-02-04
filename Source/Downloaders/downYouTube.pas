@@ -100,7 +100,8 @@ type
       function GetBestVideoFormat(const FormatList: string): string;
       function GetVideoFormatExt(const VideoFormat: string): string;
       function GetDownloader(Http: THttpSend; const VideoFormat, FormatUrlMap: string; Live, Vevo: boolean; out Url: string; out Downloader: TDownloader): boolean;
-      function ProcessFlashVars(Http: THttpSend; Parser: TRegExp; TextDecoder: TTextDecoderFunction; const FlashVars: string; out Title, Url: string): boolean;
+      function ProcessFlashVars(Http: THttpSend; Parser: TRegExp; TextDecoder: TTextDecoderFunction; const FlashVars: string; out Title, Url: string): boolean; overload;
+      function ProcessFlashVars(Http: THttpSend; const FlashVars: string; out Url: string): boolean;
       function FlashVarsDecode(const Text: string): string;
       function JSONVarsDecode(const Text: string): string;
       function UpdateVevoSignature(const Signature: string): string;
@@ -190,6 +191,11 @@ const
   EXTENSION_MP4_AUDIO {$IFDEF MINIMIZESIZE} : string {$ENDIF} = '.mpa';
   EXTENSION_3GP {$IFDEF MINIMIZESIZE} : string {$ENDIF} = '.3gp';
 
+
+const
+  ///DEFAULT_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%d.0.%d.%d Safari/537.36';
+  ///DEFAULT_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3703.3 Safari/537.36';
+  JSON_REQ = '{"context": {"client": {"clientName": "ANDROID", "clientVersion": "16.20", "hl": "en"}}, "videoId": "%s", "playbackContext": {"contentPlaybackContext": {"html5Preference": "HTML5_PREF_WANTS"}}, "contentCheckOk": true, "racyCheckOk": true}';
 
 
 type
@@ -495,6 +501,48 @@ begin
       end;
 end;
 
+
+function TDownloader_YouTube.ProcessFlashVars(Http: THttpSend; const FlashVars: string; out Url: string): boolean;
+var
+  Status, Reason, FmtList, FmtUrlMap, VideoFormat, PS, PTK: string;
+  Formats, AFormats: string;
+  charArray : Array[0..0] of Char;
+  strArray  : Array of String;
+
+  D: TDownloader;
+begin
+  Result := False;
+  Url := '';
+  fAudioFormat:='';
+
+  if FlashVars <> '' then
+    Formats := FlashVars;
+
+        ObfuscationScheme := PTK;
+        FmtUrlMap := Trim(Formats);
+        VideoFormat := GetBestVideoFormat(FmtUrlMap);
+        charArray[0] := ',';
+        strArray     := VideoFormat.Split(charArray);
+        VideoFormat := strArray[0];
+        fAudioFormat := strArray[1];
+        if VideoFormat = '' then VideoFormat := '22';
+        if StrToIntDef(VideoFormat, 0) <= 35 then fAudioFormat:='';
+
+        Extension := GetVideoFormatExt(VideoFormat);
+        ///if fAudioFormat <> '' then Extension:='.mpv';
+
+        if not GetDownloader(Http, VideoFormat, FmtUrlMap, PS = 'live', PTK = 'vevo', Url, D) then
+          SetLastErrorMsg(ERR_FAILED_TO_LOCATE_MEDIA_URL)
+        else
+        begin
+          if fAudioFormat <> ''  then
+            if not GetDownloader(Http, fAudioFormat, FmtUrlMap, PS = 'live', PTK = 'vevo', fAudioURL, fADownloader) then
+              SetLastErrorMsg(ERR_FAILED_TO_LOCATE_MEDIA_AUDIO_URL)
+            else if CreateNestedDownloaderFromDownloader(D) then ;
+          Result := True;
+        end;
+end;
+
 function TDownloader_YouTube.GetDownloader(Http: THttpSend; const VideoFormat, FormatUrlMap: string; Live, Vevo: boolean; out Url: string; out Downloader: TDownloader): boolean;
 var
   FoundFormat, Server, Stream, Signature, Signature2, sp: string;
@@ -567,7 +615,7 @@ function TDownloader_YouTube.CompareQuality(Quality: integer; const FileFormat: 
         Result := 1000
       else if Ext = EXTENSION_WEBM then
         if AvoidWebM then
-          Result := 1
+          Result := 1010
         else
           Result := 900
       else if Ext = EXTENSION_FLV then
@@ -690,6 +738,8 @@ function TDownloader_YouTube.AfterPrepareFromPage(var Page: string; PageXml: TXm
 var
     FlashVars, Title, Url, sts, js, jscore, ApiKey: string;
     InfoFound: boolean;
+    Formats, AFormats: string;
+    fJson: TJSON;
 
 begin
   inherited AfterPrepareFromPage(Page, PageXml, Http);
@@ -698,7 +748,37 @@ begin
   GetRegExpVar(JSONPlayerRegExp, Page, 'PLRESPON', FlashVars);
   GetRegExpVar(ApiKeyRegExp, Page, 'APIKEY', ApiKey);
 
-  InfoFound := ProcessFlashVars(Http, FlashVarsParserRegExp, FlashVarsDecode, FlashVars, Title, Url);
+  sts := format(JSON_REQ, [MovieID]);
+
+  if not DownloadPage(Http,'https://www.youtube.com/youtubei/v1/player?key='+ApiKey,sts, HTTP_SOAP_ENCODING,
+          ['Content-Type: application/json'],
+          FlashVars,
+          peUtf8
+   )  then SetLastErrorMsg(ERR_FAILED_TO_DOWNLOAD_MEDIA_INFO_PAGE);
+
+  fJson := JSONCreate(FlashVars);
+  sts   := JSONValue(fJson, 'playabilityStatus/status');
+  Formats := JSONValue(fJson, 'streamingData/formats');
+  AFormats := JSONValue(fJson, 'streamingData/adaptiveFormats');
+  Title := JSONValue(fJson, 'videoDetails/title');
+
+  Formats:=StringReplace(Formats, '[', '', [rfReplaceAll]);
+  Formats:=StringReplace(Formats, ']', '', [rfReplaceAll]);
+  AFormats:=StringReplace(AFormats, '[', '', [rfReplaceAll]);
+  AFormats:=StringReplace(AFormats, ']', '', [rfReplaceAll]);
+
+  {with TStringList.Create do
+  try
+    Add(Formats+','+AFormats);
+    SaveToFile('formats.txt');
+  finally
+    free;
+  end;}
+
+  ///InfoFound := ProcessFlashVars(Http, FlashVarsParserRegExp, FlashVarsDecode, FlashVars, Title, Url);
+
+  InfoFound := ProcessFlashVars(Http,Formats+','+AFormats,Url);
+
   if not InfoFound then
   begin
     if DownloadPage(Http, 'https://www.youtube.com/get_video_info?video_id=' + MovieID + '&el=detailpage', FlashVars) then
@@ -712,6 +792,7 @@ begin
     SetPrepared(True);
     Result := True;
     end;
+  JSONFreeAndNil(fJson);
 end;
 
 

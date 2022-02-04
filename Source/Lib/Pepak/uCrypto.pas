@@ -41,8 +41,9 @@ interface
 
 uses
   {$ifdef mswindows}
-    Windows;
-  {$ELSE}
+    Windows,
+  {$ENDIF}
+  {$IFDEF fpc}
     LCLIntf, LCLType, LMessages;
   {$ENDIF}
 
@@ -59,8 +60,10 @@ function RC4_Decrypt(Input, Output, Key: PAnsiChar; KeyBytes, DataBytes: integer
 
 implementation
 
+{$ifdef linux}
 uses
   dl;
+{$endif}
 
 const
   {$ifdef mswindows}
@@ -351,16 +354,18 @@ begin
 end;
 
 initialization
-  {$ifdef mswindows}
+  {$ifndef fpc}
   InitializeCriticalSection(LibEay32Lock);
   {$else}
+  {$ifdef linux}
   Init;
+  {$endif}
   InitCriticalSection(LibEay32Lock);
   {$endif}
 
 finalization
   Done;
-  {$ifdef mswindows}
+  {$ifndef fpc}
   DeleteCriticalSection(LibEay32Lock);
   {$else}
   DoneCriticalSection(LibEay32Lock);

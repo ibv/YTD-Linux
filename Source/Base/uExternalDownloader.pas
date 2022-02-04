@@ -42,9 +42,10 @@ interface
 uses
   SysUtils, Classes,
   {$ifdef mswindows}
-    Windows
-  {$ELSE}
-    LCLIntf, LCLType, LMessages, FileUtil,
+    Windows,
+  {$ENDIF}
+  {$IFDEF fpc}
+    LCLIntf, LCLType, FileUtil,
   {$ENDIF}
   uGUID, uFunctions, uSystem,
   uDownloader, uCommonDownloader;

@@ -43,7 +43,8 @@ uses
   SysUtils, Classes,
   {$ifdef mswindows}
     Windows,  ShellApi,
-  {$ELSE}
+  {$ENDIF}
+  {$IFDEF fpc}
     LCLIntf, LCLType, LMessages,
   {$ENDIF}
   {$IFNDEF DELPHI7_UP} FileCtrl, {$ENDIF}
@@ -352,7 +353,7 @@ begin
         Dir := 'YTDLib';
         ForceDirectories(Dir);
         if not Unzip(LibData, Dir) then
-          {$ifdef mswindows}
+          {$ifndef fpc}
           ForceDeleteDirectory(Dir)
           {$else}
           RemoveDir(Dir)

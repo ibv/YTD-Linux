@@ -2,16 +2,26 @@ unit supertimezone;
 
 {$INCLUDE 'super.inc'}
 
+{$mode delphi}
+
 interface
 
 uses
   {$ifdef mswindows}
-    Windows
-  {$ELSE}
-    LCLIntf, LCLType, LMessages, unix, baseunix,
+    Windows,
   {$ENDIF}
+    LCLIntf, LCLType, LMessages, DateUtils, {fgl, unix, baseunix,}
   Registry, SysUtils, Math, {$ifdef mswindows}{$ifndef LEGACYVERSION}Generics.Collections,{$endif}{$endif}
   supertypes;
+
+
+type
+  timezone = record
+    tz_minuteswest,tz_dsttime:integer;
+  end;
+  ptimezone =^timezone;
+  TTimeZone = timezone;
+
 
 type
   TSuperTimeZone = class
@@ -67,6 +77,7 @@ type
     class destructor Finish;
     class var FCacheCS: TRTLCriticalSection;
     class var FCache: TObjectDictionary<string, TSuperTimeZone>;
+    ///class var FCache: TDictionary<string, TSuperTimeZone>;
     {$endif}
     class function GetSuperTimeZoneInstance(const Name: string): TSuperTimeZone; {$ifndef LEGACYVERSION}static;{$endif}
     class function GetLocalSuperTimeZoneInstance: TSuperTimeZone; {$ifndef LEGACYVERSION}static;{$endif}
@@ -107,7 +118,7 @@ type
     {$endif}
   end;
 
-{$IFDEF MSWINDOWS}
+{$IFNDEF MSWINDOWS}
   {$WARN SYMBOL_PLATFORM OFF}
 
 (* NOT DST Aware *)
@@ -171,7 +182,7 @@ begin
 end;
 {$endif}
 
-{$IFDEF MSWINDOWS}
+{$IFNDEF MSWINDOWS}
 
 { Convert Local -> UTC for specific time-zones using the Windows API only. NOT Guaranteed to work }
 

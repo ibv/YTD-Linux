@@ -42,12 +42,13 @@ interface
 uses
   SysUtils, Classes,
   {$ifdef mswindows}
-    Windows
-  {$ELSE}
-    LCLIntf, LCLType, LMessages,
+    Windows,
+  {$ENDIF}
+  {$IFDEF fpc}
+    LCLIntf, LCLType,
   {$ENDIF}
   {$IFDEF GUI_WINAPI} uDialogs, {$ELSE} Dialogs, {$ENDIF}
-  uCompatibility, uDownloadListItem, uDownloadThread,
+  uDownloadListItem, uDownloadThread,
   uDownloadClassifier, uDownloader,
   uPlaylistDownloader, listHTML, listHTMLfile,
   uOptions, uLanguages, uFunctions;

@@ -27,13 +27,15 @@ implementation
 
 uses
   {$ifdef mswindows}
-    Windows;
-  {$ELSE}
-    LCLIntf, LCLType, LMessages, dl;
+    Windows,
+  {$ENDIF}
+  {$IFDEF fpc}
+    LCLIntf, LCLType {$IFDEF UNIX}, dl {$ENDIF};
   {$ENDIF}
 
 const
-  LIBRARY_NAME = 
+  LIBRARY_NAME =
+  {$ifdef mswindows}
     {$IFDEF WIN32}
     'msdl_dll.dll'
     {$ELSE}
@@ -41,7 +43,9 @@ const
       'msdl_dll_x64.dll'
       {$ENDIF}
     {$ENDIF}
+  {$else}
     'libmsdl.so'
+  {$endif}
     ;
 
 type
@@ -78,13 +82,19 @@ begin
   ///if LibHandle = 0 then
   if LibHandle = INVALID_MODULEHANDLE_VALUE then
     begin
-    ///LibHandle := LoadLibrary(LIBRARY_NAME);
+    {$ifdef mswindows}
+    LibHandle := LoadLibrary(LIBRARY_NAME);
+    {$else}
     LibHandle := dlopen(PAnsiChar(LIBRARY_NAME), RTLD_NOW);
+    {$endif}
     ///if LibHandle <> 0 then
     if LibHandle <> INVALID_MODULEHANDLE_VALUE then
       begin
-      ///MsdlMain := GetProcAddress(LibHandle, 'MsdlMain');
+      {$ifdef mswindows}
+      MsdlMain := GetProcAddress(LibHandle, 'MsdlMain');
+      {$else}
       MsdlMain := dlsym(LibHandle, 'MsdlMain');
+      {$endif}
       end;
     end;
   Result := (LibHandle <> INVALID_MODULEHANDLE_VALUE) and (@MsdlMain <> nil);
@@ -93,8 +103,11 @@ end;
 procedure Msdl_Done;
 begin
   if LibHandle <> INVALID_MODULEHANDLE_VALUE then
-    ///FreeLibrary(LibHandle);
+    {$ifdef mswindows}
+    FreeLibrary(LibHandle);
+    {$else}
     dlclose(Pointer(LibHandle));
+    {$endif}
   LibHandle := INVALID_MODULEHANDLE_VALUE;
   MsdlMain := nil;
 end;

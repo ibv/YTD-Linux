@@ -54,9 +54,11 @@ program YTD;
 uses
   {$IFnDEF FPC}
   {$ELSE}
-  cthreads,
+    {$ifndef mswindows}
+      cthreads,
+    {$ENDIF}
     //cmem,
-  Interfaces,
+    Interfaces,
   {$ENDIF}
   {$IFDEF FASTMM}
   FastMM4,
@@ -143,6 +145,7 @@ uses
         guiOptionsLCL_Joj in 'GUI\LCL\Downloaders\guiOptionsLCL_Joj.pas' {FrameDownloaderOptionsPage_Joj: TFrame},
         guiOptionsLCL_YouTube in 'GUI\LCL\Downloaders\guiOptionsLCL_YouTube.pas' {FrameDownloaderOptionsPage_YouTube: TFrame},
         guiOptionsLCL_Prima in 'GUI\LCL\Downloaders\guiOptionsLCL_Prima.pas' {FrameDownloaderOptionsPage_Prima: TFrame},
+        guiOptionsLCL_DASH in 'GUI\LCL\Downloaders\guiOptionsLCL_DASH.pas' {FrameDownloaderOptionsPage_DASH: TFrame},
         {$IFDEF CONVERTERS}
         guiConverterLCL in 'GUI\LCL\guiConverterLCL.pas' {FormSelectConverter},
         {$ENDIF}
@@ -332,7 +335,7 @@ uses
   downPrazdninyVTelci in 'Downloaders\downPrazdninyVTelci.pas',
   downProglas in 'Downloaders\downProglas.pas',
   downProstoPleer in 'Downloaders\downProstoPleer.pas',
-  ///downPrima in 'Downloaders\downPrima.pas',
+  downPrima in 'Downloaders\downPrima.pas',
   downPublicTV in 'Downloaders\downPublicTV.pas',
   downQipRu_Embed in 'Downloaders\downQipRu_Embed.pas',
   downRaajje in 'Downloaders\downRaajje.pas',
@@ -497,5 +500,6 @@ uses
 {$R *.res}
 
 begin
+  ///Application.Scaled:=True;
   Main;
 end.

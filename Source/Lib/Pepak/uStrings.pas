@@ -86,7 +86,7 @@ function SplitNameValueWide(Data: PWideChar; DataChars: integer; Separator: PWid
 
 implementation
 
-{$ifdef mswindows}
+{$ifndef fpc}
 function OemToAnsi(Value: Pointer; Length: integer): AnsiString;
 begin
   if Length > 0 then
@@ -105,14 +105,14 @@ begin
   if Value = '' then
     Result := ''
   else
-    {$ifdef mswindows}
+    {$ifndef fpc}
     Result := OemToAnsi(@(Value[1]), Length(Value));
     {$else}
-    Result:=UTF8ToAnsi(UTF8Copy(Value,1,Length(Value)));
+    Result:=UTF8ToAnsi(Copy(Value,1,Length(Value)));
     {$endif}
 end;
 
-{$ifdef mswidnows}
+{$ifndef fpc}
 function AnsiToOem(Value: Pointer; Length: integer): AnsiString;
 begin
   if Length > 0 then
@@ -131,7 +131,7 @@ begin
   if Value = '' then
     Result := ''
   else
-    {$ifdef mswindows}
+    {$ifndef fpc}
     Result := AnsiToOem(@(Value[1]), Length(Value));
     {$else}
     result:= AnsiToUTF8(Value);
@@ -194,9 +194,9 @@ begin
       SetLength(Result, n)
     else
       Raise EStringError.Create('Conversion failed.');
-    end
+    ///end
     {$else}
-    Result:=UTF8Copy(AnsiString(Value^),1,length);
+    Result:=Copy(AnsiString(Value^),1,length);
     {$endif}
     end
   else
@@ -218,7 +218,8 @@ end;
 
 function WideToAnsi(const Value: WideChar): AnsiChar; overload;
 begin
-  Result := (WideToAnsi(@(Value), 1))[1];
+  ///Result := (WideToAnsi(@(Value), 1))[1];
+  Result := AnsiChar(Value);
 end;
 
 function WideToUtf8(Value: Pointer; Length: integer): Utf8String;

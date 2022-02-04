@@ -42,10 +42,11 @@ interface
 
 uses
   {$ifdef mswindows}
-    Windows, ActiveX, ShellApi,
+    Windows,
     ShlObj,
-  {$ELSE}
-    LCLIntf, LCLType, LMessages, Process,
+  {$ENDIF}
+  {$IFDEF fpc}
+    LCLIntf, LCLType,  Process,
   {$ENDIF}
 
   SysUtils, Classes, {$IFDEF COMOBJ} ComObj, {$ENDIF}
@@ -53,7 +54,7 @@ uses
   {$IFDEF SETUP}
   uSetup,
   {$ENDIF}
-  uMessages, uCompatibility, uFiles, uStrings, uOptions;
+  uMessages, uCompatibility, uOptions;
 
 type
   TProgressBarState = (pbsNoProgress, pbsUnknown, pbsNormal, pbsError, pbsPaused);
@@ -128,7 +129,7 @@ const
   States: array[TProgressBarState] of DWORD = (TBPF_NOPROGRESS, TBPF_INDETERMINATE, TBPF_NORMAL, TBPF_ERROR, TBPF_PAUSED);
 begin
   Result := False;
-  {$ifdef mswindows}
+  {$ifndef fpc}
   if (Win32MajorVersion > 6) or ((Win32MajorVersion = 6) and (Win32MinorVersion >= 1)) then
     begin
     if not TaskBarListInitialized then
@@ -163,7 +164,7 @@ begin
 end;
 
 function GetSpecialFolder(FolderID: integer): string;
-{$ifdef mswindows}
+{$ifndef fpc}
 var PIDL : PItemIDList;
     DirBuf: array[0..MAX_PATH] of char;
 begin
@@ -184,7 +185,7 @@ var
   IObject: IUnknown;
   FN, Dir, ShortcutFile: string;
 begin
-{$ifdef mswindows}
+{$ifndef fpc}
   CoInitialize(nil);
   try
     {$IFDEF COMOBJ}
@@ -284,10 +285,9 @@ var
   VTempFolder: array[0..MAX_PATH] of Char;
 {$ENDIF}
 begin
-{$IFDEF UNIX}
+{$IFDEF fpc}
   Result := GetTempDir;
-{$ENDIF}
-{$IFDEF MSWINDOWS}
+{$ELSE}
   GetTempPath(MAX_PATH, @VTempFolder);
   Result := IncludeTrailingPathDelimiter(StrPas(VTempFolder));
 {$ENDIF}
@@ -474,7 +474,7 @@ var
   Dir, FN: string;
   Data: AnsiString;
   FS: TFileStream;
-{$ifndef mswindows}
+{$ifdef fpc}
   const  FILE_ATTRIBUTE_DIRECTORY=16;
 {$endif}
 begin

@@ -44,12 +44,12 @@ uses
     Windows, ActiveX, ShellApi,
     ShlObj,
   {$ELSE}
-    LCLIntf, LCLType, LMessages, fileutil,
+    LCLIntf, LCLType, fileutil,
   {$ENDIF}
 
   SysUtils, Classes, {$IFNDEF DELPHI7_UP} FileCtrl, {$ENDIF}
   HttpSend,
-  uLanguages, uXml;
+  uXml;
 
 type
   TOverwriteMode = (omNever, omAlways, omRename, omAsk);
@@ -292,9 +292,9 @@ const
   {$ENDIF}
   XML_DEFAULT_DOWNLOADTOTEMPFILES = False;
   XML_DEFAULT_DOWNLOADTOPROVIDERSUBDIRS = False;
-  XML_DEFAULT_IGNOREMISSINGOPENSSL = False;
-  XML_DEFAULT_IGNOREMISSINGRTMPDUMP = False;
-  XML_DEFAULT_IGNOREMISSINGMSDL = False;
+  XML_DEFAULT_IGNOREMISSINGOPENSSL = True;
+  XML_DEFAULT_IGNOREMISSINGRTMPDUMP = True;
+  XML_DEFAULT_IGNOREMISSINGMSDL = True;
   XML_DEFAULT_ADDINDEXTONAMES = ifnNone;
 
 resourcestring
@@ -317,11 +317,12 @@ begin
     fMainXmlFileName := ExeXml
   else
     fMainXmlFileName := LocalXml;}
+  ///fMainXmlFileName := GetAppConfigDir(False)+'ytd.xml';
   fMainXmlFileName := 'ytd.xml';
 
   fUserXmlFileName := '';
   ///if SHGetSpecialFolderPath(0, PathBuf, CSIDL_APPDATA, False) then
-  ///  fUserXmlFileName := PathBuf + '\YouTube Downloader\ytd.xml';
+  ///  fUserXmlFileName := PathBuf + '\YTD\ytd.xml';
   Init;
 end;
 
@@ -686,8 +687,7 @@ begin
       begin
       ProfileDir := ExtractFilePath(XmlFileName);
       Result := ProfileDir + DEFS_FILENAME;
-      ///if (not FileExists(Result)) or (GetFileDateTime(Result) < GetFileDateTime(MainFileName)) then
-      {$ifdef mswindows}
+      {$ifndef fpc}
       if (not FileExists(Result)) or (GetFileDateTime(Result) < GetFileDateTime(MainFileName)) then
       {$else}
       if (not FileExists(Result)) or (FileAge(Result) < FileAge(MainFileName)) then

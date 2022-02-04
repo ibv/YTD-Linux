@@ -44,12 +44,13 @@ interface
 uses
   SysUtils, Classes,
   {$ifdef mswindows}
-    Windows
-  {$ELSE}
-    LCLIntf, LCLType, LMessages, uXml,
+    Windows,
+  {$ENDIF}
+  {$IFDEF fpc}
+    LCLIntf, LCLType, uXml,
   {$ENDIF}
   HttpSend, SynaUtil,
-  uCompatibility, uOptions, {$IFDEF SETUP} uSetup, {$ENDIF} uFunctions, uPCRE;
+  uOptions, {$IFDEF SETUP} uSetup, {$ENDIF} uFunctions;
 
 type
   TYTDUpgrade = class;

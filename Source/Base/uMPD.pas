@@ -42,9 +42,10 @@ interface
 uses
   SysUtils, Classes,
   {$ifdef mswindows}
-    Windows
-  {$ELSE}
-  LCLIntf, LCLType, {LMessages,}
+    Windows,
+  {$ENDIF}
+  {$IFDEF fpc}
+  LCLIntf, LCLType, 
   {$ENDIF}
   uXml;
 

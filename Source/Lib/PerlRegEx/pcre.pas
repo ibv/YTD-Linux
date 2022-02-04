@@ -533,7 +533,11 @@ type
 
 const
   {$IFDEF MSWINDOWS}
-  libpcremodulename = 'pcre3.dll';
+    {$IFDEF WIN64}
+      libpcremodulename = 'pcre64.dll';
+    {$ELSE}
+  libpcremodulename = 'pcre32.dll';
+    {$ENDIF}
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   libpcremodulename = 'libpcre.so';

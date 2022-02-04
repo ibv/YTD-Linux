@@ -42,8 +42,9 @@ interface
 uses
   SysUtils, Classes,
   {$ifdef mswindows}
-    Windows
-  {$ELSE}
+    Windows,
+    {$ENDIF}
+  {$IFDEF fpc}  
     LCLIntf, LCLType, LMessages,
   {$ENDIF}
   uPCRE,

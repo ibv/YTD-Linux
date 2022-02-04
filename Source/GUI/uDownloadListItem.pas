@@ -43,7 +43,8 @@ uses
   SysUtils, Classes,
   {$ifdef mswindows}
     Windows,  ShellApi,
-  {$ELSE}
+  {$ENDIF}
+  {$IFDEF fpc}
     LCLIntf, LCLType, LMessages, Process, FileUtil,
   {$ENDIF}
   uDownloader, uDownloadThread,
@@ -214,7 +215,7 @@ begin
     OnConvertThreadFinished(Self);
 end;
 
-{$ifdef mswindows}
+{$ifndef fpc}
 function TDownloadListItem.Convert(Force: boolean; const ForceConverter: string): boolean;
 var Converter: TConverter;
     ID, CommandLine, MediaFile: string;

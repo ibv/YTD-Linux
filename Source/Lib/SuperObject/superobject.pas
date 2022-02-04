@@ -813,8 +813,8 @@ function SOInvoke(const obj: TValue; const method: string; const params: string;
 implementation
 uses
   sysutils,
-  {$ifdef mswindows}
-    Windows
+  {$ifndef fpc}
+    Windows,
   {$ELSE}
     LCLIntf, LCLType, LMessages,
   {$ENDIF}
