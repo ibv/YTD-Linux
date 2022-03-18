@@ -58,7 +58,7 @@ uses
   {$IFDEF DELPHIX_SEATTLE_UP}
   Types,
   {$ENDIF}
-  uLanguages, uFunctions, uMessages, uOptions, uCompatibility,
+  uLanguages, uFunctions, uMessages, uOptions, uCompatibility, uplaysound,
   guiOptions, guiFunctions, uUpgrade,
   uDownloadList, uDownloadListItem, uDownloadThread, Types;
 
@@ -88,6 +88,8 @@ type
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
     mnuResolut: TMenuItem;
+    playsound1: Tplaysound;
+    Separator1: TMenuItem;
     VQualityPopUp: TPopupMenu;
     ToolVQuality: TToolButton;
     TrayIcon: TTrayIcon;
@@ -668,6 +670,13 @@ begin
               {$ENDIF}
               end;
           {$ENDIF}
+            if DlItem.PlaySound then
+            begin
+              playsound1.SoundFile:=Options.EndSoundFile;
+              playsound1.PlayStyle:=psASync;
+              playsound1.Execute;
+              DlItem.PlaySound:=false;
+            end;
           end;
         dtsFailed:
           sProgress := DlItem.ErrorMessage + ' (' + DlItem.ErrorClass + ')';

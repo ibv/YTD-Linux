@@ -1963,4 +1963,24 @@ object FormYTD: TFormYTD
       OnClick = Item6Click
     end
   end
+  object playsound1: Tplaysound
+    About.Description.Strings = (
+      'Plays WAVE sounds in Windows or Linux'#10'Public methods: Execute and StopSound'
+    )
+    About.Title = 'PlaySound'
+    About.Height = 400
+    About.Width = 400
+    About.Font.Color = clNavy
+    About.Font.Height = -13
+    About.BackGroundColor = clCream
+    About.Version = '0.0.8'
+    About.Authorname = 'Gordon Bamber'
+    About.Organisation = 'Public Domain'
+    About.AuthorEmail = 'minesadorada@charcodelvalle.com'
+    About.ComponentName = 'PlaySound'
+    About.LicenseType = abModifiedGPL
+    PlayCommand = 'play'
+    Left = 632
+    Top = 80
+  end
 end
