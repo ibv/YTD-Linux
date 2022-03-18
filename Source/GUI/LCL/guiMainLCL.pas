@@ -670,7 +670,7 @@ begin
               {$ENDIF}
               end;
           {$ENDIF}
-            if DlItem.PlaySound then
+            if DlItem.PlaySound and Options.EndSound then
             begin
               playsound1.SoundFile:=Options.EndSoundFile;
               playsound1.PlayStyle:=psASync;
@@ -729,6 +729,14 @@ var i: integer;
 begin
   if Downloads.SelCount < 1 then
     Exit;
+
+  if Options.StartSound then
+  begin
+    playsound1.SoundFile:=Options.StartSoundFile;
+    playsound1.PlayStyle:=psASync;
+    playsound1.Execute;
+  end;
+
   if Downloads.SelCount = 1 then
     StartPauseResumeTask(Downloads.Selected.Index)
   else
