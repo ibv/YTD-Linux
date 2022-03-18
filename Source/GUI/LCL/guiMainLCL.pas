@@ -1077,22 +1077,21 @@ procedure TFormYTD.DownloadsMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   i, j, ind: integer;
-  pr, value: string;
+  ///pr, value: string;
   Item : TLIstItem;
 
 ///const
    ///Res : array[0..5] of integer = (0,1920,1280,1024,720,512);
 
 begin
-  Item := Downloads.GetItemAt(X, Y);
-  i := Item.index;
   (*
   if button  = mbMiddle then
   begin
+    Item := Downloads.GetItemAt(X, Y);
     if Assigned(Item) then
     begin
       fMenuID:=-1;
-
+      i := Item.index;
       for ind:=0 to VQualityPopUp.Items.Count-1 do
       begin
         VQualityPopUp.Items[ind].Checked:=false;
@@ -1121,8 +1120,11 @@ begin
   ///
   if button  = mbLeft then
   begin
+    Item := Downloads.GetItemAt(X, Y);
+
     if Assigned(Item) then
     begin
+      i := Item.index;
       ind := DownloadList[i].Downloader.MaxVResolution;
       for j := Low(Res) to High(Res) do
       begin
