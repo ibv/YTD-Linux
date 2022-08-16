@@ -284,7 +284,7 @@ implementation
 
 uses
   guiConsts, guiAboutLCL, {$IFDEF CONVERTERS} guiConverterLCL, {$ENDIF} guiOptionsLCL,
-  uScriptedDownloader;
+  synautil, uScriptedDownloader;
 
 const
 
@@ -616,7 +616,7 @@ var DlItem: TDownloadListItem;
 begin
   if DownloadList <> nil then
     if Item.Index < DownloadList.Count then
-      begin
+    begin
       canPlay:=false;
       DlItem := DownloadList[Item.Index];
       Item.Caption := DownloadList.Urls[Item.Index];
@@ -652,7 +652,9 @@ begin
           end;
         dtsDownloading:
           begin
-          sProgress := GetProgressStr(DlItem.DownloadedSize, DlItem.TotalSize);
+          sProgress := GetProgressStr(DlItem.DownloadedSize, DlItem.TotalSize, DlItem.DownloadedSize - DlItem.LastFragment, TickDelta(DlItem.TimeTick, GetTick));
+          DlItem.TimeTick:=GetTick;
+          DlItem.LastFragment:=DlItem.DownloadedSize;
           if DlItem.Paused then
             begin
             sState := _(THREADSTATE_PAUSED); // Download thread state: Paused
@@ -688,7 +690,7 @@ begin
           end;
           end;
         dtsAborted:
-          sProgress := GetProgressStr(DlItem.DownloadedSize, DlItem.TotalSize);
+          sProgress := GetProgressStr(DlItem.DownloadedSize, DlItem.TotalSize, DlItem.DownloadedSize - DlItem.LastFragment,TickDelta(DlItem.TimeTick, GetTick));
         end;
       {$IFNDEF F-PC}
       Item.StateIndex := iStateImage;
@@ -698,12 +700,12 @@ begin
       Item.SubItems.Add(sSize);
       Item.SubItems.Add(sProgress);
       if canPlay then
-       begin
+      begin
          playsound1.PlayStyle:=psASync;
          playsound1.Execute;
          DlItem.PlaySound:=false;
-       end;
       end;
+  end;
   GetProgress(Progress, Total);
   if Total > 0 then
     ShowTotalProgressBar(Self.Handle, pbsNormal, Progress, Total)
@@ -1107,47 +1109,9 @@ procedure TFormYTD.DownloadsMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   i, j, ind: integer;
-  ///pr, value: string;
   Item : TLIstItem;
 
-///const
-   ///Res : array[0..5] of integer = (0,1920,1280,1024,720,512);
-
 begin
-  (*
-  if button  = mbMiddle then
-  begin
-    Item := Downloads.GetItemAt(X, Y);
-    if Assigned(Item) then
-    begin
-      fMenuID:=-1;
-      i := Item.index;
-      for ind:=0 to VQualityPopUp.Items.Count-1 do
-      begin
-        VQualityPopUp.Items[ind].Checked:=false;
-        if Res[ind] = DownloadList[i].Downloader.MaxVResolution{.MaxVResolution} then
-        begin
-          VQualityPopUp.Items[ind].Checked:=true;
-          j:=ind;
-        end;
-      end;
-    end;
-    VQualityPopUp.PopUp;
-    if (j <> fMenuID) and (fMenuID >= 0) then
-    begin
-      VQualityPopUp.Items[j].Checked:=false;
-      VQualityPopUp.Items[fMenuID].Checked:=true;
-      value := Inputbox(MSG_MAX_VIDEO_BITRATE, MSG_VIDEO_BITRATE_VALUE, '0');
-      Options.WriteProviderOption(DownloadList[i].Downloader.ProviderName, 'max_video_width', Res[fMenuID]);
-      Options.WriteProviderOption(DownloadList[i].Downloader.ProviderName, 'max_video_bitrate', value);
-      DownloadList[i].Downloader.MaxVResolution:=Res[fMenuID];
-      ///DownloadList[i].MaxVBitrate := StrToIntDef(value,0);
-      DownloadList[i].Downloader.MaxVBitRate := StrToIntDef(value,0);
-      ///InputQuery('Max Video Bitrate', 'Please type your value', value);
-    end;
-  end;
-  *)
-  ///
   if button  = mbLeft then
   begin
     Item := Downloads.GetItemAt(X, Y);
