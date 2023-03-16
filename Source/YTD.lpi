@@ -15,6 +15,7 @@
       <Title Value="YTD"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
+      <Icon Value="0"/>
     </General>
     <i18n>
       <EnableI18N Value="True"/>
@@ -22,11 +23,10 @@
     </i18n>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
-      <AutoIncrementBuild Value="True"/>
       <MajorVersionNr Value="1"/>
-      <MinorVersionNr Value="67"/>
-      <BuildNr Value="5"/>
-      <StringTable ProductVersion="1.67"/>
+      <MinorVersionNr Value="69"/>
+      <BuildNr Value="2"/>
+      <StringTable ProductVersion="1.69"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
@@ -40,10 +40,13 @@
         <Mode0 Name="default"/>
       </Modes>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
         <PackageName Value="LCL"/>
       </Item1>
+      <Item2>
+        <PackageName Value="playwavepackage"/>
+      </Item2>
     </RequiredPackages>
     <Units Count="279">
       <Unit0>
@@ -1174,7 +1177,7 @@
     <SearchPaths>
       <IncludeFiles Value="Common;Base;Downloaders;Playlists;Lib/Synapse/source/lib;Lib/Pepak;$(ProjOutDir)"/>
       <Libraries Value="../Bin"/>
-      <OtherUnitFiles Value="Common;Base;Downloaders;Playlists;Lib/Synapse/source/lib;Lib/Pepak;Lib/NativeXML;Lib/SciZipFile;Lib/PerlRegEx;Lib/SuperObject;Lib/lkJSON;Lib/RtmpDump;Lib/MSDL;Lib/DxGetText/fpc;GUI/LCL/Downloaders"/>
+      <OtherUnitFiles Value="Common;Base;Downloaders;Playlists;Lib/Synapse/source/lib;Lib/Pepak;Lib/NativeXML;Lib/SciZipFile;Lib/PerlRegEx;Lib/SuperObject;Lib/lkJSON;Lib/RtmpDump;Lib/MSDL;Lib/DxGetText/fpc;GUI/LCL/Downloaders;GUI"/>
       <UnitOutputDirectory Value="Units"/>
     </SearchPaths>
     <Parsing>
