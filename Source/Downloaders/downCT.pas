@@ -81,6 +81,7 @@ type
       UrlToken: TregExp;
       IDEC: TregExp;
       BID:  TRegExp;
+      AID:  TRegExp;
       {$IFDEF MULTIDOWNLOADS}
       property NameList: TStringList read fNameList;
       property UrlList: TStringList read fUrlList;
@@ -126,7 +127,7 @@ uses
 
 const
   URLREGEXP_BEFORE_ID = '';
-  URLREGEXP_ID =        REGEXP_COMMON_URL_PREFIX + '(?:ceskatelevize|ct24)\.cz/(?:ivysilani|porady)/.+';
+  URLREGEXP_ID =        REGEXP_COMMON_URL_PREFIX + '(?:ceskatelevize|ct24)\.cz/(?:ivysilani|porady|inside)/.+';
   URLREGEXP_AFTER_ID =  '';
 
   ///DEFAULT_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
@@ -148,6 +149,7 @@ const
   REGEXP_URL_TOKEN = '<token>(?P<TOKEN>.*?)</token>';
   REGEX_PLAYLIST_ID_IDEC = '"idec":"(?P<IDEC>.+?)",*?';
   REGEX_PLAYLIST_BONUS_ID = 'link href=".*?/bonus/(?P<BID>.+?)/" *?';
+  REGEX_PLAYLIST_ART_ID = 'origin=artzona.+?;bonus=(?P<AID>.+?)"';
 
 const
 
@@ -197,6 +199,7 @@ begin
   UrlToken := RegExCreate(REGEXP_URL_TOKEN);
   IDEC := RegExCreate(REGEX_PLAYLIST_ID_IDEC);
   BID  := RegExCreate(REGEX_PLAYLIST_BONUS_ID);
+  AID  := RegExCreate(REGEX_PLAYLIST_ART_ID);
   Referer := GetMovieInfoUrl;
 end;
 
@@ -212,6 +215,7 @@ begin
   RegExFreeAndNil(UrlToken);
   RegExFreeAndNil(IDEC);
   RegExFreeAndNil(BID);
+  RegExFreeAndNil(AID);
   {$IFDEF MULTIDOWNLOADS}
   FreeAndNil(fNameList);
   FreeAndNil(fUrlList);
@@ -236,7 +240,7 @@ var
   Url: string;
   {$ENDIF}
   PlayListIDEC, iframeHash: string;
-  StreamType: string;
+  StreamType, RequestSource: string;
 
   function getRedirectUrl(Http: THttpSend; Url: string): string;
   var MethodStr: string;
@@ -264,17 +268,23 @@ begin
 
   PlayListType:='episode';
   StreamType:='type=dash';
+  RequestSource:='iVysilani';
 
   if not GetRegExpVars(IDEC, Page, ['IDEC'], [@PlaylistIDEC]) then
      SetLastErrorMsg('Failed to locate media info page (idec).');
   if PlaylistIDEC = '' then
+  begin
     if not GetRegExpVars(BID, Page, ['BID'], [@PlaylistIDEC]) then
-      SetLastErrorMsg('Failed to locate bonus media info page (bid).')
-    else
-    begin
-      PlayListType:='bonus';
-      StreamType:='type=html&streamingProtocol=dash';
-    end;
+      SetLastErrorMsg('Failed to locate bonus media info page (bid).');
+    if PlayListIDEC = '' then
+       if not GetRegExpVars(AID, Page, ['AID'], [@PlaylistIDEC]) then
+         SetLastErrorMsg('Failed to locate art bonus media info page (aid).')
+       else
+         RequestSource:='Art';
+    PlayListType:='bonus';
+    StreamType:='type=html&streamingProtocol=dash';
+  end;
+
   if not DownloadPage(Http,'https://www.ceskatelevize.cz/v-api/iframe-hash/', iframeHash) then
      SetLastErrorMsg(ERR_FAILED_TO_LOCATE_MEDIA_INFO_PAGE)
   else if not DownloadPage(Http,'https://www.ceskatelevize.cz/ivysilani/embed/iFramePlayer.php?hash=' +iframeHash + '&origin=iVysilani&autoStart=true&start=0&IDEC=' + PlayListIDEC, page) then
@@ -284,7 +294,7 @@ begin
                            'https://www.ceskatelevize.cz/ivysilani/ajax/get-client-playlist/',
                            ///{$IFDEF UNICODE} AnsiString {$ENDIF} ('playlist%5B0%5D%5Btype%5D=' + PlaylistType + '&playlist%5B0%5D%5Bid%5D=' + PlaylistID + '&requestUrl=' + UrlEncode(Part) + '&requestSource=iVysilani&addCommercials=1&type=dash'),
                            {$IFDEF UNICODE} AnsiString {$ENDIF} ('playlist[0][type]='+PlayListType+'&playlist[0][id]='+PlaylistIDEC+'&playlist[0][startTime]=0'+
-                                                      '&requestSource=iVysilani&'+StreamType+'&canPlayDRM=false&requestUrl=/ivysilani/embed/iFramePlayer.php'),
+                                                      '&requestSource='+RequestSource+'&'+StreamType+'&canPlayDRM=false&requestUrl=/ivysilani/embed/iFramePlayer.php'),
                            HTTP_FORM_URLENCODING_UTF8,
                            ['x-addr: 127.0.0.1', 'X-Requested-With: XMLHttpRequest'],
                            PlaylistUrlPage,
