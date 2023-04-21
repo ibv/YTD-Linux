@@ -118,7 +118,7 @@
 // They are only listed here for reference and documentation. DO NOT define
 // them here.
 
-{.DEFINE DEBUG}
+{.$DEFINE DEBUG}
   // Include debug code
 
 {.DEFINE RELEASE} 

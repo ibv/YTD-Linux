@@ -11,7 +11,7 @@ object FormAbout: TFormAbout
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Position = poOwnerFormCenter
-  LCLVersion = '2.2.0.4'
+  LCLVersion = '2.2.4.0'
   object LabelYTD: TLabel
     Left = 8
     Height = 23
@@ -22,6 +22,7 @@ object FormAbout: TFormAbout
     Font.Height = -19
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold, fsUnderline]
+    ParentColor = False
     ParentFont = False
   end
   object LabelVersionLabel: TLabel
@@ -30,6 +31,7 @@ object FormAbout: TFormAbout
     Top = 40
     Width = 46
     Caption = 'Version:'
+    ParentColor = False
   end
   object LabelVersion: TLabel
     Left = 127
@@ -41,6 +43,7 @@ object FormAbout: TFormAbout
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
+    ParentColor = False
     ParentFont = False
   end
   object LabelNewestVersionLabel: TLabel
@@ -49,6 +52,7 @@ object FormAbout: TFormAbout
     Top = 56
     Width = 90
     Caption = 'Newest version:'
+    ParentColor = False
   end
   object LabelNewestVersion: TLabel
     Left = 127
@@ -60,6 +64,7 @@ object FormAbout: TFormAbout
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
+    ParentColor = False
     ParentFont = False
     OnClick = LabelNewestVersionClick
   end
@@ -69,6 +74,7 @@ object FormAbout: TFormAbout
     Top = 73
     Width = 65
     Caption = 'Homepage:'
+    ParentColor = False
   end
   object LabelHomepage: TLabel
     Left = 127
@@ -80,15 +86,17 @@ object FormAbout: TFormAbout
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
+    ParentColor = False
     ParentFont = False
     OnClick = LabelHomepageClick
   end
   object LabelMediaProviders: TLabel
     Left = 8
     Height = 14
-    Top = 97
+    Top = 113
     Width = 93
     Caption = 'Media providers:'
+    ParentColor = False
   end
   object LabelDefsVersion: TLabel
     Left = 210
@@ -100,6 +108,7 @@ object FormAbout: TFormAbout
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
+    ParentColor = False
     ParentFont = False
   end
   object LabelNewestDefsVersion: TLabel
@@ -112,13 +121,14 @@ object FormAbout: TFormAbout
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
+    ParentColor = False
     ParentFont = False
     OnClick = LabelNewestDefsVersionClick
   end
   object ListProviders: TListView
     Left = 8
     Height = 155
-    Top = 111
+    Top = 127
     Width = 414
     Anchors = [akTop, akLeft, akRight, akBottom]
     Columns = <    
@@ -144,5 +154,28 @@ object FormAbout: TFormAbout
     Top = 15
     Width = 29
     Caption = 'YTD2'
+    ParentColor = False
+  end
+  object LabelSSLLabel: TLabel
+    Left = 8
+    Height = 14
+    Top = 90
+    Width = 54
+    Caption = 'OpenSSL:'
+    ParentColor = False
+  end
+  object LabelSSL: TLabel
+    Left = 127
+    Height = 14
+    Top = 90
+    Width = 10
+    Caption = '--'
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+    OnClick = LabelHomepageClick
   end
 end

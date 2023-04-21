@@ -59,6 +59,8 @@ type
   { TFormAbout }
 
   TFormAbout = class(TForm)
+    LabelSSL: TLabel;
+    LabelSSLLabel: TLabel;
     LabelYTD2: TLabel;
     LabelYTD: TLabel;
     LabelVersionLabel: TLabel;
@@ -165,6 +167,7 @@ begin
   // Show available version
   LabelNewestVersion.Caption := {$IFDEF THREADEDVERSION} _('checking...') {$ELSE} _('not found') {$ENDIF} ; // GUI: Check for a new version wasn't made yet - or failed.
   LabelNewestDefsVersion.Caption := {$IFDEF THREADEDVERSION} _('checking...') {$ELSE} _('not found') {$ENDIF} ; // GUI: Check for a new version wasn't made yet - or failed.
+  LabelSSL.Caption:=ChangeFileExt(DLLSSLName, '');
   Application.ProcessMessages;
   if Options <> nil then
     begin
