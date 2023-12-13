@@ -40,9 +40,9 @@ unit uMain;
   {$MODE Delphi}
 {$ENDIF}
 
-{$INCLUDE 'ytd.inc'
+{$INCLUDE 'ytd.inc'}
 
-uses FileUtil;}
+{uses FileUtil;}
 
 interface
 
@@ -72,8 +72,8 @@ uses
         guiSetupWINAPI,
       {$ELSE}
         {$IFNDEF GUI_LCL}
-  		    guiSetupVCL,
-  		  {$ELSE}
+  	  guiSetupVCL,
+  	{$ELSE}
           guiSetupLCL,
         {$ENDIF}
       {$ENDIF}
@@ -92,9 +92,9 @@ uses
       Forms,
       {$IFNDEF GUI_LCL}
         guiMainVCL,
-  		{$ELSE}
-  	    guiMainLCL,
-  		{$ENDIF}
+      {$ELSE}
+        guiMainLCL,
+      {$ENDIF}
     {$ENDIF}
   {$ENDIF}
   uSystem, uFunctions, uMessages;
@@ -313,6 +313,7 @@ begin
         {$ENDIF}
         end;
   {$ELSE}
+    Application.Scaled:=True;
     Application.Initialize;
     Application.Title := 'YTD';
     Application.CreateForm(TFormYTD, FormYTD);
