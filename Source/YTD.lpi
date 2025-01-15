@@ -24,8 +24,8 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
-      <MinorVersionNr Value="69"/>
-      <BuildNr Value="2"/>
+      <MinorVersionNr Value="71"/>
+      <BuildNr Value="1"/>
       <StringTable ProductVersion="1.69"/>
     </VersionInfo>
     <BuildModes Count="1">
@@ -1187,6 +1187,7 @@
     </Parsing>
     <Linking>
       <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
         <UseExternalDbgSyms Value="True"/>
       </Debugging>
       <Options>
