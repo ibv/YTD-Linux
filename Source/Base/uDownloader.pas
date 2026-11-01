@@ -306,7 +306,7 @@ begin
   {$ENDIF}
   fHttp := THttpSend.Create;
   ///fHttp.UserAgent := DEFAULT_USER_AGENT;
-  fHttp.UserAgent := format(DEFAULT_USER_AGENT, [RandomRange(100, 131),RandomRange(0, 120),RandomRange(0, 100)]);
+  fHttp.UserAgent := format(DEFAULT_USER_AGENT, [RandomRange(150, 160),RandomRange(0, 120),RandomRange(0, 100)]);
   MovieID := AMovieID;
   ///fVideoBitRate := MaxInt;
 end;
